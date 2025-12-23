@@ -1,0 +1,1013 @@
+<div class="card">
+    <h1 class="text-2xl font-bold mb-6 text-center">إنشاء حساب جديد</h1>
+
+    <p-steps [model]="items" [(activeIndex)]="activeIndex" [readonly]="false"></p-steps>
+
+    <form [formGroup]="customerForm">
+        <!-- Customer Information Step -->
+        <div *ngIf="activeIndex === 0" class="mt-6">
+            <!-- Customer Information Form -->
+            <div class="flex flex-col gap-4 mb-5">
+                <!-- Names Section -->
+                <div class="card flex flex-col gap-4">
+                    <div class="font-semibold text-xl">الأسماء</div>
+
+                    <!-- Arabic Names Section -->
+                    <div class="flex flex-col gap-3">
+                        <div class="text-lg font-medium">الأسماء بالعربية</div>
+                        <div class="font-bold text-lg text-primary">{{ fullName || 'سيتم عرض الاسم الكامل هنا' }}</div>
+
+                        <!-- Individual Arabic Name Fields in One Row -->
+                        <div class="flex flex-wrap gap-2">
+                            <div class="flex flex-wrap gap-2 flex-1 min-w-0">
+                                <label for="custCFname" class="required">الاسم الأول</label>
+                                <input pInputText id="custCFname" formControlName="custCFname" placeholder="الاسم الأول"
+                                    class="w-full"
+                                    [ngClass]="{ 'ng-invalid ng-touched': customerForm.get('custCFname')?.invalid && customerForm.get('custCFname')?.touched }"
+                                    (input)="cleanNameField('custCFname')" (blur)="trimNameField('custCFname')">
+                            </div>
+                            <div class="flex flex-wrap gap-2 flex-1 min-w-0">
+                                <label for="custCSname" class="required">الاسم الثاني</label>
+                                <input pInputText id="custCSname" formControlName="custCSname"
+                                    placeholder="الاسم الثاني" class="w-full"
+                                    [ngClass]="{ 'ng-invalid ng-touched': customerForm.get('custCSname')?.invalid && customerForm.get('custCSname')?.touched }"
+                                    (input)="cleanNameField('custCSname')" (blur)="trimNameField('custCSname')">
+                            </div>
+                            <div class="flex flex-wrap gap-2 flex-1 min-w-0">
+                                <label for="custCTname" class="required">الاسم الثالث</label>
+                                <input pInputText id="custCTname" formControlName="custCTname"
+                                    placeholder="الاسم الثالث" class="w-full"
+                                    [ngClass]="{ 'ng-invalid ng-touched': customerForm.get('custCTname')?.invalid && customerForm.get('custCTname')?.touched }"
+                                    (input)="cleanNameField('custCTname')" (blur)="trimNameField('custCTname')">
+                            </div>
+                            <div class="flex flex-wrap gap-2 flex-1 min-w-0">
+                                <label for="custCFoname" class="required">الاسم الرابع</label>
+                                <input pInputText id="custCFoname" formControlName="custCFoname"
+                                    placeholder="الاسم الرابع" class="w-full"
+                                    [ngClass]="{ 'ng-invalid ng-touched': customerForm.get('custCFoname')?.invalid && customerForm.get('custCFoname')?.touched }"
+                                    (input)="cleanNameField('custCFoname')" (blur)="trimNameField('custCFoname')">
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col md:flex-row gap-6">
+
+                            <div class="flex flex-wrap gap-2 w-full md:w-1/3">
+                                <label for="custCMname" class="required">اسم الأم</label>
+                                <input pInputText id="custCMname" formControlName="custCMname" placeholder="اسم الأم"
+                                    class="w-full"
+                                    [ngClass]="{ 'ng-invalid ng-touched': customerForm.get('custCMname')?.invalid && customerForm.get('custCMname')?.touched }">
+                            </div>
+                            <div class="flex flex-wrap gap-2 w-full md:w-1/3">
+                                <label for="custCSex" class="required">الجنس</label>
+                                <p-select id="custCSex" formControlName="custCSex" [options]="genderOptions"
+                                    placeholder="اختر الجنس" optionLabel="label" optionValue="value" class="w-full"
+                                    [ngClass]="{ 'ng-invalid ng-touched': customerForm.get('custCSex')?.invalid && customerForm.get('custCSex')?.touched }"></p-select>
+                            </div>
+                            <div class="flex flex-wrap gap-2 w-full md:w-1/3">
+                                <label for="custCMaritalsts" class="required">الحالة الاجتماعية</label>
+                                <p-select id="custCMaritalsts" formControlName="custCMaritalsts"
+                                    [options]="maritalStatusOptions" placeholder="اختر الحالة الاجتماعية"
+                                    optionLabel="label" optionValue="value" class="w-full"
+                                    [ngClass]="{ 'ng-invalid ng-touched': customerForm.get('custCMaritalsts')?.invalid && customerForm.get('custCMaritalsts')?.touched }"></p-select>
+                            </div>
+                            <div class="flex flex-wrap gap-2 w-full md:w-1/3" *ngIf="shouldShowWifeName">
+                                <label for="custCWife1" class="required">اسم الزوجة</label>
+                                <input pInputText id="custCWife1" formControlName="custCWife1" placeholder="اسم الزوجة"
+                                    class="w-full"
+                                    [ngClass]="{ 'ng-invalid ng-touched': customerForm.get('custCWife1')?.invalid && customerForm.get('custCWife1')?.touched }">
+                            </div>
+                            <div class="flex flex-wrap gap-2 w-full md:w-1/3" *ngIf="shouldShowHusbandName">
+                                <label for="husbCName" class="required">اسم الزوج</label>
+                                <input pInputText id="husbCName" formControlName="husbCName" placeholder="اسم الزوج"
+                                    class="w-full"
+                                    [ngClass]="{ 'ng-invalid ng-touched': customerForm.get('husbCName')?.invalid && customerForm.get('husbCName')?.touched }">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- English Names Section -->
+                    <div class="flex flex-col gap-3">
+                        <div class="text-lg font-medium">الأسماء بالإنجليزية</div>
+                        <div class="font-bold text-lg text-primary">{{ englishFullName || 'Full name will appear here'
+                            }}</div>
+
+                        <!-- Individual English Name Fields in One Row -->
+                        <div class="flex flex-wrap gap-2">
+                            <div class="flex flex-wrap gap-2 flex-1 min-w-0">
+                                <label for="custCEngfname" class="required">First Name</label>
+                                <input pInputText id="custCEngfname" formControlName="custCEngfname"
+                                    placeholder="First name" class="w-full"
+                                    [ngClass]="{ 'ng-invalid ng-touched': customerForm.get('custCEngfname')?.invalid && customerForm.get('custCEngfname')?.touched }"
+                                    (input)="cleanEnglishNameField('custCEngfname')"
+                                    (blur)="trimEnglishNameField('custCEngfname')">
+                            </div>
+                            <div class="flex flex-wrap gap-2 flex-1 min-w-0">
+                                <label for="custCEngsname" class="required">Second Name</label>
+                                <input pInputText id="custCEngsname" formControlName="custCEngsname"
+                                    placeholder="Second name" class="w-full"
+                                    [ngClass]="{ 'ng-invalid ng-touched': customerForm.get('custCEngsname')?.invalid && customerForm.get('custCEngsname')?.touched }"
+                                    (input)="cleanEnglishNameField('custCEngsname')"
+                                    (blur)="trimEnglishNameField('custCEngsname')">
+                            </div>
+                            <div class="flex flex-wrap gap-2 flex-1 min-w-0">
+                                <label for="custCEngtname" class="required">Third Name</label>
+                                <input pInputText id="custCEngtname" formControlName="custCEngtname"
+                                    placeholder="Third name" class="w-full"
+                                    [ngClass]="{ 'ng-invalid ng-touched': customerForm.get('custCEngtname')?.invalid && customerForm.get('custCEngtname')?.touched }"
+                                    (input)="cleanEnglishNameField('custCEngtname')"
+                                    (blur)="trimEnglishNameField('custCEngtname')">
+                            </div>
+                            <div class="flex flex-wrap gap-2 flex-1 min-w-0">
+                                <label for="custCEngfoname" class="required">Fourth Name</label>
+                                <input pInputText id="custCEngfoname" formControlName="custCEngfoname"
+                                    placeholder="Fourth name" class="w-full"
+                                    [ngClass]="{ 'ng-invalid ng-touched': customerForm.get('custCEngfoname')?.invalid && customerForm.get('custCEngfoname')?.touched }"
+                                    (input)="cleanEnglishNameField('custCEngfoname')"
+                                    (blur)="trimEnglishNameField('custCEngfoname')">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Contact Information Section -->
+            <div class="card flex flex-col gap-4">
+                <div class="font-semibold text-xl">معلومات الاتصال</div>
+
+                <div class="flex flex-col md:flex-row gap-6">
+                    <div class="flex flex-wrap gap-2 w-full md:w-1/3">
+                        <label for="mobileCNo" class="required">رقم الهاتف المحمول</label>
+                        <p-inputgroup>
+                            <p-inputgroup-addon>+249</p-inputgroup-addon>
+                            <input pInputText id="mobileCNo" formControlName="mobileCNo" placeholder="912345678"
+                                maxlength="9" pattern="[1-9][0-9]{8}" (keypress)="onPhoneNumberKeyPress($event)"
+                                (input)="onPhonMobileInput($event)"
+                                [ngClass]="{ 'ng-invalid ng-touched': customerForm.get('mobileCNo')?.invalid && customerForm.get('mobileCNo')?.touched }">
+                        </p-inputgroup>
+                    </div>
+                    <div class="flex flex-wrap gap-2 w-full md:w-1/3">
+                        <label for="homeINumber">رقم آخر</label>
+                        <p-inputgroup>
+                            <p-inputgroup-addon [ngStyle]="{'padding': '0', 'min-width': '80px'}">
+                                <p-select formControlName="homeCountryCode" [options]="countryCodeOptions"
+                                    optionLabel="label" optionValue="value" placeholder="كود"
+                                    [ngStyle]="{'min-width': '70px', 'border': 'none', 'background': 'transparent', 'padding': '0 4px', 'height': '100%', 'font-size': '0.875rem'}">
+                                </p-select>
+                            </p-inputgroup-addon>
+                            <input pInputText id="homeINumber" formControlName="homeINumber" placeholder="123456789"
+                                maxlength="15" (keypress)="onHomeNumberKeyPress($event)"
+                                (input)="onHomeNumberInput($event)">
+                        </p-inputgroup>
+                    </div>
+                    <div class="flex flex-wrap gap-2 w-full md:w-1/3">
+                        <label for="emailCAdd">البريد الإلكتروني</label>
+                        <input pInputText id="emailCAdd" formControlName="emailCAdd"
+                            placeholder="أدخل البريد الإلكتروني" class="w-full">
+                    </div>
+
+                </div>
+                <div class="flex flex-col md:flex-row gap-6">
+                    <div class="flex flex-wrap gap-2 md:w-2/3">
+                        <label for="custCPadd1" class="required">العنوان</label>
+                        <input pTextarea id="custCPadd1" formControlName="custCPadd1" placeholder="أدخل العنوان"
+                            rows="2" class="w-full"
+                            [ngClass]="{ 'ng-invalid ng-touched': customerForm.get('custCPadd1')?.invalid && customerForm.get('custCPadd1')?.touched }">
+                    </div>
+
+                    <div class="flex flex-wrap gap-2 md:w-1/3">
+                        <label for="custCPCity" class="required">المدينة</label>
+                        <input pInputText id="custCPCity" formControlName="custCPCity" placeholder="أدخل المدينة"
+                            class="w-full"
+                            [ngClass]="{ 'ng-invalid ng-touched': customerForm.get('custCPCity')?.invalid && customerForm.get('custCPCity')?.touched }">
+                    </div>
+                </div>
+            </div>
+            <!-- Identification Section -->
+            <div class="card flex flex-col gap-4">
+                <div class="font-semibold text-xl">معلومات الهوية</div>
+
+                <!-- Personal Information Fields - Compact Layout -->
+
+                <div class="flex flex-col md:flex-row gap-4">
+                    <div class="flex flex-wrap gap-2 w-full md:w-1/4">
+                        <label for="custCNationality" class="required">الجنسية</label>
+                        <p-select id="custCNationality" formControlName="custCNationality"
+                            [options]="nationalityOptions" placeholder="اختر الجنسية" optionLabel="label"
+                            optionValue="value" class="w-full"
+                            [ngClass]="{ 'ng-invalid ng-touched': customerForm.get('custCNationality')?.invalid && customerForm.get('custCNationality')?.touched }"></p-select>
+                    </div>
+                    <div class="flex flex-wrap gap-2 w-full md:w-1/4">
+                        <label for="custCReligion" class="required">الديانة</label>
+                        <p-select id="custCReligion" formControlName="custCReligion" [options]="religionOptions"
+                            placeholder="اختر الديانة" optionLabel="label" optionValue="value" class="w-full"
+                            [ngClass]="{ 'ng-invalid ng-touched': customerForm.get('custCReligion')?.invalid && customerForm.get('custCReligion')?.touched }"></p-select>
+                    </div>
+                    <div class="flex flex-wrap gap-2 w-full md:w-1/4">
+                        <label for="custCHigheducation" class="required">المستوي التعليمي</label>
+                        <p-select id="custCHigheducation" formControlName="custCHigheducation"
+                            [options]="educationOptions" placeholder="اختر المستوي التعليمي" optionLabel="label"
+                            optionValue="value" class="w-full"
+                            [ngClass]="{ 'ng-invalid ng-touched': customerForm.get('custCHigheducation')?.invalid && customerForm.get('custCHigheducation')?.touched }"></p-select>
+                    </div>
+                    <div class="flex flex-wrap gap-2 w-full md:w-1/4">
+                        <label for="custDBdate" class="required">تاريخ الميلاد</label>
+                        <p-datepicker id="custDBdate" formControlName="custDBdate" [showIcon]="true"
+                            [showButtonBar]="true" placeholder="اختر تاريخ الميلاد" class="w-full"
+                            [ngClass]="{ 'ng-invalid ng-touched': customerForm.get('custDBdate')?.invalid && customerForm.get('custDBdate')?.touched }"></p-datepicker>
+                    </div>
+                </div>
+
+                <!-- Birth Location Information - Compact Layout -->
+                <div class="flex flex-col md:flex-row gap-4">
+                    <div class="flex flex-wrap gap-2 w-full md:w-1/3">
+                        <label for="placeCBirth" class="required">مكان الميلاد</label>
+                        <input pInputText id="placeCBirth" formControlName="placeCBirth" placeholder="أدخل مكان الميلاد"
+                            class="w-full">
+                    </div>
+                    <div class="flex flex-wrap gap-2 w-full md:w-1/3">
+                        <label for="custCCountrybrith" class="required">بلد الميلاد</label>
+                        <p-select id="custCCountrybrith" formControlName="custCCountrybrith"
+                            [options]="countriesOfBirth" placeholder="اختر بلد الميلاد" optionLabel="label"
+                            optionValue="value" [filter]="true" class="w-full"></p-select>
+                    </div>
+                    <div class="flex flex-wrap gap-2 w-full md:w-1/3">
+                        <label for="custCStatebrith" class="required">ولاية الميلاد</label>
+                        <input pInputText id="custCStatebrith" formControlName="custCStatebrith"
+                            placeholder="أدخل ولاية الميلاد" class="w-full">
+                    </div>
+                </div>
+
+                <!-- ID Information Fields - Compact Layout -->
+                <div class="flex flex-col md:flex-row gap-4">
+                    <div class="flex flex-wrap gap-2 w-full md:w-1/4">
+                        <label for="idCType" class="required">نوع الهوية</label>
+                        <p-select id="idCType" formControlName="idCType" [options]="idTypeOptions"
+                            placeholder="اختر نوع الهوية" optionLabel="label" optionValue="value"
+                            class="w-full"></p-select>
+                    </div>
+                    <div class="flex flex-wrap gap-2 w-full md:w-1/4">
+                        <label for="idCNo" class="required">رقم الهوية</label>
+                        <input pInputText id="idCNo" formControlName="idCNo" placeholder="أدخل رقم الهوية"
+                            class="w-full">
+                    </div>
+                    <div class="flex flex-wrap gap-2 w-full md:w-1/4">
+                        <label for="idCIssplace" class="required">مكان الإصدار</label>
+                        <input pInputText id="idCIssplace" formControlName="idCIssplace" placeholder="أدخل مكان الإصدار"
+                            class="w-full">
+                    </div>
+                    <div class="flex flex-wrap gap-2 w-full md:w-1/4">
+                        <label for="idDIssdate" class="required">تاريخ الإصدار</label>
+                        <p-datepicker id="idDIssdate" formControlName="idDIssdate" [showIcon]="true"
+                            [showButtonBar]="true" placeholder="اختر تاريخ الإصدار" class="w-full"></p-datepicker>
+                    </div>
+                </div>
+
+                <div class="flex flex-col md:flex-row gap-4">
+                    <div class="flex flex-wrap gap-2 w-full md:w-1/3">
+                        <label for="idDExpdate" class="required">تاريخ الانتهاء</label>
+                        <p-datepicker id="idDExpdate" formControlName="idDExpdate" [showIcon]="true"
+                            [showButtonBar]="true" placeholder="اختر تاريخ الانتهاء" class="w-full"></p-datepicker>
+                    </div>
+                    <div class="flex flex-wrap gap-2 w-full md:w-1/3">
+                        <label for="idCType2">نوع الهوية الثاني</label>
+                        <p-select id="idCType2" [disabled]="true" formControlName="idCType2" [options]="idTypeOptions"
+                            placeholder="اختر نوع الهوية الثاني" optionLabel="label" optionValue="value"
+                            class="w-full"></p-select>
+                    </div>
+                    <div class="flex flex-wrap gap-2 w-full md:w-1/3">
+                        <label for="idCNo2" class="required">الرقم الوطني</label>
+                        <input pInputText id="idCNo2" formControlName="idCNo2" appIdMask placeholder="###-####-####"
+                            maxlength="13" class="w-full"
+                            [ngClass]="{ 'ng-invalid ng-touched': customerForm.get('idCNo2')?.invalid && customerForm.get('idCNo2')?.touched }">
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Professional Information Section -->
+            <div class="card flex flex-col gap-4">
+                <div class="font-semibold text-xl">المعلومات المهنية</div>
+
+                <div class="flex flex-col md:flex-row gap-6">
+                    <div class="flex flex-wrap gap-2 w-full md:w-1/3">
+                        <label for="custCOccupation" class="required">المهنة</label>
+                        <input pInputText id="custCOccupation" formControlName="custCOccupation"
+                            placeholder="أدخل المهنة" class="w-full">
+                    </div>
+                    <div class="flex flex-wrap gap-2 w-full md:w-1/3">
+                        <label for="custCEmployer" class="required">جهة العمل</label>
+                        <input pInputText id="custCEmployer" formControlName="custCEmployer"
+                            placeholder="أدخل اسم جهة العمل" class="w-full">
+                    </div>
+                    <div class="flex flex-wrap gap-2 w-full md:w-1/3">
+                        <label for="custFIncome">الدخل الشهري</label>
+                        <p-inputNumber id="custFIncome" formControlName="custFIncome" mode="currency" currency="SDG"
+                            [showButtons]="true" placeholder="أدخل الدخل الشهري" class="w-full"></p-inputNumber>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap gap-2">
+                    <label for="custFAvgmonth">متوسط الدخل الشهري</label>
+                    <p-inputNumber id="custFAvgmonth" formControlName="custFAvgmonth" mode="currency" currency="SDG"
+                        [showButtons]="true" placeholder="أدخل متوسط الدخل الشهري" class="w-full"></p-inputNumber>
+                </div>
+            </div>
+
+            <!-- Document Upload Section -->
+            <div class="card flex flex-col gap-4">
+                <div class="font-semibold text-xl">رفع المستندات المطلوبة</div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Identification Document -->
+                    <div class="flex flex-col gap-2 min-h-[320px]">
+                        <label class="font-medium">صورة الهوية</label>
+                        <small class="text-gray-600">صورة بطاقة الهوية أو جواز السفر</small>
+                        <div class="flex-1">
+                            <p-fileupload name="identification" accept="image/*,.pdf" [multiple]="false" maxFileSize="1000000" (onUpload)="onTemplatedUpload()" (onSelect)="onFileChange($event, 'identification')">
+                                <ng-template #header let-files let-chooseCallback="chooseCallback" let-clearCallback="clearCallback" let-uploadCallback="uploadCallback">
+                                    <div class="flex flex-wrap justify-between items-center flex-1 gap-4">
+                                        <div class="flex gap-2">
+                                            <p-button (onClick)="chooseCallback($event)" icon="pi pi-images" [rounded]="true" [outlined]="true" />
+                                            <p-button (onClick)="uploadEvent(uploadCallback)" icon="pi pi-cloud-upload" [rounded]="true" [outlined]="true" severity="success" [disabled]="!files || files.length === 0" />
+                                            <p-button (onClick)="clearCallback()" icon="pi pi-times" [rounded]="true" [outlined]="true" severity="danger" [disabled]="!files || files.length === 0" />
+                                        </div>
+                                        <p-progressbar [value]="totalSizePercent" [showValue]="false" class="w-full" class="md:w-20rem h-1 w-full md:ml-auto">
+                                            <span class="whitespace-nowrap">{{ totalSize }}B / 1Mb</span>
+                                        </p-progressbar>
+                                    </div>
+                                </ng-template>
+                                <ng-template #content let-files let-uploadedFiles="uploadedFiles" let-removeFileCallback="removeFileCallback" let-removeUploadedFileCallback="removeUploadedFileCallback">
+                                    <div class="flex flex-col gap-8 pt-4">
+                                        <div *ngIf="files?.length > 0">
+                                            <h5>Pending</h5>
+                                            <div class="flex flex-wrap gap-4">
+                                                <div *ngFor="let file of files; let i = index" class="p-8 rounded-border flex flex-col border border-surface items-center gap-4">
+                                                    <div>
+                                                        <img role="presentation" [alt]="file.name" [src]="file.objectURL" width="100" height="50" />
+                                                    </div>
+                                                    <span class="font-semibold text-ellipsis max-w-60 whitespace-nowrap overflow-hidden">{{ file.name }}</span>
+                                                    <div>{{ formatSize(file.size) }}</div>
+                                                    <p-badge value="Pending" severity="warn" />
+                                                    <p-button icon="pi pi-times" (click)="onRemoveTemplatingFile($event, file, removeFileCallback, index)" [outlined]="true" [rounded]="true" severity="danger" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div *ngIf="uploadedFiles?.length > 0">
+                                            <h5>Completed</h5>
+                                            <div class="flex flex-wrap gap-4">
+                                                <div *ngFor="let file of uploadedFiles; let i = index" class="card m-0 px-12 flex flex-col border border-surface items-center gap-4">
+                                                    <div>
+                                                        <img role="presentation" [alt]="file.name" [src]="file.objectURL" width="100" height="50" />
+                                                    </div>
+                                                    <span class="font-semibold text-ellipsis max-w-60 whitespace-nowrap overflow-hidden">{{ file.name }}</span>
+                                                    <div>{{ formatSize(file.size) }}</div>
+                                                    <p-badge value="Completed" class="mt-4" severity="success" />
+                                                    <p-button icon="pi pi-times" (onClick)="removeUploadedFileCallback(index)" [outlined]="true" [rounded]="true" severity="danger" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ng-template>
+                                <ng-template #file></ng-template>
+                                <ng-template #empty>
+                                    <div class="flex items-center justify-center flex-col">
+                                        <i class="pi pi-cloud-upload !border-2 !rounded-full !p-8 !text-4xl !text-muted-color"></i>
+                                        <p class="mt-6 mb-0">Drag and drop files to here to upload.</p>
+                                    </div>
+                                </ng-template>
+                            </p-fileupload>
+                        </div>
+                    </div>
+
+                    <!-- National ID -->
+                    <div class="flex flex-col gap-2 min-h-[320px]">
+                        <label class="font-medium">الرقم القومي</label>
+                        <small class="text-gray-600">صورة البطاقة الشخصية</small>
+                        <div class="flex-1">
+                            <p-fileupload name="nationalId" accept="image/*,.pdf" [multiple]="false" maxFileSize="1000000" (onUpload)="onTemplatedUpload()" (onSelect)="onFileChange($event, 'nationalId')">
+                                <ng-template #header let-files let-chooseCallback="chooseCallback" let-clearCallback="clearCallback" let-uploadCallback="uploadCallback">
+                                    <div class="flex flex-wrap justify-between items-center flex-1 gap-4">
+                                        <div class="flex gap-2">
+                                            <p-button (onClick)="chooseCallback($event)" icon="pi pi-images" [rounded]="true" [outlined]="true" />
+                                            <p-button (onClick)="uploadEvent(uploadCallback)" icon="pi pi-cloud-upload" [rounded]="true" [outlined]="true" severity="success" [disabled]="!files || files.length === 0" />
+                                            <p-button (onClick)="clearCallback()" icon="pi pi-times" [rounded]="true" [outlined]="true" severity="danger" [disabled]="!files || files.length === 0" />
+                                        </div>
+                                        <p-progressbar [value]="totalSizePercent" [showValue]="false" class="w-full" class="md:w-20rem h-1 w-full md:ml-auto">
+                                            <span class="whitespace-nowrap">{{ totalSize }}B / 1Mb</span>
+                                        </p-progressbar>
+                                    </div>
+                                </ng-template>
+                                <ng-template #content let-files let-uploadedFiles="uploadedFiles" let-removeFileCallback="removeFileCallback" let-removeUploadedFileCallback="removeUploadedFileCallback">
+                                    <div class="flex flex-col gap-8 pt-4">
+                                        <div *ngIf="files?.length > 0">
+                                            <h5>Pending</h5>
+                                            <div class="flex flex-wrap gap-4">
+                                                <div *ngFor="let file of files; let i = index" class="p-8 rounded-border flex flex-col border border-surface items-center gap-4">
+                                                    <div>
+                                                        <img role="presentation" [alt]="file.name" [src]="file.objectURL" width="100" height="50" />
+                                                    </div>
+                                                    <span class="font-semibold text-ellipsis max-w-60 whitespace-nowrap overflow-hidden">{{ file.name }}</span>
+                                                    <div>{{ formatSize(file.size) }}</div>
+                                                    <p-badge value="Pending" severity="warn" />
+                                                    <p-button icon="pi pi-times" (click)="onRemoveTemplatingFile($event, file, removeFileCallback, index)" [outlined]="true" [rounded]="true" severity="danger" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div *ngIf="uploadedFiles?.length > 0">
+                                            <h5>Completed</h5>
+                                            <div class="flex flex-wrap gap-4">
+                                                <div *ngFor="let file of uploadedFiles; let i = index" class="card m-0 px-12 flex flex-col border border-surface items-center gap-4">
+                                                    <div>
+                                                        <img role="presentation" [alt]="file.name" [src]="file.objectURL" width="100" height="50" />
+                                                    </div>
+                                                    <span class="font-semibold text-ellipsis max-w-60 whitespace-nowrap overflow-hidden">{{ file.name }}</span>
+                                                    <div>{{ formatSize(file.size) }}</div>
+                                                    <p-badge value="Completed" class="mt-4" severity="success" />
+                                                    <p-button icon="pi pi-times" (onClick)="removeUploadedFileCallback(index)" [outlined]="true" [rounded]="true" severity="danger" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ng-template>
+                                <ng-template #file></ng-template>
+                                <ng-template #empty>
+                                    <div class="flex items-center justify-center flex-col">
+                                        <i class="pi pi-cloud-upload !border-2 !rounded-full !p-8 !text-4xl !text-muted-color"></i>
+                                        <p class="mt-6 mb-0">Drag and drop files to here to upload.</p>
+                                    </div>
+                                </ng-template>
+                            </p-fileupload>
+                        </div>
+                    </div>
+
+                    <!-- Personal Image -->
+                    <div class="flex flex-col gap-2 min-h-[320px]">
+                        <label class="font-medium">الصورة الشخصية</label>
+                        <small class="text-gray-600">صورة شخصية حديثة</small>
+                        <div class="flex-1">
+                            <p-fileupload name="personalImage" accept="image/*" [multiple]="false" maxFileSize="1000000" (onUpload)="onTemplatedUpload()" (onSelect)="onFileChange($event, 'personalImage')">
+                                <ng-template #header let-files let-chooseCallback="chooseCallback" let-clearCallback="clearCallback" let-uploadCallback="uploadCallback">
+                                    <div class="flex flex-wrap justify-between items-center flex-1 gap-4">
+                                        <div class="flex gap-2">
+                                            <p-button (onClick)="chooseCallback($event)" icon="pi pi-images" [rounded]="true" [outlined]="true" />
+                                            <p-button (onClick)="uploadEvent(uploadCallback)" icon="pi pi-cloud-upload" [rounded]="true" [outlined]="true" severity="success" [disabled]="!files || files.length === 0" />
+                                            <p-button (onClick)="clearCallback()" icon="pi pi-times" [rounded]="true" [outlined]="true" severity="danger" [disabled]="!files || files.length === 0" />
+                                        </div>
+                                        <p-progressbar [value]="totalSizePercent" [showValue]="false" class="w-full" class="md:w-20rem h-1 w-full md:ml-auto">
+                                            <span class="whitespace-nowrap">{{ totalSize }}B / 1Mb</span>
+                                        </p-progressbar>
+                                    </div>
+                                </ng-template>
+                                <ng-template #content let-files let-uploadedFiles="uploadedFiles" let-removeFileCallback="removeFileCallback" let-removeUploadedFileCallback="removeUploadedFileCallback">
+                                    <div class="flex flex-col gap-8 pt-4">
+                                        <div *ngIf="files?.length > 0">
+                                            <h5>Pending</h5>
+                                            <div class="flex flex-wrap gap-4">
+                                                <div *ngFor="let file of files; let i = index" class="p-8 rounded-border flex flex-col border border-surface items-center gap-4">
+                                                    <div>
+                                                        <img role="presentation" [alt]="file.name" [src]="file.objectURL" width="100" height="50" />
+                                                    </div>
+                                                    <span class="font-semibold text-ellipsis max-w-60 whitespace-nowrap overflow-hidden">{{ file.name }}</span>
+                                                    <div>{{ formatSize(file.size) }}</div>
+                                                    <p-badge value="Pending" severity="warn" />
+                                                    <p-button icon="pi pi-times" (click)="onRemoveTemplatingFile($event, file, removeFileCallback, index)" [outlined]="true" [rounded]="true" severity="danger" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div *ngIf="uploadedFiles?.length > 0">
+                                            <h5>Completed</h5>
+                                            <div class="flex flex-wrap gap-4">
+                                                <div *ngFor="let file of uploadedFiles; let i = index" class="card m-0 px-12 flex flex-col border border-surface items-center gap-4">
+                                                    <div>
+                                                        <img role="presentation" [alt]="file.name" [src]="file.objectURL" width="100" height="50" />
+                                                    </div>
+                                                    <span class="font-semibold text-ellipsis max-w-60 whitespace-nowrap overflow-hidden">{{ file.name }}</span>
+                                                    <div>{{ formatSize(file.size) }}</div>
+                                                    <p-badge value="Completed" class="mt-4" severity="success" />
+                                                    <p-button icon="pi pi-times" (onClick)="removeUploadedFileCallback(index)" [outlined]="true" [rounded]="true" severity="danger" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ng-template>
+                                <ng-template #file></ng-template>
+                                <ng-template #empty>
+                                    <div class="flex items-center justify-center flex-col">
+                                        <i class="pi pi-cloud-upload !border-2 !rounded-full !p-8 !text-4xl !text-muted-color"></i>
+                                        <p class="mt-6 mb-0">Drag and drop files to here to upload.</p>
+                                    </div>
+                                </ng-template>
+                            </p-fileupload>
+                        </div>
+                    </div>
+
+                    <!-- Image with ID -->
+                    <div class="flex flex-col gap-2 min-h-[320px]">
+                        <label class="font-medium">صورة طالب الخدمة بالهوية</label>
+                        <small class="text-gray-600">صورة طالب الخدمة وهو يحمل الهوية</small>
+                        <div class="flex-1">
+                            <p-fileupload name="imageFortheRequesterHoldingTheID" accept="image/*" [multiple]="false" maxFileSize="1000000" (onUpload)="onTemplatedUpload()" (onSelect)="onFileChange($event, 'imageFortheRequesterHoldingTheID')">
+                                <ng-template #header let-files let-chooseCallback="chooseCallback" let-clearCallback="clearCallback" let-uploadCallback="uploadCallback">
+                                    <div class="flex flex-wrap justify-between items-center flex-1 gap-4">
+                                        <div class="flex gap-2">
+                                            <p-button (onClick)="chooseCallback($event)" icon="pi pi-images" [rounded]="true" [outlined]="true" />
+                                            <p-button (onClick)="uploadEvent(uploadCallback)" icon="pi pi-cloud-upload" [rounded]="true" [outlined]="true" severity="success" [disabled]="!files || files.length === 0" />
+                                            <p-button (onClick)="clearCallback()" icon="pi pi-times" [rounded]="true" [outlined]="true" severity="danger" [disabled]="!files || files.length === 0" />
+                                        </div>
+                                        <p-progressbar [value]="totalSizePercent" [showValue]="false" class="w-full" class="md:w-20rem h-1 w-full md:ml-auto">
+                                            <span class="whitespace-nowrap">{{ totalSize }}B / 1Mb</span>
+                                        </p-progressbar>
+                                    </div>
+                                </ng-template>
+                                <ng-template #content let-files let-uploadedFiles="uploadedFiles" let-removeFileCallback="removeFileCallback" let-removeUploadedFileCallback="removeUploadedFileCallback">
+                                    <div class="flex flex-col gap-8 pt-4">
+                                        <div *ngIf="files?.length > 0">
+                                            <h5>Pending</h5>
+                                            <div class="flex flex-wrap gap-4">
+                                                <div *ngFor="let file of files; let i = index" class="p-8 rounded-border flex flex-col border border-surface items-center gap-4">
+                                                    <div>
+                                                        <img role="presentation" [alt]="file.name" [src]="file.objectURL" width="100" height="50" />
+                                                    </div>
+                                                    <span class="font-semibold text-ellipsis max-w-60 whitespace-nowrap overflow-hidden">{{ file.name }}</span>
+                                                    <div>{{ formatSize(file.size) }}</div>
+                                                    <p-badge value="Pending" severity="warn" />
+                                                    <p-button icon="pi pi-times" (click)="onRemoveTemplatingFile($event, file, removeFileCallback, index)" [outlined]="true" [rounded]="true" severity="danger" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div *ngIf="uploadedFiles?.length > 0">
+                                            <h5>Completed</h5>
+                                            <div class="flex flex-wrap gap-4">
+                                                <div *ngFor="let file of uploadedFiles; let i = index" class="card m-0 px-12 flex flex-col border border-surface items-center gap-4">
+                                                    <div>
+                                                        <img role="presentation" [alt]="file.name" [src]="file.objectURL" width="100" height="50" />
+                                                    </div>
+                                                    <span class="font-semibold text-ellipsis max-w-60 whitespace-nowrap overflow-hidden">{{ file.name }}</span>
+                                                    <div>{{ formatSize(file.size) }}</div>
+                                                    <p-badge value="Completed" class="mt-4" severity="success" />
+                                                    <p-button icon="pi pi-times" (onClick)="removeUploadedFileCallback(index)" [outlined]="true" [rounded]="true" severity="danger" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ng-template>
+                                <ng-template #file></ng-template>
+                                <ng-template #empty>
+                                    <div class="flex items-center justify-center flex-col">
+                                        <i class="pi pi-cloud-upload !border-2 !rounded-full !p-8 !text-4xl !text-muted-color"></i>
+                                        <p class="mt-6 mb-0">Drag and drop files to here to upload.</p>
+                                    </div>
+                                </ng-template>
+                            </p-fileupload>
+                        </div>
+                    </div>
+
+                    <!-- Signature Template -->
+                    <div class="flex flex-col gap-2 min-h-[320px]">
+                        <label class="font-medium">نموذج التوقيع</label>
+                        <small class="text-gray-600">نموذج التوقيع المعتمد</small>
+                        <div class="flex-1">
+                            <p-fileupload name="signitureTemplate" accept="image/*" [multiple]="false" maxFileSize="1000000" (onUpload)="onTemplatedUpload()" (onSelect)="onFileChange($event, 'signitureTemplate')">
+                                <ng-template #header let-files let-chooseCallback="chooseCallback" let-clearCallback="clearCallback" let-uploadCallback="uploadCallback">
+                                    <div class="flex flex-wrap justify-between items-center flex-1 gap-4">
+                                        <div class="flex gap-2">
+                                            <p-button (onClick)="chooseCallback($event)" icon="pi pi-images" [rounded]="true" [outlined]="true" />
+                                            <p-button (onClick)="uploadEvent(uploadCallback)" icon="pi pi-cloud-upload" [rounded]="true" [outlined]="true" severity="success" [disabled]="!files || files.length === 0" />
+                                            <p-button (onClick)="clearCallback()" icon="pi pi-times" [rounded]="true" [outlined]="true" severity="danger" [disabled]="!files || files.length === 0" />
+                                        </div>
+                                        <p-progressbar [value]="totalSizePercent" [showValue]="false" class="w-full" class="md:w-20rem h-1 w-full md:ml-auto">
+                                            <span class="whitespace-nowrap">{{ totalSize }}B / 1Mb</span>
+                                        </p-progressbar>
+                                    </div>
+                                </ng-template>
+                                <ng-template #content let-files let-uploadedFiles="uploadedFiles" let-removeFileCallback="removeFileCallback" let-removeUploadedFileCallback="removeUploadedFileCallback">
+                                    <div class="flex flex-col gap-8 pt-4">
+                                        <div *ngIf="files?.length > 0">
+                                            <h5>Pending</h5>
+                                            <div class="flex flex-wrap gap-4">
+                                                <div *ngFor="let file of files; let i = index" class="p-8 rounded-border flex flex-col border border-surface items-center gap-4">
+                                                    <div>
+                                                        <img role="presentation" [alt]="file.name" [src]="file.objectURL" width="100" height="50" />
+                                                    </div>
+                                                    <span class="font-semibold text-ellipsis max-w-60 whitespace-nowrap overflow-hidden">{{ file.name }}</span>
+                                                    <div>{{ formatSize(file.size) }}</div>
+                                                    <p-badge value="Pending" severity="warn" />
+                                                    <p-button icon="pi pi-times" (click)="onRemoveTemplatingFile($event, file, removeFileCallback, index)" [outlined]="true" [rounded]="true" severity="danger" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div *ngIf="uploadedFiles?.length > 0">
+                                            <h5>Completed</h5>
+                                            <div class="flex flex-wrap gap-4">
+                                                <div *ngFor="let file of uploadedFiles; let i = index" class="card m-0 px-12 flex flex-col border border-surface items-center gap-4">
+                                                    <div>
+                                                        <img role="presentation" [alt]="file.name" [src]="file.objectURL" width="100" height="50" />
+                                                    </div>
+                                                    <span class="font-semibold text-ellipsis max-w-60 whitespace-nowrap overflow-hidden">{{ file.name }}</span>
+                                                    <div>{{ formatSize(file.size) }}</div>
+                                                    <p-badge value="Completed" class="mt-4" severity="success" />
+                                                    <p-button icon="pi pi-times" (onClick)="removeUploadedFileCallback(index)" [outlined]="true" [rounded]="true" severity="danger" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ng-template>
+                                <ng-template #file></ng-template>
+                                <ng-template #empty>
+                                    <div class="flex items-center justify-center flex-col">
+                                        <i class="pi pi-cloud-upload !border-2 !rounded-full !p-8 !text-4xl !text-muted-color"></i>
+                                        <p class="mt-6 mb-0">Drag and drop files to here to upload.</p>
+                                    </div>
+                                </ng-template>
+                            </p-fileupload>
+                        </div>
+                    </div>
+
+                    <!-- Handwritten Request -->
+                    <div class="flex flex-col gap-2 min-h-[320px]">
+                        <label class="font-medium">الطلب المكتوب بخط اليد</label>
+                        <small class="text-gray-600">الطلب المكتوب بخط اليد</small>
+                        <div class="flex-1">
+                            <p-fileupload name="handwrittenRequest" accept="image/*,.pdf" [multiple]="false" maxFileSize="1000000" (onUpload)="onTemplatedUpload()" (onSelect)="onFileChange($event, 'handwrittenRequest')">
+                                <ng-template #header let-files let-chooseCallback="chooseCallback" let-clearCallback="clearCallback" let-uploadCallback="uploadCallback">
+                                    <div class="flex flex-wrap justify-between items-center flex-1 gap-4">
+                                        <div class="flex gap-2">
+                                            <p-button (onClick)="chooseCallback($event)" icon="pi pi-images" [rounded]="true" [outlined]="true" />
+                                            <p-button (onClick)="uploadEvent(uploadCallback)" icon="pi pi-cloud-upload" [rounded]="true" [outlined]="true" severity="success" [disabled]="!files || files.length === 0" />
+                                            <p-button (onClick)="clearCallback()" icon="pi pi-times" [rounded]="true" [outlined]="true" severity="danger" [disabled]="!files || files.length === 0" />
+                                        </div>
+                                        <p-progressbar [value]="totalSizePercent" [showValue]="false" class="w-full" class="md:w-20rem h-1 w-full md:ml-auto">
+                                            <span class="whitespace-nowrap">{{ totalSize }}B / 1Mb</span>
+                                        </p-progressbar>
+                                    </div>
+                                </ng-template>
+                                <ng-template #content let-files let-uploadedFiles="uploadedFiles" let-removeFileCallback="removeFileCallback" let-removeUploadedFileCallback="removeUploadedFileCallback">
+                                    <div class="flex flex-col gap-8 pt-4">
+                                        <div *ngIf="files?.length > 0">
+                                            <h5>Pending</h5>
+                                            <div class="flex flex-wrap gap-4">
+                                                <div *ngFor="let file of files; let i = index" class="p-8 rounded-border flex flex-col border border-surface items-center gap-4">
+                                                    <div>
+                                                        <img role="presentation" [alt]="file.name" [src]="file.objectURL" width="100" height="50" />
+                                                    </div>
+                                                    <span class="font-semibold text-ellipsis max-w-60 whitespace-nowrap overflow-hidden">{{ file.name }}</span>
+                                                    <div>{{ formatSize(file.size) }}</div>
+                                                    <p-badge value="Pending" severity="warn" />
+                                                    <p-button icon="pi pi-times" (click)="onRemoveTemplatingFile($event, file, removeFileCallback, index)" [outlined]="true" [rounded]="true" severity="danger" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div *ngIf="uploadedFiles?.length > 0">
+                                            <h5>Completed</h5>
+                                            <div class="flex flex-wrap gap-4">
+                                                <div *ngFor="let file of uploadedFiles; let i = index" class="card m-0 px-12 flex flex-col border border-surface items-center gap-4">
+                                                    <div>
+                                                        <img role="presentation" [alt]="file.name" [src]="file.objectURL" width="100" height="50" />
+                                                    </div>
+                                                    <span class="font-semibold text-ellipsis max-w-60 whitespace-nowrap overflow-hidden">{{ file.name }}</span>
+                                                    <div>{{ formatSize(file.size) }}</div>
+                                                    <p-badge value="Completed" class="mt-4" severity="success" />
+                                                    <p-button icon="pi pi-times" (onClick)="removeUploadedFileCallback(index)" [outlined]="true" [rounded]="true" severity="danger" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ng-template>
+                                <ng-template #file></ng-template>
+                                <ng-template #empty>
+                                    <div class="flex items-center justify-center flex-col">
+                                        <i class="pi pi-cloud-upload !border-2 !rounded-full !p-8 !text-4xl !text-muted-color"></i>
+                                        <p class="mt-6 mb-0">Drag and drop files to here to upload.</p>
+                                    </div>
+                                </ng-template>
+                            </p-fileupload>
+                        </div>
+                    </div>
+
+                    <!-- Employment Certificate -->
+                    <div class="flex flex-col gap-2 min-h-[320px]">
+                        <label class="font-medium">شهادة العمل</label>
+                        <small class="text-gray-600">شهادة العمل الحالي</small>
+                        <div class="flex-1">
+                            <p-fileupload name="employmentCertificate" accept="image/*,.pdf" [multiple]="false" maxFileSize="1000000" (onUpload)="onTemplatedUpload()" (onSelect)="onFileChange($event, 'employmentCertificate')">
+                                <ng-template #header let-files let-chooseCallback="chooseCallback" let-clearCallback="clearCallback" let-uploadCallback="uploadCallback">
+                                    <div class="flex flex-wrap justify-between items-center flex-1 gap-4">
+                                        <div class="flex gap-2">
+                                            <p-button (onClick)="chooseCallback($event)" icon="pi pi-images" [rounded]="true" [outlined]="true" />
+                                            <p-button (onClick)="uploadEvent(uploadCallback)" icon="pi pi-cloud-upload" [rounded]="true" [outlined]="true" severity="success" [disabled]="!files || files.length === 0" />
+                                            <p-button (onClick)="clearCallback()" icon="pi pi-times" [rounded]="true" [outlined]="true" severity="danger" [disabled]="!files || files.length === 0" />
+                                        </div>
+                                        <p-progressbar [value]="totalSizePercent" [showValue]="false" class="w-full" class="md:w-20rem h-1 w-full md:ml-auto">
+                                            <span class="whitespace-nowrap">{{ totalSize }}B / 1Mb</span>
+                                        </p-progressbar>
+                                    </div>
+                                </ng-template>
+                                <ng-template #content let-files let-uploadedFiles="uploadedFiles" let-removeFileCallback="removeFileCallback" let-removeUploadedFileCallback="removeUploadedFileCallback">
+                                    <div class="flex flex-col gap-8 pt-4">
+                                        <div *ngIf="files?.length > 0">
+                                            <h5>Pending</h5>
+                                            <div class="flex flex-wrap gap-4">
+                                                <div *ngFor="let file of files; let i = index" class="p-8 rounded-border flex flex-col border border-surface items-center gap-4">
+                                                    <div>
+                                                        <img role="presentation" [alt]="file.name" [src]="file.objectURL" width="100" height="50" />
+                                                    </div>
+                                                    <span class="font-semibold text-ellipsis max-w-60 whitespace-nowrap overflow-hidden">{{ file.name }}</span>
+                                                    <div>{{ formatSize(file.size) }}</div>
+                                                    <p-badge value="Pending" severity="warn" />
+                                                    <p-button icon="pi pi-times" (click)="onRemoveTemplatingFile($event, file, removeFileCallback, index)" [outlined]="true" [rounded]="true" severity="danger" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div *ngIf="uploadedFiles?.length > 0">
+                                            <h5>Completed</h5>
+                                            <div class="flex flex-wrap gap-4">
+                                                <div *ngFor="let file of uploadedFiles; let i = index" class="card m-0 px-12 flex flex-col border border-surface items-center gap-4">
+                                                    <div>
+                                                        <img role="presentation" [alt]="file.name" [src]="file.objectURL" width="100" height="50" />
+                                                    </div>
+                                                    <span class="font-semibold text-ellipsis max-w-60 whitespace-nowrap overflow-hidden">{{ file.name }}</span>
+                                                    <div>{{ formatSize(file.size) }}</div>
+                                                    <p-badge value="Completed" class="mt-4" severity="success" />
+                                                    <p-button icon="pi pi-times" (onClick)="removeUploadedFileCallback(index)" [outlined]="true" [rounded]="true" severity="danger" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ng-template>
+                                <ng-template #file></ng-template>
+                                <ng-template #empty>
+                                    <div class="flex items-center justify-center flex-col">
+                                        <i class="pi pi-cloud-upload !border-2 !rounded-full !p-8 !text-4xl !text-muted-color"></i>
+                                        <p class="mt-6 mb-0">Drag and drop files to here to upload.</p>
+                                    </div>
+                                </ng-template>
+                            </p-fileupload>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons for Customer Step -->
+                    <div *ngIf="activeIndex === 0"
+                        class="flex justify-content-between align-items-center pt-4 border-top-1 surface-border">
+                        <div class="flex gap-2">
+                            <button pButton pRipple type="button" icon="pi pi-refresh" label="إعادة تعيين"
+                                class="p-button-outlined p-button-secondary" (click)="resetForms()"></button>
+                        </div>
+                        <div class="flex gap-2">
+                            <button pButton pRipple type="button" icon="pi pi-step-backward" label="السابق"
+                                class="p-button-outlined" [disabled]="activeIndex === 0" (click)="previousStep()"></button>
+                            <button pButton pRipple type="button" icon="pi pi-step-forward" [label]="stepLabel"
+                                [loading]="loading" (click)="nextStep()"></button>
+                        </div>
+                    </div>
+                </div>
+
+                
+            </div>
+
+            <!-- Action Buttons for Customer Step -->
+            <div *ngIf="activeIndex === 0"
+                class="flex justify-content-between align-items-center pt-4 border-top-1 surface-border">
+                <div class="flex gap-2">
+                    <button pButton pRipple type="button" icon="pi pi-refresh" label="إعادة تعيين"
+                        class="p-button-outlined p-button-secondary" (click)="resetForms()"></button>
+                </div>
+                <div class="flex gap-2">
+                    <button pButton pRipple type="button" icon="pi pi-step-backward" label="السابق"
+                        class="p-button-outlined" [disabled]="activeIndex === 0" (click)="previousStep()"></button>
+                    <button pButton pRipple type="button" icon="pi pi-step-forward" [label]="stepLabel"
+                        [loading]="loading" (click)="nextStep()"></button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <!-- Account Information Step - Separate Form -->
+    <div *ngIf="isAccountStep" class="mt-6">
+        <form [formGroup]="accountForm">
+            <!-- Account Information Form -->
+            <div class="card flex flex-col gap-4">
+                <div class="font-semibold text-xl">معلومات الحساب الأساسية</div>
+
+                <div class="flex flex-col md:flex-row gap-6">
+                    <div class="flex flex-wrap gap-2 w-full md:w-1/3">
+                        <label for="actBranchCCode" class="required">فرع الحساب</label>
+                        <p-select id="actBranchCCode" formControlName="branchCCode" [options]="branches"
+                            placeholder="اختر فرع الحساب" optionLabel="label" optionValue="value" [filter]="true"
+                            (onChange)="onBranchChange($event)" class="w-full"
+                            [ngClass]="{ 'ng-invalid ng-touched': accountForm.get('branchCCode')?.invalid && accountForm.get('branchCCode')?.touched }"></p-select>
+                    </div>
+                    <div class="flex flex-wrap gap-2 w-full md:w-1/3">
+                        <label for="actCType" class="required">نوع الحساب</label>
+                        <p-select id="actCType" formControlName="actCType" [options]="accountTypeOptions"
+                            placeholder="اختر نوع الحساب" optionLabel="label" optionValue="value" class="w-full"
+                            [ngClass]="{ 'ng-invalid ng-touched': accountForm.get('actCType')?.invalid && accountForm.get('actCType')?.touched }"></p-select>
+                    </div>
+                    <div class="flex flex-wrap gap-2 w-full md:w-1/3">
+                        <label for="currencyCCode" class="required">عملة الحساب</label>
+                        <p-select id="currencyCCode" formControlName="currencyCCode" [options]="currencyOptions"
+                            placeholder="اختر العملة" optionLabel="label" optionValue="value" class="w-full"
+                            [ngClass]="{ 'ng-invalid ng-touched': accountForm.get('currencyCCode')?.invalid && accountForm.get('currencyCCode')?.touched }"></p-select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card flex flex-col gap-4">
+                <div class="font-semibold text-xl">معلومات إضافية</div>
+
+                <div class="flex flex-col md:flex-row gap-6">
+                    <div class="flex flex-wrap gap-2 w-full md:w-1/2">
+                        <label for="actCIntrotype" class="required">نوع المقدم</label>
+                        <p-select id="actCIntrotype" formControlName="actCIntrotype" [options]="[
+                                 { label: 'فردي', value: 'INDIVIDUAL' },
+                                 { label: 'مؤسسة', value: 'CORPORATE' },
+                                 { label: 'حكومي', value: 'GOVERNMENT' }
+                               ]" placeholder="اختر نوع المقدم" optionLabel="label" optionValue="value"
+                            class="w-full"></p-select>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap gap-2">
+                    <label for="introCRem">ملاحظات المقدم</label>
+                    <textarea pTextarea id="introCRem" formControlName="introCRem" placeholder="أدخل ملاحظات المقدم"
+                        rows="3" class="w-full"></textarea>
+                </div>
+            </div>
+
+            <!-- Action Buttons for Account Step -->
+            <div class="flex justify-content-between align-items-center pt-4 border-top-1 surface-border">
+                <div class="flex gap-2">
+                    <button pButton pRipple type="button" icon="pi pi-refresh" label="إعادة تعيين"
+                        class="p-button-outlined p-button-secondary" (click)="resetForms()"></button>
+                </div>
+                <div class="flex gap-2">
+                    <button pButton pRipple type="button" icon="pi pi-step-backward" label="السابق"
+                        class="p-button-outlined" [disabled]="activeIndex === 0" (click)="previousStep()"></button>
+                    <button pButton pRipple type="button" icon="pi pi-step-forward" [label]="stepLabel"
+                        [loading]="loading" (click)="nextStep()"></button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- FATCA Information Step -->
+    <div *ngIf="isFatcaStep" class="mt-6">
+        <form [formGroup]="fatcaForm">
+            <div class="card flex flex-col gap-4">
+                <div class="font-semibold text-xl">معلومات FATCA</div>
+
+                <!-- SECTION A: US Person Status -->
+                <div class="flex flex-col gap-4">
+                    <div class="text-lg font-medium text-primary">القسم أ: حالة الشخص الأمريكي</div>
+
+                    <div class="flex flex-wrap gap-2">
+                        <label class="required">هل أنت شخص أمريكي؟</label>
+                        <p-radioButton name="isUsPerson" value="Y" formControlName="isUsPerson"
+                            inputId="usPersonYes"></p-radioButton>
+                        <label for="usPersonYes" class="mr-3">نعم</label>
+                        <p-radioButton name="isUsPerson" value="N" formControlName="isUsPerson"
+                            inputId="usPersonNo"></p-radioButton>
+                        <label for="usPersonNo">لا</label>
+                    </div>
+
+                    <div *ngIf="fatcaForm.get('isUsPerson')?.value === 'Y'">
+                        <div class="flex flex-wrap gap-2">
+                            <label for="citizenshipCountries">إذا كان لديك أكثر من جنسية، يرجى تحديد كل دولة من دول
+                                الجنسية:</label>
+                            <textarea pTextarea id="citizenshipCountries" formControlName="citizenshipCountries"
+                                placeholder="أدخل الدول مفصولة بفواصل" rows="2" class="w-full"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- SECTION B: US Tax Identification Numbers -->
+                    <div *ngIf="fatcaForm.get('isUsPerson')?.value === 'Y'" class="flex flex-col gap-4">
+                        <div class="text-lg font-medium text-primary">القسم ب: أرقام التعريف الضريبي الأمريكية</div>
+
+                        <div class="flex flex-col md:flex-row gap-4">
+                            <div class="flex flex-wrap gap-2 w-full md:w-1/3">
+                                <label for="ssn">رقم الضمان الاجتماعي (SSN):</label>
+                                <input pInputText id="ssn" formControlName="ssn" placeholder="XXX-XX-XXXX"
+                                    class="w-full">
+                            </div>
+                            <div class="flex flex-wrap gap-2 w-full md:w-1/3">
+                                <label for="itin">رقم تعريف المكلف الفرد (ITIN):</label>
+                                <input pInputText id="itin" formControlName="itin" placeholder="XXX-XX-XXXX"
+                                    class="w-full">
+                            </div>
+                            <div class="flex flex-wrap gap-2 w-full md:w-1/3">
+                                <label for="atin">رقم تعريف ضريبي لحالات التبني المعلقة (ATIN):</label>
+                                <input pInputText id="atin" formControlName="atin" placeholder="XXX-XX-XXXX"
+                                    class="w-full">
+                            </div>
+                        </div>
+
+                        <div class="flex flex-wrap gap-2 mt-2">
+                            <label class="required">هل لديك تأشيرة مهاجر أو إقامة دائمة في دولة غير السودان؟</label>
+                            <p-radioButton name="hasImmigrantVisa" value="Y" formControlName="hasImmigrantVisa"
+                                inputId="immigrantVisaYes"></p-radioButton>
+                            <label for="immigrantVisaYes" class="mr-3">نعم</label>
+                            <p-radioButton name="hasImmigrantVisa" value="N" formControlName="hasImmigrantVisa"
+                                inputId="immigrantVisaNo"></p-radioButton>
+                            <label for="immigrantVisaNo">لا</label>
+                        </div>
+
+                        <div *ngIf="fatcaForm.get('hasImmigrantVisa')?.value === 'Y'">
+                            <div class="flex flex-wrap gap-2">
+                                <label for="permanentResidencyStates">إذا كانت الإجابة نعم، يرجى تحديد ولاية كل إقامة
+                                    دائمة:</label>
+                                <textarea pTextarea id="permanentResidencyStates"
+                                    formControlName="permanentResidencyStates" placeholder="أدخل الولايات مفصولة بفواصل"
+                                    rows="2" class="w-full"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap gap-2 mt-2">
+                        <label class="required">هل لديك إقامة في دولة خارج السودان؟</label>
+                        <p-radioButton name="hasOtherCountriesResidency" value="Y" formControlName="hasOtherCountriesResidency"
+                            inputId="hasOtherCountriesResidencyYes"></p-radioButton>
+                        <label for="hasOtherCountriesResidencyYes" class="mr-3">نعم</label>
+                        <p-radioButton name="hasOtherCountriesResidency" value="N" formControlName="hasOtherCountriesResidency"
+                            inputId="hasOtherCountriesResidencyNo"></p-radioButton>
+                        <label for="hasOtherCountriesResidencyNo">لا</label>
+                    </div>
+
+                    <div class="flex flex-wrap gap-2">
+                        <p-checkbox name="soleSudanResidency" binary="true" 
+                            formControlName="soleSudanResidencyConfirmed"
+                                                        inputId="soleSudanYes"></p-checkbox>
+                        <label for="soleSudanYes">أقر بأن جميع البيانات أعلاه صحيحة</label>
+                    </div>
+                </div>
+
+                <!-- SECTION C: Tax Information for Other Countries -->
+                <div *ngIf="fatcaForm.get('hasOtherCountriesResidency')?.value == 'Y'" class="flex flex-col gap-4">
+                    <div class="text-lg font-medium text-primary">القسم ج: معلومات ضريبية للدول الأخرى</div>
+
+                    <!-- Country 1 -->
+                    <div class="card flex flex-col gap-3">
+                        <div class="font-semibold">البلد 1</div>
+                        <div class="flex flex-col md:flex-row gap-4">
+                            <div class="flex flex-wrap gap-2 w-full md:w-1/3">
+                                <label for="country1TaxJurisdiction">الدولة:</label>
+                                <input pInputText id="country1TaxJurisdiction" formControlName="country1TaxJurisdiction"
+                                    placeholder="أدخل الدولة" class="w-full">
+                            </div>
+                            <div class="flex flex-wrap gap-2 w-full md:w-1/3">
+                                <label for="country1Tin">رقم التعريف الضريبي (TIN) أو ما يعادله وظيفياً:</label>
+                                <input pInputText id="country1Tin" formControlName="country1TIN"
+                                    placeholder="أدخل رقم TIN" class="w-full">
+                            </div>
+                            <div class="flex flex-wrap gap-2 w-full md:w-1/3">
+                                <label for="country1NoTinReason">إذا لم يكن TIN متاحًا، أدخل السبب:</label>
+                                <p-select id="country1NoTinReason" formControlName="country1NoTinReason" [options]="[
+                                    { label: 'A', value: 'A' },
+                                    { label: 'B', value: 'B' },
+                                    { label: 'C', value: 'C' }
+                                ]" placeholder="اختر السبب" class="w-full"></p-select>
+                            </div>
+                        </div>
+                        <div *ngIf="fatcaForm.get('country1NoTinReason')?.value === 'B'" class="flex flex-wrap gap-2">
+                            <label for="country1NoTinExplanation">اشرح لماذا لا يمكنك الحصول على TIN:</label>
+                            <textarea pTextarea id="country1NoTinExplanation" formControlName="country1NoTinExplanation"
+                                placeholder="أدخل الشرح" rows="2" class="w-full"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons for FATCA Step -->
+            <div class="flex justify-content-between align-items-center pt-4 border-top-1 surface-border">
+                <div class="flex gap-2">
+                    <button pButton pRipple type="button" icon="pi pi-refresh" label="إعادة تعيين"
+                        class="p-button-outlined p-button-secondary" (click)="resetForms()"></button>
+                </div>
+                <div class="flex gap-2">
+                    <button pButton pRipple type="button" icon="pi pi-step-backward" label="السابق"
+                        class="p-button-outlined" [disabled]="activeIndex === 0" (click)="previousStep()"></button>
+                    <button pButton pRipple type="button" icon="pi pi-step-forward" [label]="stepLabel"
+                        [loading]="loading" [disabled]="fatcaForm.invalid" (click)="nextStep()"></button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- Confirmation Step -->
+    <div *ngIf="activeIndex === 3" class="mt-6">
+        <div class="flex flex-col gap-4 text-center"
+            style="background: transparent; box-shadow: none; border: none; padding: 2rem;">
+            <div class="flex justify-content-center"
+                style="display: flex; justify-content: center; align-items: center; min-height: 70px;">
+                <i class="pi pi-check-circle text-xl text-green-500" style="font-size:3rem;"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-green-600">تم إنشاء طلبك بنجاح!</h2>
+            <span class="text-lg text-600">
+                شكراً لتقديم طلبك. تم استلام بياناتك بنجاح وسيتم مراجعتها من قبل فريقنا.
+            </span>
+            <span class="text-md text-primary text-600 mb-6">
+                سيتم التواصل معك في أقرب وقت ممكن لإكمال إجراءات فتح الحساب.
+            </span>
+        </div>
+    </div>
+
+    <p-toast></p-toast>

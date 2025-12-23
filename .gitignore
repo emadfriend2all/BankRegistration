@@ -1,0 +1,8 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/RegistrationPortal
+/RegistrationPortal.Server/bin/Debug/net8.0
+/RegistrationPortal.Server/Files
+/RegistrationPortal.Server/obj

@@ -1,0 +1,29 @@
+@import 'tailwindcss';
+@import 'tailwindcss-primeui';
+
+/* Define custom breakpoints */
+:root {
+  --breakpoint-sm: 576px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 992px;
+  --breakpoint-xl: 1200px;
+  --breakpoint-2xl: 1920px;
+  --font-family-sans: 'Tajawal', ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Apply Tajawal font globally */
+* {
+  font-family: 'Tajawal', ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+  font-family: 'Tajawal', ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Dark theme variant support */
+@media (prefers-color-scheme: dark) {
+  .app-dark,
+  .app-dark * {
+    color-scheme: dark;
+  }
+}
