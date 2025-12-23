@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Oracle.EntityFrameworkCore.Metadata;
 using RegistrationPortal.Server.Data;
@@ -11,9 +12,11 @@ using RegistrationPortal.Server.Data;
 namespace RegistrationPortal.Server.Migrations
 {
     [DbContext(typeof(RegistrationPortalDbContext))]
-    partial class RegistrationPortalDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251223132114_AddStatusColumnToCustMast")]
+    partial class AddStatusColumnToCustMast
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

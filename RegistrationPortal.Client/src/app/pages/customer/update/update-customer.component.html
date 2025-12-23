@@ -1,11 +1,11 @@
 <div class="card">
-    <h1 class="text-2xl font-bold mb-6 text-center">إنشاء حساب جديد</h1>
+    <h1 class="text-2xl font-bold mb-6 text-center">تحديث بيانات</h1>
 
     <p-steps [model]="items" [(activeIndex)]="activeIndex" [readonly]="false"></p-steps>
 
     <form [formGroup]="customerForm">
         <!-- Customer Information Step -->
-        <div *ngIf="activeIndex === 2" class="mt-6">
+        <div *ngIf="activeIndex === 1" class="mt-6">
             <!-- Customer Information Form -->
             <div class="flex flex-col gap-4 mb-5">
                 <!-- Names Section -->
@@ -368,7 +368,7 @@
                         </div>
                         <div class="mt-2">
                             <button pButton pRipple type="button" icon="pi pi-image" label="عرض مثال"
-                                class="p-button-outlined p-button-info" (click)="showExampleImage('passportImage')">
+                                class="p-button-outlined p-button-info" (click)="showExampleImage('personalImage')">
                             </button>
                         </div>
                     </div>
@@ -452,19 +452,8 @@
                 
             </div>
 
-            <!-- Confirmation Section -->
-            <div class="card flex flex-col gap-4">
-                <div class="font-semibold text-xl">تأكيد البيانات</div>
-                <div class="flex flex-wrap gap-2">
-                    <p-checkbox name="dataConfirmation" binary="true" 
-                        formControlName="dataConfirmationConfirmed"
-                        inputId="dataConfirmationYes"></p-checkbox>
-                    <label for="dataConfirmationYes">أقر بأن جميع البيانات أعلاه صحيحة</label>
-                </div>
-            </div>
-
             <!-- Action Buttons for Customer Step -->
-            <div *ngIf="activeIndex === 2"
+            <div *ngIf="activeIndex === 1"
                 class="flex justify-content-between align-items-center pt-4 border-top-1 surface-border">
                 <div class="flex gap-2">
                     <button pButton pRipple type="button" icon="pi pi-refresh" label="إعادة تعيين"
@@ -472,9 +461,9 @@
                 </div>
                 <div class="flex gap-2">
                     <button pButton pRipple type="button" icon="pi pi-step-backward" label="السابق"
-                        class="p-button-outlined" [disabled]="false" (click)="previousStep()"></button>
+                        class="p-button-outlined" [disabled]="activeIndex < 1" (click)="previousStep()"></button>
                     <button pButton pRipple type="button" icon="pi pi-step-forward" [label]="stepLabel"
-                        [loading]="loading" [disabled]="!customerForm.get('dataConfirmationConfirmed')?.value" (click)="nextStep()"></button>
+                        [loading]="loading" (click)="nextStep()"></button>
                 </div>
             </div>
         </div>
@@ -502,16 +491,18 @@
                             [ngClass]="{ 'ng-invalid ng-touched': accountForm.get('actCType')?.invalid && accountForm.get('actCType')?.touched }"></p-select>
                     </div>
                     <div class="flex flex-wrap gap-2 w-full md:w-1/3">
+                        <label for="cust_i_no" class="required">رقم الحساب</label>
+                        <input pInputText id="cust_i_no" formControlName="cust_i_no" placeholder="أدخل رقم الحساب"
+                            class="w-full"
+                            [ngClass]="{ 'ng-invalid ng-touched': accountForm.get('cust_i_no')?.invalid && accountForm.get('cust_i_no')?.touched }">
+                    </div>
+                    <div class="flex flex-wrap gap-2 w-full md:w-1/3">
                         <label for="currencyCCode" class="required">عملة الحساب</label>
                         <p-select id="currencyCCode" formControlName="currencyCCode" [options]="currencyOptions"
                             placeholder="اختر العملة" optionLabel="label" optionValue="value" class="w-full"
                             [ngClass]="{ 'ng-invalid ng-touched': accountForm.get('currencyCCode')?.invalid && accountForm.get('currencyCCode')?.touched }"></p-select>
                     </div>
                 </div>
-            </div>
-
-            <div class="card flex flex-col gap-4">
-                <div class="font-semibold text-xl">معلومات إضافية</div>
 
                 <div class="flex flex-col md:flex-row gap-6">
                     <div class="flex flex-wrap gap-2 w-full md:w-1/2">
@@ -540,7 +531,7 @@
                 </div>
                 <div class="flex gap-2">
                     <button pButton pRipple type="button" icon="pi pi-step-backward" label="السابق"
-                        class="p-button-outlined" [disabled]="activeIndex === 0" (click)="previousStep()"></button>
+                        class="p-button-outlined" [disabled]="activeIndex < 1" (click)="previousStep()"></button>
                     <button pButton pRipple type="button" icon="pi pi-step-forward" [label]="stepLabel"
                         [loading]="loading" (click)="nextStep()"></button>
                 </div>
@@ -548,150 +539,8 @@
         </form>
     </div>
 
-    <!-- FATCA Information Step -->
-    <div *ngIf="isFatcaStep" class="mt-6">
-        <form [formGroup]="fatcaForm">
-            <div class="card flex flex-col gap-4">
-                <div class="font-semibold text-xl">معلومات FATCA</div>
-
-                <!-- SECTION A: US Person Status -->
-                <div class="flex flex-col gap-4">
-                    <div class="text-lg font-medium text-primary">القسم أ: حالة الشخص الأمريكي</div>
-
-                    <div class="flex flex-wrap gap-2">
-                        <label class="required">هل أنت شخص أمريكي؟</label>
-                        <p-radioButton name="isUsPerson" value="Y" formControlName="isUsPerson"
-                            inputId="usPersonYes"></p-radioButton>
-                        <label for="usPersonYes" class="mr-3">نعم</label>
-                        <p-radioButton name="isUsPerson" value="N" formControlName="isUsPerson"
-                            inputId="usPersonNo"></p-radioButton>
-                        <label for="usPersonNo">لا</label>
-                    </div>
-
-                    <div *ngIf="fatcaForm.get('isUsPerson')?.value === 'Y'">
-                        <div class="flex flex-wrap gap-2">
-                            <label for="citizenshipCountries">إذا كان لديك أكثر من جنسية، يرجى تحديد كل دولة من دول
-                                الجنسية:</label>
-                            <textarea pTextarea id="citizenshipCountries" formControlName="citizenshipCountries"
-                                placeholder="أدخل الدول مفصولة بفواصل" rows="2" class="w-full"></textarea>
-                        </div>
-                    </div>
-
-                    <!-- SECTION B: US Tax Identification Numbers -->
-                    <div *ngIf="fatcaForm.get('isUsPerson')?.value === 'Y'" class="flex flex-col gap-4">
-                        <div class="text-lg font-medium text-primary">القسم ب: أرقام التعريف الضريبي الأمريكية</div>
-
-                        <div class="flex flex-col md:flex-row gap-4">
-                            <div class="flex flex-wrap gap-2 w-full md:w-1/3">
-                                <label for="ssn">رقم الضمان الاجتماعي (SSN):</label>
-                                <input pInputText id="ssn" formControlName="ssn" placeholder="XXX-XX-XXXX"
-                                    class="w-full">
-                            </div>
-                            <div class="flex flex-wrap gap-2 w-full md:w-1/3">
-                                <label for="itin">رقم تعريف المكلف الفرد (ITIN):</label>
-                                <input pInputText id="itin" formControlName="itin" placeholder="XXX-XX-XXXX"
-                                    class="w-full">
-                            </div>
-                            <div class="flex flex-wrap gap-2 w-full md:w-1/3">
-                                <label for="atin">رقم تعريف ضريبي لحالات التبني المعلقة (ATIN):</label>
-                                <input pInputText id="atin" formControlName="atin" placeholder="XXX-XX-XXXX"
-                                    class="w-full">
-                            </div>
-                        </div>
-
-                        <div class="flex flex-wrap gap-2 mt-2">
-                            <label class="required">هل لديك تأشيرة مهاجر أو إقامة دائمة في دولة غير السودان؟</label>
-                            <p-radioButton name="hasImmigrantVisa" value="Y" formControlName="hasImmigrantVisa"
-                                inputId="immigrantVisaYes"></p-radioButton>
-                            <label for="immigrantVisaYes" class="mr-3">نعم</label>
-                            <p-radioButton name="hasImmigrantVisa" value="N" formControlName="hasImmigrantVisa"
-                                inputId="immigrantVisaNo"></p-radioButton>
-                            <label for="immigrantVisaNo">لا</label>
-                        </div>
-
-                        <div *ngIf="fatcaForm.get('hasImmigrantVisa')?.value === 'Y'">
-                            <div class="flex flex-wrap gap-2">
-                                <label for="permanentResidencyStates">إذا كانت الإجابة نعم، يرجى تحديد ولاية كل إقامة
-                                    دائمة:</label>
-                                <textarea pTextarea id="permanentResidencyStates"
-                                    formControlName="permanentResidencyStates" placeholder="أدخل الولايات مفصولة بفواصل"
-                                    rows="2" class="w-full"></textarea>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="flex flex-wrap gap-2 mt-2">
-                        <label class="required">هل لديك إقامة في دولة خارج السودان؟</label>
-                        <p-radioButton name="hasOtherCountriesResidency" value="Y" formControlName="hasOtherCountriesResidency"
-                            inputId="hasOtherCountriesResidencyYes"></p-radioButton>
-                        <label for="hasOtherCountriesResidencyYes" class="mr-3">نعم</label>
-                        <p-radioButton name="hasOtherCountriesResidency" value="N" formControlName="hasOtherCountriesResidency"
-                            inputId="hasOtherCountriesResidencyNo"></p-radioButton>
-                        <label for="hasOtherCountriesResidencyNo">لا</label>
-                    </div>
-
-                    <!-- <div class="flex flex-wrap gap-2">
-                        <p-checkbox name="soleSudanResidency" binary="true" 
-                            formControlName="soleSudanResidencyConfirmed"
-                                                        inputId="soleSudanYes"></p-checkbox>
-                        <label for="soleSudanYes">أقر بأن جميع البيانات أعلاه صحيحة</label>
-                    </div> -->
-                </div>
-
-                <!-- SECTION C: Tax Information for Other Countries -->
-                <div *ngIf="fatcaForm.get('hasOtherCountriesResidency')?.value == 'Y'" class="flex flex-col gap-4">
-                    <div class="text-lg font-medium text-primary">القسم ج: معلومات ضريبية للدول الأخرى</div>
-
-                    <!-- Country 1 -->
-                    <div class="card flex flex-col gap-3">
-                        <div class="font-semibold">البلد 1</div>
-                        <div class="flex flex-col md:flex-row gap-4">
-                            <div class="flex flex-wrap gap-2 w-full md:w-1/3">
-                                <label for="country1TaxJurisdiction">الدولة:</label>
-                                <input pInputText id="country1TaxJurisdiction" formControlName="country1TaxJurisdiction"
-                                    placeholder="أدخل الدولة" class="w-full">
-                            </div>
-                            <div class="flex flex-wrap gap-2 w-full md:w-1/3">
-                                <label for="country1Tin">رقم التعريف الضريبي (TIN) أو ما يعادله وظيفياً:</label>
-                                <input pInputText id="country1Tin" formControlName="country1TIN"
-                                    placeholder="أدخل رقم TIN" class="w-full">
-                            </div>
-                            <div class="flex flex-wrap gap-2 w-full md:w-1/3">
-                                <label for="country1NoTinReason">إذا لم يكن TIN متاحًا، أدخل السبب:</label>
-                                <p-select id="country1NoTinReason" formControlName="country1NoTinReason" [options]="[
-                                    { label: 'A', value: 'A' },
-                                    { label: 'B', value: 'B' },
-                                    { label: 'C', value: 'C' }
-                                ]" placeholder="اختر السبب" class="w-full"></p-select>
-                            </div>
-                        </div>
-                        <div *ngIf="fatcaForm.get('country1NoTinReason')?.value === 'B'" class="flex flex-wrap gap-2">
-                            <label for="country1NoTinExplanation">اشرح لماذا لا يمكنك الحصول على TIN:</label>
-                            <textarea pTextarea id="country1NoTinExplanation" formControlName="country1NoTinExplanation"
-                                placeholder="أدخل الشرح" rows="2" class="w-full"></textarea>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Action Buttons for FATCA Step -->
-            <div class="flex justify-content-between align-items-center pt-4 border-top-1 surface-border">
-                <div class="flex gap-2">
-                    <button pButton pRipple type="button" icon="pi pi-refresh" label="إعادة تعيين"
-                        class="p-button-outlined p-button-secondary" (click)="resetForms()"></button>
-                </div>
-                <div class="flex gap-2">
-                    <button pButton pRipple type="button" icon="pi pi-step-backward" label="السابق"
-                        class="p-button-outlined" [disabled]="true" (click)="previousStep()"></button>
-                    <button pButton pRipple type="button" icon="pi pi-step-forward" [label]="stepLabel"
-                        [loading]="loading" [disabled]="fatcaForm.invalid" (click)="nextStep()"></button>
-                </div>
-            </div>
-        </form>
-    </div>
-
     <!-- Confirmation Step -->
-    <div *ngIf="activeIndex === 3" class="mt-6">
+    <div *ngIf="activeIndex === 2" class="mt-6">
         <div class="flex flex-col gap-4 text-center"
             style="background: transparent; box-shadow: none; border: none; padding: 2rem;">
             <div class="flex justify-content-center"

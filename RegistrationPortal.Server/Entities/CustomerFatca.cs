@@ -38,8 +38,8 @@ namespace RegistrationPortal.Server.Entities
         [StringLength(1)]
         public string? HasOtherCountriesResidency { get; set; } // 'Y' or 'N'
 
-        [Column("sole_sudan_residency_confirmed", TypeName = "CHAR(1 BYTE)")]
-        [StringLength(1)]
+        [Column("sole_sudan_residency_confirmed", TypeName = "CHAR(10 BYTE)")]
+        [StringLength(10)]
         public string? SoleSudanResidencyConfirmed { get; set; } // 'Y' or 'N'
 
         // SECTION B: US Tax Identification Numbers

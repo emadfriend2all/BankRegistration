@@ -518,6 +518,8 @@ export class Client {
     }
 
     /**
+     * @param branchCCode (optional) 
+     * @param custCName (optional) 
      * @param custCFname (optional) 
      * @param custCSname (optional) 
      * @param custCTname (optional) 
@@ -567,6 +569,7 @@ export class Client {
      * @param custCEngsname (optional) 
      * @param custCEngtname (optional) 
      * @param custCEngfoname (optional) 
+     * @param status (optional) 
      * @param custDEntrydt (optional) 
      * @param accountMasts (optional) 
      * @param isUsPerson (optional) 
@@ -599,312 +602,311 @@ export class Client {
      * @param employmentCertificate (optional) 
      * @return OK
      */
-    custMastPOST(branchCCode: string, custCName: string, custCFname: string | undefined, custCSname: string | undefined, custCTname: string | undefined, custCFoname: string | undefined, custCMname: string | undefined, custCSex: string | undefined, custCReligion: string | undefined, custCCaste: string | undefined, custCMaritalsts: string | undefined, custCPadd1: string | undefined, custCPadd2: string | undefined, custCPadd3: string | undefined, custCPCity: string | undefined, custCPstate: string | undefined, mobileCNo: string | undefined, emailCAdd: string | undefined, idCType: string | undefined, idCNo: string | undefined, idCIssplace: string | undefined, idDIssdate: Date | undefined, idDExpdate: Date | undefined, custCAuthority: string | undefined, husbCName: string | undefined, countryCCode: string | undefined, placeCBirth: string | undefined, custCNationality: string | undefined, custCWife1: string | undefined, idCType2: string | undefined, idCNo2: string | undefined, idCIssplace2: string | undefined, idCIssueDate2: string | undefined, idCExpiryDate2: string | undefined, custDBdate: Date | undefined, idCAuthority2: string | undefined, custCOccupation: string | undefined, homeINumber: number | undefined, custIIdentify: string | undefined, custCCountrybrith: string | undefined, custCStatebrith: string | undefined, custCCitizenship: string | undefined, custCEmployer: string | undefined, custFIncome: number | undefined, custCHigheducation: string | undefined, custFAvgmonth: number | undefined, tradeCNameenglish: string | undefined, custCEngfname: string | undefined, custCEngsname: string | undefined, custCEngtname: string | undefined, custCEngfoname: string | undefined, custDEntrydt: Date | undefined, accountMasts: CreateAccountDto[] | undefined, isUsPerson: string | undefined, citizenshipCountries: string | undefined, hasImmigrantVisa: string | undefined, permanentResidencyStates: string | undefined, hasOtherCountriesResidency: string | undefined, soleSudanResidencyConfirmed: string | undefined, sSN: string | undefined, iTIN: string | undefined, aTIN: string | undefined, country1TaxJurisdiction: string | undefined, country1TIN: string | undefined, country1NoTinReason: string | undefined, country1NoTinExplanation: string | undefined, country2TaxJurisdiction: string | undefined, country2TIN: string | undefined, country2NoTinReason: string | undefined, country2NoTinExplanation: string | undefined, country3TaxJurisdiction: string | undefined, country3TIN: string | undefined, country3NoTinReason: string | undefined, country3NoTinExplanation: string | undefined, identification: FileParameter | undefined, nationalId: FileParameter | undefined, personalImage: FileParameter | undefined, imageFortheRequesterHoldingTheID: FileParameter | undefined, signitureTemplate: FileParameter | undefined, handwrittenRequest: FileParameter | undefined, employmentCertificate: FileParameter | undefined): Observable<CustMast> {
-        let url_ = this.baseUrl + "/api/CustMast?";
-        if (branchCCode === undefined || branchCCode === null)
-            throw new globalThis.Error("The parameter 'branchCCode' must be defined and cannot be null.");
-        else
-            url_ += "BranchCCode=" + encodeURIComponent("" + branchCCode) + "&";
-        if (custCName === undefined || custCName === null)
-            throw new globalThis.Error("The parameter 'custCName' must be defined and cannot be null.");
-        else
-            url_ += "CustCName=" + encodeURIComponent("" + custCName) + "&";
-        if (custCFname === null)
-            throw new globalThis.Error("The parameter 'custCFname' cannot be null.");
-        else if (custCFname !== undefined)
-            url_ += "CustCFname=" + encodeURIComponent("" + custCFname) + "&";
-        if (custCSname === null)
-            throw new globalThis.Error("The parameter 'custCSname' cannot be null.");
-        else if (custCSname !== undefined)
-            url_ += "CustCSname=" + encodeURIComponent("" + custCSname) + "&";
-        if (custCTname === null)
-            throw new globalThis.Error("The parameter 'custCTname' cannot be null.");
-        else if (custCTname !== undefined)
-            url_ += "CustCTname=" + encodeURIComponent("" + custCTname) + "&";
-        if (custCFoname === null)
-            throw new globalThis.Error("The parameter 'custCFoname' cannot be null.");
-        else if (custCFoname !== undefined)
-            url_ += "CustCFoname=" + encodeURIComponent("" + custCFoname) + "&";
-        if (custCMname === null)
-            throw new globalThis.Error("The parameter 'custCMname' cannot be null.");
-        else if (custCMname !== undefined)
-            url_ += "CustCMname=" + encodeURIComponent("" + custCMname) + "&";
-        if (custCSex === null)
-            throw new globalThis.Error("The parameter 'custCSex' cannot be null.");
-        else if (custCSex !== undefined)
-            url_ += "CustCSex=" + encodeURIComponent("" + custCSex) + "&";
-        if (custCReligion === null)
-            throw new globalThis.Error("The parameter 'custCReligion' cannot be null.");
-        else if (custCReligion !== undefined)
-            url_ += "CustCReligion=" + encodeURIComponent("" + custCReligion) + "&";
-        if (custCCaste === null)
-            throw new globalThis.Error("The parameter 'custCCaste' cannot be null.");
-        else if (custCCaste !== undefined)
-            url_ += "CustCCaste=" + encodeURIComponent("" + custCCaste) + "&";
-        if (custCMaritalsts === null)
-            throw new globalThis.Error("The parameter 'custCMaritalsts' cannot be null.");
-        else if (custCMaritalsts !== undefined)
-            url_ += "CustCMaritalsts=" + encodeURIComponent("" + custCMaritalsts) + "&";
-        if (custCPadd1 === null)
-            throw new globalThis.Error("The parameter 'custCPadd1' cannot be null.");
-        else if (custCPadd1 !== undefined)
-            url_ += "CustCPadd1=" + encodeURIComponent("" + custCPadd1) + "&";
-        if (custCPadd2 === null)
-            throw new globalThis.Error("The parameter 'custCPadd2' cannot be null.");
-        else if (custCPadd2 !== undefined)
-            url_ += "CustCPadd2=" + encodeURIComponent("" + custCPadd2) + "&";
-        if (custCPadd3 === null)
-            throw new globalThis.Error("The parameter 'custCPadd3' cannot be null.");
-        else if (custCPadd3 !== undefined)
-            url_ += "CustCPadd3=" + encodeURIComponent("" + custCPadd3) + "&";
-        if (custCPCity === null)
-            throw new globalThis.Error("The parameter 'custCPCity' cannot be null.");
-        else if (custCPCity !== undefined)
-            url_ += "CustCPCity=" + encodeURIComponent("" + custCPCity) + "&";
-        if (custCPstate === null)
-            throw new globalThis.Error("The parameter 'custCPstate' cannot be null.");
-        else if (custCPstate !== undefined)
-            url_ += "CustCPstate=" + encodeURIComponent("" + custCPstate) + "&";
-        if (mobileCNo === null)
-            throw new globalThis.Error("The parameter 'mobileCNo' cannot be null.");
-        else if (mobileCNo !== undefined)
-            url_ += "MobileCNo=" + encodeURIComponent("" + mobileCNo) + "&";
-        if (emailCAdd === null)
-            throw new globalThis.Error("The parameter 'emailCAdd' cannot be null.");
-        else if (emailCAdd !== undefined)
-            url_ += "EmailCAdd=" + encodeURIComponent("" + emailCAdd) + "&";
-        if (idCType === null)
-            throw new globalThis.Error("The parameter 'idCType' cannot be null.");
-        else if (idCType !== undefined)
-            url_ += "IdCType=" + encodeURIComponent("" + idCType) + "&";
-        if (idCNo === null)
-            throw new globalThis.Error("The parameter 'idCNo' cannot be null.");
-        else if (idCNo !== undefined)
-            url_ += "IdCNo=" + encodeURIComponent("" + idCNo) + "&";
-        if (idCIssplace === null)
-            throw new globalThis.Error("The parameter 'idCIssplace' cannot be null.");
-        else if (idCIssplace !== undefined)
-            url_ += "IdCIssplace=" + encodeURIComponent("" + idCIssplace) + "&";
-        if (idDIssdate === null)
-            throw new globalThis.Error("The parameter 'idDIssdate' cannot be null.");
-        else if (idDIssdate !== undefined)
-            url_ += "IdDIssdate=" + encodeURIComponent(idDIssdate ? "" + idDIssdate.toISOString() : "") + "&";
-        if (idDExpdate === null)
-            throw new globalThis.Error("The parameter 'idDExpdate' cannot be null.");
-        else if (idDExpdate !== undefined)
-            url_ += "IdDExpdate=" + encodeURIComponent(idDExpdate ? "" + idDExpdate.toISOString() : "") + "&";
-        if (custCAuthority === null)
-            throw new globalThis.Error("The parameter 'custCAuthority' cannot be null.");
-        else if (custCAuthority !== undefined)
-            url_ += "CustCAuthority=" + encodeURIComponent("" + custCAuthority) + "&";
-        if (husbCName === null)
-            throw new globalThis.Error("The parameter 'husbCName' cannot be null.");
-        else if (husbCName !== undefined)
-            url_ += "HusbCName=" + encodeURIComponent("" + husbCName) + "&";
-        if (countryCCode === null)
-            throw new globalThis.Error("The parameter 'countryCCode' cannot be null.");
-        else if (countryCCode !== undefined)
-            url_ += "CountryCCode=" + encodeURIComponent("" + countryCCode) + "&";
-        if (placeCBirth === null)
-            throw new globalThis.Error("The parameter 'placeCBirth' cannot be null.");
-        else if (placeCBirth !== undefined)
-            url_ += "PlaceCBirth=" + encodeURIComponent("" + placeCBirth) + "&";
-        if (custCNationality === null)
-            throw new globalThis.Error("The parameter 'custCNationality' cannot be null.");
-        else if (custCNationality !== undefined)
-            url_ += "CustCNationality=" + encodeURIComponent("" + custCNationality) + "&";
-        if (custCWife1 === null)
-            throw new globalThis.Error("The parameter 'custCWife1' cannot be null.");
-        else if (custCWife1 !== undefined)
-            url_ += "CustCWife1=" + encodeURIComponent("" + custCWife1) + "&";
-        if (idCType2 === null)
-            throw new globalThis.Error("The parameter 'idCType2' cannot be null.");
-        else if (idCType2 !== undefined)
-            url_ += "IdCType2=" + encodeURIComponent("" + idCType2) + "&";
-        if (idCNo2 === null)
-            throw new globalThis.Error("The parameter 'idCNo2' cannot be null.");
-        else if (idCNo2 !== undefined)
-            url_ += "IdCNo2=" + encodeURIComponent("" + idCNo2) + "&";
-        if (idCIssplace2 === null)
-            throw new globalThis.Error("The parameter 'idCIssplace2' cannot be null.");
-        else if (idCIssplace2 !== undefined)
-            url_ += "IdCIssplace2=" + encodeURIComponent("" + idCIssplace2) + "&";
-        if (idCIssueDate2 === null)
-            throw new globalThis.Error("The parameter 'idCIssueDate2' cannot be null.");
-        else if (idCIssueDate2 !== undefined)
-            url_ += "IdCIssueDate2=" + encodeURIComponent("" + idCIssueDate2) + "&";
-        if (idCExpiryDate2 === null)
-            throw new globalThis.Error("The parameter 'idCExpiryDate2' cannot be null.");
-        else if (idCExpiryDate2 !== undefined)
-            url_ += "IdCExpiryDate2=" + encodeURIComponent("" + idCExpiryDate2) + "&";
-        if (custDBdate === null)
-            throw new globalThis.Error("The parameter 'custDBdate' cannot be null.");
-        else if (custDBdate !== undefined)
-            url_ += "CustDBdate=" + encodeURIComponent(custDBdate ? "" + custDBdate.toISOString() : "") + "&";
-        if (idCAuthority2 === null)
-            throw new globalThis.Error("The parameter 'idCAuthority2' cannot be null.");
-        else if (idCAuthority2 !== undefined)
-            url_ += "IdCAuthority2=" + encodeURIComponent("" + idCAuthority2) + "&";
-        if (custCOccupation === null)
-            throw new globalThis.Error("The parameter 'custCOccupation' cannot be null.");
-        else if (custCOccupation !== undefined)
-            url_ += "CustCOccupation=" + encodeURIComponent("" + custCOccupation) + "&";
-        if (homeINumber === null)
-            throw new globalThis.Error("The parameter 'homeINumber' cannot be null.");
-        else if (homeINumber !== undefined)
-            url_ += "HomeINumber=" + encodeURIComponent("" + homeINumber) + "&";
-        if (custIIdentify === null)
-            throw new globalThis.Error("The parameter 'custIIdentify' cannot be null.");
-        else if (custIIdentify !== undefined)
-            url_ += "CustIIdentify=" + encodeURIComponent("" + custIIdentify) + "&";
-        if (custCCountrybrith === null)
-            throw new globalThis.Error("The parameter 'custCCountrybrith' cannot be null.");
-        else if (custCCountrybrith !== undefined)
-            url_ += "CustCCountrybrith=" + encodeURIComponent("" + custCCountrybrith) + "&";
-        if (custCStatebrith === null)
-            throw new globalThis.Error("The parameter 'custCStatebrith' cannot be null.");
-        else if (custCStatebrith !== undefined)
-            url_ += "CustCStatebrith=" + encodeURIComponent("" + custCStatebrith) + "&";
-        if (custCCitizenship === null)
-            throw new globalThis.Error("The parameter 'custCCitizenship' cannot be null.");
-        else if (custCCitizenship !== undefined)
-            url_ += "CustCCitizenship=" + encodeURIComponent("" + custCCitizenship) + "&";
-        if (custCEmployer === null)
-            throw new globalThis.Error("The parameter 'custCEmployer' cannot be null.");
-        else if (custCEmployer !== undefined)
-            url_ += "CustCEmployer=" + encodeURIComponent("" + custCEmployer) + "&";
-        if (custFIncome === null)
-            throw new globalThis.Error("The parameter 'custFIncome' cannot be null.");
-        else if (custFIncome !== undefined)
-            url_ += "CustFIncome=" + encodeURIComponent("" + custFIncome) + "&";
-        if (custCHigheducation === null)
-            throw new globalThis.Error("The parameter 'custCHigheducation' cannot be null.");
-        else if (custCHigheducation !== undefined)
-            url_ += "CustCHigheducation=" + encodeURIComponent("" + custCHigheducation) + "&";
-        if (custFAvgmonth === null)
-            throw new globalThis.Error("The parameter 'custFAvgmonth' cannot be null.");
-        else if (custFAvgmonth !== undefined)
-            url_ += "CustFAvgmonth=" + encodeURIComponent("" + custFAvgmonth) + "&";
-        if (tradeCNameenglish === null)
-            throw new globalThis.Error("The parameter 'tradeCNameenglish' cannot be null.");
-        else if (tradeCNameenglish !== undefined)
-            url_ += "TradeCNameenglish=" + encodeURIComponent("" + tradeCNameenglish) + "&";
-        if (custCEngfname === null)
-            throw new globalThis.Error("The parameter 'custCEngfname' cannot be null.");
-        else if (custCEngfname !== undefined)
-            url_ += "CustCEngfname=" + encodeURIComponent("" + custCEngfname) + "&";
-        if (custCEngsname === null)
-            throw new globalThis.Error("The parameter 'custCEngsname' cannot be null.");
-        else if (custCEngsname !== undefined)
-            url_ += "CustCEngsname=" + encodeURIComponent("" + custCEngsname) + "&";
-        if (custCEngtname === null)
-            throw new globalThis.Error("The parameter 'custCEngtname' cannot be null.");
-        else if (custCEngtname !== undefined)
-            url_ += "CustCEngtname=" + encodeURIComponent("" + custCEngtname) + "&";
-        if (custCEngfoname === null)
-            throw new globalThis.Error("The parameter 'custCEngfoname' cannot be null.");
-        else if (custCEngfoname !== undefined)
-            url_ += "CustCEngfoname=" + encodeURIComponent("" + custCEngfoname) + "&";
-        if (custDEntrydt === null)
-            throw new globalThis.Error("The parameter 'custDEntrydt' cannot be null.");
-        else if (custDEntrydt !== undefined)
-            url_ += "CustDEntrydt=" + encodeURIComponent(custDEntrydt ? "" + custDEntrydt.toISOString() : "") + "&";
-        if (accountMasts === null)
-            throw new globalThis.Error("The parameter 'accountMasts' cannot be null.");
-        else if (accountMasts !== undefined)
-            accountMasts && accountMasts.forEach((item, index) => {
-                for (const attr in item)
-        			if (item.hasOwnProperty(attr)) {
-        				url_ += "AccountMasts[" + index + "]." + attr + "=" + encodeURIComponent("" + (item as any)[attr]) + "&";
-        			}
-            });
-        if (isUsPerson === null)
-            throw new globalThis.Error("The parameter 'isUsPerson' cannot be null.");
-        else if (isUsPerson !== undefined)
-            url_ += "IsUsPerson=" + encodeURIComponent("" + isUsPerson) + "&";
-        if (citizenshipCountries === null)
-            throw new globalThis.Error("The parameter 'citizenshipCountries' cannot be null.");
-        else if (citizenshipCountries !== undefined)
-            url_ += "CitizenshipCountries=" + encodeURIComponent("" + citizenshipCountries) + "&";
-        if (hasImmigrantVisa === null)
-            throw new globalThis.Error("The parameter 'hasImmigrantVisa' cannot be null.");
-        else if (hasImmigrantVisa !== undefined)
-            url_ += "HasImmigrantVisa=" + encodeURIComponent("" + hasImmigrantVisa) + "&";
-        if (permanentResidencyStates === null)
-            throw new globalThis.Error("The parameter 'permanentResidencyStates' cannot be null.");
-        else if (permanentResidencyStates !== undefined)
-            url_ += "PermanentResidencyStates=" + encodeURIComponent("" + permanentResidencyStates) + "&";
-        if (hasOtherCountriesResidency === null)
-            throw new globalThis.Error("The parameter 'hasOtherCountriesResidency' cannot be null.");
-        else if (hasOtherCountriesResidency !== undefined)
-            url_ += "HasOtherCountriesResidency=" + encodeURIComponent("" + hasOtherCountriesResidency) + "&";
-        if (soleSudanResidencyConfirmed === null)
-            throw new globalThis.Error("The parameter 'soleSudanResidencyConfirmed' cannot be null.");
-        else if (soleSudanResidencyConfirmed !== undefined)
-            url_ += "SoleSudanResidencyConfirmed=" + encodeURIComponent("" + soleSudanResidencyConfirmed) + "&";
-        if (sSN === null)
-            throw new globalThis.Error("The parameter 'sSN' cannot be null.");
-        else if (sSN !== undefined)
-            url_ += "SSN=" + encodeURIComponent("" + sSN) + "&";
-        if (iTIN === null)
-            throw new globalThis.Error("The parameter 'iTIN' cannot be null.");
-        else if (iTIN !== undefined)
-            url_ += "ITIN=" + encodeURIComponent("" + iTIN) + "&";
-        if (aTIN === null)
-            throw new globalThis.Error("The parameter 'aTIN' cannot be null.");
-        else if (aTIN !== undefined)
-            url_ += "ATIN=" + encodeURIComponent("" + aTIN) + "&";
-        if (country1TaxJurisdiction === null)
-            throw new globalThis.Error("The parameter 'country1TaxJurisdiction' cannot be null.");
-        else if (country1TaxJurisdiction !== undefined)
-            url_ += "Country1TaxJurisdiction=" + encodeURIComponent("" + country1TaxJurisdiction) + "&";
-        if (country1TIN === null)
-            throw new globalThis.Error("The parameter 'country1TIN' cannot be null.");
-        else if (country1TIN !== undefined)
-            url_ += "Country1TIN=" + encodeURIComponent("" + country1TIN) + "&";
-        if (country1NoTinReason === null)
-            throw new globalThis.Error("The parameter 'country1NoTinReason' cannot be null.");
-        else if (country1NoTinReason !== undefined)
-            url_ += "Country1NoTinReason=" + encodeURIComponent("" + country1NoTinReason) + "&";
-        if (country1NoTinExplanation === null)
-            throw new globalThis.Error("The parameter 'country1NoTinExplanation' cannot be null.");
-        else if (country1NoTinExplanation !== undefined)
-            url_ += "Country1NoTinExplanation=" + encodeURIComponent("" + country1NoTinExplanation) + "&";
-        if (country2TaxJurisdiction === null)
-            throw new globalThis.Error("The parameter 'country2TaxJurisdiction' cannot be null.");
-        else if (country2TaxJurisdiction !== undefined)
-            url_ += "Country2TaxJurisdiction=" + encodeURIComponent("" + country2TaxJurisdiction) + "&";
-        if (country2TIN === null)
-            throw new globalThis.Error("The parameter 'country2TIN' cannot be null.");
-        else if (country2TIN !== undefined)
-            url_ += "Country2TIN=" + encodeURIComponent("" + country2TIN) + "&";
-        if (country2NoTinReason === null)
-            throw new globalThis.Error("The parameter 'country2NoTinReason' cannot be null.");
-        else if (country2NoTinReason !== undefined)
-            url_ += "Country2NoTinReason=" + encodeURIComponent("" + country2NoTinReason) + "&";
-        if (country2NoTinExplanation === null)
-            throw new globalThis.Error("The parameter 'country2NoTinExplanation' cannot be null.");
-        else if (country2NoTinExplanation !== undefined)
-            url_ += "Country2NoTinExplanation=" + encodeURIComponent("" + country2NoTinExplanation) + "&";
-        if (country3TaxJurisdiction === null)
-            throw new globalThis.Error("The parameter 'country3TaxJurisdiction' cannot be null.");
-        else if (country3TaxJurisdiction !== undefined)
-            url_ += "Country3TaxJurisdiction=" + encodeURIComponent("" + country3TaxJurisdiction) + "&";
-        if (country3TIN === null)
-            throw new globalThis.Error("The parameter 'country3TIN' cannot be null.");
-        else if (country3TIN !== undefined)
-            url_ += "Country3TIN=" + encodeURIComponent("" + country3TIN) + "&";
-        if (country3NoTinReason === null)
-            throw new globalThis.Error("The parameter 'country3NoTinReason' cannot be null.");
-        else if (country3NoTinReason !== undefined)
-            url_ += "Country3NoTinReason=" + encodeURIComponent("" + country3NoTinReason) + "&";
-        if (country3NoTinExplanation === null)
-            throw new globalThis.Error("The parameter 'country3NoTinExplanation' cannot be null.");
-        else if (country3NoTinExplanation !== undefined)
-            url_ += "Country3NoTinExplanation=" + encodeURIComponent("" + country3NoTinExplanation) + "&";
+    custMastPOST(branchCCode: string | undefined, custCName: string | undefined, custCFname: string | undefined, custCSname: string | undefined, custCTname: string | undefined, custCFoname: string | undefined, custCMname: string | undefined, custCSex: string | undefined, custCReligion: string | undefined, custCCaste: string | undefined, custCMaritalsts: string | undefined, custCPadd1: string | undefined, custCPadd2: string | undefined, custCPadd3: string | undefined, custCPCity: string | undefined, custCPstate: string | undefined, mobileCNo: string | undefined, emailCAdd: string | undefined, idCType: string | undefined, idCNo: string | undefined, idCIssplace: string | undefined, idDIssdate: Date | undefined, idDExpdate: Date | undefined, custCAuthority: string | undefined, husbCName: string | undefined, countryCCode: string | undefined, placeCBirth: string | undefined, custCNationality: string | undefined, custCWife1: string | undefined, idCType2: string | undefined, idCNo2: string | undefined, idCIssplace2: string | undefined, idCIssueDate2: string | undefined, idCExpiryDate2: string | undefined, custDBdate: Date | undefined, idCAuthority2: string | undefined, custCOccupation: string | undefined, homeINumber: number | undefined, custIIdentify: string | undefined, custCCountrybrith: string | undefined, custCStatebrith: string | undefined, custCCitizenship: string | undefined, custCEmployer: string | undefined, custFIncome: number | undefined, custCHigheducation: string | undefined, custFAvgmonth: number | undefined, tradeCNameenglish: string | undefined, custCEngfname: string | undefined, custCEngsname: string | undefined, custCEngtname: string | undefined, custCEngfoname: string | undefined, status: string | undefined, custDEntrydt: Date | undefined, accountMasts: CreateAccountDto[] | undefined, isUsPerson: string | undefined, citizenshipCountries: string | undefined, hasImmigrantVisa: string | undefined, permanentResidencyStates: string | undefined, hasOtherCountriesResidency: string | undefined, soleSudanResidencyConfirmed: string | undefined, sSN: string | undefined, iTIN: string | undefined, aTIN: string | undefined, country1TaxJurisdiction: string | undefined, country1TIN: string | undefined, country1NoTinReason: string | undefined, country1NoTinExplanation: string | undefined, country2TaxJurisdiction: string | undefined, country2TIN: string | undefined, country2NoTinReason: string | undefined, country2NoTinExplanation: string | undefined, country3TaxJurisdiction: string | undefined, country3TIN: string | undefined, country3NoTinReason: string | undefined, country3NoTinExplanation: string | undefined, identification: FileParameter | undefined, nationalId: FileParameter | undefined, personalImage: FileParameter | undefined, imageFortheRequesterHoldingTheID: FileParameter | undefined, signitureTemplate: FileParameter | undefined, handwrittenRequest: FileParameter | undefined, employmentCertificate: FileParameter | undefined): Observable<CustMast> {
+        let url_ = this.baseUrl + "/api/CustMast";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = new FormData();
+        if (branchCCode === null || branchCCode === undefined)
+            throw new globalThis.Error("The parameter 'branchCCode' cannot be null.");
+        else
+            content_.append("BranchCCode", branchCCode.toString());
+        if (custCName === null || custCName === undefined)
+            throw new globalThis.Error("The parameter 'custCName' cannot be null.");
+        else
+            content_.append("CustCName", custCName.toString());
+        if (custCFname === null || custCFname === undefined)
+            throw new globalThis.Error("The parameter 'custCFname' cannot be null.");
+        else
+            content_.append("CustCFname", custCFname.toString());
+        if (custCSname === null || custCSname === undefined)
+            throw new globalThis.Error("The parameter 'custCSname' cannot be null.");
+        else
+            content_.append("CustCSname", custCSname.toString());
+        if (custCTname === null || custCTname === undefined)
+            throw new globalThis.Error("The parameter 'custCTname' cannot be null.");
+        else
+            content_.append("CustCTname", custCTname.toString());
+        if (custCFoname === null || custCFoname === undefined)
+            throw new globalThis.Error("The parameter 'custCFoname' cannot be null.");
+        else
+            content_.append("CustCFoname", custCFoname.toString());
+        if (custCMname === null || custCMname === undefined)
+            throw new globalThis.Error("The parameter 'custCMname' cannot be null.");
+        else
+            content_.append("CustCMname", custCMname.toString());
+        if (custCSex === null || custCSex === undefined)
+            throw new globalThis.Error("The parameter 'custCSex' cannot be null.");
+        else
+            content_.append("CustCSex", custCSex.toString());
+        if (custCReligion === null || custCReligion === undefined)
+            throw new globalThis.Error("The parameter 'custCReligion' cannot be null.");
+        else
+            content_.append("CustCReligion", custCReligion.toString());
+        if (custCCaste === null || custCCaste === undefined)
+            throw new globalThis.Error("The parameter 'custCCaste' cannot be null.");
+        else
+            content_.append("CustCCaste", custCCaste.toString());
+        if (custCMaritalsts === null || custCMaritalsts === undefined)
+            throw new globalThis.Error("The parameter 'custCMaritalsts' cannot be null.");
+        else
+            content_.append("CustCMaritalsts", custCMaritalsts.toString());
+        if (custCPadd1 === null || custCPadd1 === undefined)
+            throw new globalThis.Error("The parameter 'custCPadd1' cannot be null.");
+        else
+            content_.append("CustCPadd1", custCPadd1.toString());
+        if (custCPadd2 === null || custCPadd2 === undefined)
+            throw new globalThis.Error("The parameter 'custCPadd2' cannot be null.");
+        else
+            content_.append("CustCPadd2", custCPadd2.toString());
+        if (custCPadd3 === null || custCPadd3 === undefined)
+            throw new globalThis.Error("The parameter 'custCPadd3' cannot be null.");
+        else
+            content_.append("CustCPadd3", custCPadd3.toString());
+        if (custCPCity === null || custCPCity === undefined)
+            throw new globalThis.Error("The parameter 'custCPCity' cannot be null.");
+        else
+            content_.append("CustCPCity", custCPCity.toString());
+        if (custCPstate === null || custCPstate === undefined)
+            throw new globalThis.Error("The parameter 'custCPstate' cannot be null.");
+        else
+            content_.append("CustCPstate", custCPstate.toString());
+        if (mobileCNo === null || mobileCNo === undefined)
+            throw new globalThis.Error("The parameter 'mobileCNo' cannot be null.");
+        else
+            content_.append("MobileCNo", mobileCNo.toString());
+        if (emailCAdd === null || emailCAdd === undefined)
+            throw new globalThis.Error("The parameter 'emailCAdd' cannot be null.");
+        else
+            content_.append("EmailCAdd", emailCAdd.toString());
+        if (idCType === null || idCType === undefined)
+            throw new globalThis.Error("The parameter 'idCType' cannot be null.");
+        else
+            content_.append("IdCType", idCType.toString());
+        if (idCNo === null || idCNo === undefined)
+            throw new globalThis.Error("The parameter 'idCNo' cannot be null.");
+        else
+            content_.append("IdCNo", idCNo.toString());
+        if (idCIssplace === null || idCIssplace === undefined)
+            throw new globalThis.Error("The parameter 'idCIssplace' cannot be null.");
+        else
+            content_.append("IdCIssplace", idCIssplace.toString());
+        if (idDIssdate === null || idDIssdate === undefined)
+            throw new globalThis.Error("The parameter 'idDIssdate' cannot be null.");
+        else
+            content_.append("IdDIssdate", idDIssdate.toJSON());
+        if (idDExpdate === null || idDExpdate === undefined)
+            throw new globalThis.Error("The parameter 'idDExpdate' cannot be null.");
+        else
+            content_.append("IdDExpdate", idDExpdate.toJSON());
+        if (custCAuthority === null || custCAuthority === undefined)
+            throw new globalThis.Error("The parameter 'custCAuthority' cannot be null.");
+        else
+            content_.append("CustCAuthority", custCAuthority.toString());
+        if (husbCName === null || husbCName === undefined)
+            throw new globalThis.Error("The parameter 'husbCName' cannot be null.");
+        else
+            content_.append("HusbCName", husbCName.toString());
+        if (countryCCode === null || countryCCode === undefined)
+            throw new globalThis.Error("The parameter 'countryCCode' cannot be null.");
+        else
+            content_.append("CountryCCode", countryCCode.toString());
+        if (placeCBirth === null || placeCBirth === undefined)
+            throw new globalThis.Error("The parameter 'placeCBirth' cannot be null.");
+        else
+            content_.append("PlaceCBirth", placeCBirth.toString());
+        if (custCNationality === null || custCNationality === undefined)
+            throw new globalThis.Error("The parameter 'custCNationality' cannot be null.");
+        else
+            content_.append("CustCNationality", custCNationality.toString());
+        if (custCWife1 === null || custCWife1 === undefined)
+            throw new globalThis.Error("The parameter 'custCWife1' cannot be null.");
+        else
+            content_.append("CustCWife1", custCWife1.toString());
+        if (idCType2 === null || idCType2 === undefined)
+            throw new globalThis.Error("The parameter 'idCType2' cannot be null.");
+        else
+            content_.append("IdCType2", idCType2.toString());
+        if (idCNo2 === null || idCNo2 === undefined)
+            throw new globalThis.Error("The parameter 'idCNo2' cannot be null.");
+        else
+            content_.append("IdCNo2", idCNo2.toString());
+        if (idCIssplace2 === null || idCIssplace2 === undefined)
+            throw new globalThis.Error("The parameter 'idCIssplace2' cannot be null.");
+        else
+            content_.append("IdCIssplace2", idCIssplace2.toString());
+        if (idCIssueDate2 === null || idCIssueDate2 === undefined)
+            throw new globalThis.Error("The parameter 'idCIssueDate2' cannot be null.");
+        else
+            content_.append("IdCIssueDate2", idCIssueDate2.toString());
+        if (idCExpiryDate2 === null || idCExpiryDate2 === undefined)
+            throw new globalThis.Error("The parameter 'idCExpiryDate2' cannot be null.");
+        else
+            content_.append("IdCExpiryDate2", idCExpiryDate2.toString());
+        if (custDBdate === null || custDBdate === undefined)
+            throw new globalThis.Error("The parameter 'custDBdate' cannot be null.");
+        else
+            content_.append("CustDBdate", custDBdate.toJSON());
+        if (idCAuthority2 === null || idCAuthority2 === undefined)
+            throw new globalThis.Error("The parameter 'idCAuthority2' cannot be null.");
+        else
+            content_.append("IdCAuthority2", idCAuthority2.toString());
+        if (custCOccupation === null || custCOccupation === undefined)
+            throw new globalThis.Error("The parameter 'custCOccupation' cannot be null.");
+        else
+            content_.append("CustCOccupation", custCOccupation.toString());
+        if (homeINumber === null || homeINumber === undefined)
+            throw new globalThis.Error("The parameter 'homeINumber' cannot be null.");
+        else
+            content_.append("HomeINumber", homeINumber.toString());
+        if (custIIdentify === null || custIIdentify === undefined)
+            throw new globalThis.Error("The parameter 'custIIdentify' cannot be null.");
+        else
+            content_.append("CustIIdentify", custIIdentify.toString());
+        if (custCCountrybrith === null || custCCountrybrith === undefined)
+            throw new globalThis.Error("The parameter 'custCCountrybrith' cannot be null.");
+        else
+            content_.append("CustCCountrybrith", custCCountrybrith.toString());
+        if (custCStatebrith === null || custCStatebrith === undefined)
+            throw new globalThis.Error("The parameter 'custCStatebrith' cannot be null.");
+        else
+            content_.append("CustCStatebrith", custCStatebrith.toString());
+        if (custCCitizenship === null || custCCitizenship === undefined)
+            throw new globalThis.Error("The parameter 'custCCitizenship' cannot be null.");
+        else
+            content_.append("CustCCitizenship", custCCitizenship.toString());
+        if (custCEmployer === null || custCEmployer === undefined)
+            throw new globalThis.Error("The parameter 'custCEmployer' cannot be null.");
+        else
+            content_.append("CustCEmployer", custCEmployer.toString());
+        if (custFIncome === null || custFIncome === undefined)
+            throw new globalThis.Error("The parameter 'custFIncome' cannot be null.");
+        else
+            content_.append("CustFIncome", custFIncome.toString());
+        if (custCHigheducation === null || custCHigheducation === undefined)
+            throw new globalThis.Error("The parameter 'custCHigheducation' cannot be null.");
+        else
+            content_.append("CustCHigheducation", custCHigheducation.toString());
+        if (custFAvgmonth === null || custFAvgmonth === undefined)
+            throw new globalThis.Error("The parameter 'custFAvgmonth' cannot be null.");
+        else
+            content_.append("CustFAvgmonth", custFAvgmonth.toString());
+        if (tradeCNameenglish === null || tradeCNameenglish === undefined)
+            throw new globalThis.Error("The parameter 'tradeCNameenglish' cannot be null.");
+        else
+            content_.append("TradeCNameenglish", tradeCNameenglish.toString());
+        if (custCEngfname === null || custCEngfname === undefined)
+            throw new globalThis.Error("The parameter 'custCEngfname' cannot be null.");
+        else
+            content_.append("CustCEngfname", custCEngfname.toString());
+        if (custCEngsname === null || custCEngsname === undefined)
+            throw new globalThis.Error("The parameter 'custCEngsname' cannot be null.");
+        else
+            content_.append("CustCEngsname", custCEngsname.toString());
+        if (custCEngtname === null || custCEngtname === undefined)
+            throw new globalThis.Error("The parameter 'custCEngtname' cannot be null.");
+        else
+            content_.append("CustCEngtname", custCEngtname.toString());
+        if (custCEngfoname === null || custCEngfoname === undefined)
+            throw new globalThis.Error("The parameter 'custCEngfoname' cannot be null.");
+        else
+            content_.append("CustCEngfoname", custCEngfoname.toString());
+        if (status === null || status === undefined)
+            throw new globalThis.Error("The parameter 'status' cannot be null.");
+        else
+            content_.append("Status", status.toString());
+        if (custDEntrydt === null || custDEntrydt === undefined)
+            throw new globalThis.Error("The parameter 'custDEntrydt' cannot be null.");
+        else
+            content_.append("CustDEntrydt", custDEntrydt.toJSON());
+        if (accountMasts === null || accountMasts === undefined)
+            throw new globalThis.Error("The parameter 'accountMasts' cannot be null.");
+        else
+            accountMasts.forEach(item_ => content_.append("AccountMasts", item_.toString()));
+        if (isUsPerson === null || isUsPerson === undefined)
+            throw new globalThis.Error("The parameter 'isUsPerson' cannot be null.");
+        else
+            content_.append("IsUsPerson", isUsPerson.toString());
+        if (citizenshipCountries === null || citizenshipCountries === undefined)
+            throw new globalThis.Error("The parameter 'citizenshipCountries' cannot be null.");
+        else
+            content_.append("CitizenshipCountries", citizenshipCountries.toString());
+        if (hasImmigrantVisa === null || hasImmigrantVisa === undefined)
+            throw new globalThis.Error("The parameter 'hasImmigrantVisa' cannot be null.");
+        else
+            content_.append("HasImmigrantVisa", hasImmigrantVisa.toString());
+        if (permanentResidencyStates === null || permanentResidencyStates === undefined)
+            throw new globalThis.Error("The parameter 'permanentResidencyStates' cannot be null.");
+        else
+            content_.append("PermanentResidencyStates", permanentResidencyStates.toString());
+        if (hasOtherCountriesResidency === null || hasOtherCountriesResidency === undefined)
+            throw new globalThis.Error("The parameter 'hasOtherCountriesResidency' cannot be null.");
+        else
+            content_.append("HasOtherCountriesResidency", hasOtherCountriesResidency.toString());
+        if (soleSudanResidencyConfirmed === null || soleSudanResidencyConfirmed === undefined)
+            throw new globalThis.Error("The parameter 'soleSudanResidencyConfirmed' cannot be null.");
+        else
+            content_.append("SoleSudanResidencyConfirmed", soleSudanResidencyConfirmed.toString());
+        if (sSN === null || sSN === undefined)
+            throw new globalThis.Error("The parameter 'sSN' cannot be null.");
+        else
+            content_.append("SSN", sSN.toString());
+        if (iTIN === null || iTIN === undefined)
+            throw new globalThis.Error("The parameter 'iTIN' cannot be null.");
+        else
+            content_.append("ITIN", iTIN.toString());
+        if (aTIN === null || aTIN === undefined)
+            throw new globalThis.Error("The parameter 'aTIN' cannot be null.");
+        else
+            content_.append("ATIN", aTIN.toString());
+        if (country1TaxJurisdiction === null || country1TaxJurisdiction === undefined)
+            throw new globalThis.Error("The parameter 'country1TaxJurisdiction' cannot be null.");
+        else
+            content_.append("Country1TaxJurisdiction", country1TaxJurisdiction.toString());
+        if (country1TIN === null || country1TIN === undefined)
+            throw new globalThis.Error("The parameter 'country1TIN' cannot be null.");
+        else
+            content_.append("Country1TIN", country1TIN.toString());
+        if (country1NoTinReason === null || country1NoTinReason === undefined)
+            throw new globalThis.Error("The parameter 'country1NoTinReason' cannot be null.");
+        else
+            content_.append("Country1NoTinReason", country1NoTinReason.toString());
+        if (country1NoTinExplanation === null || country1NoTinExplanation === undefined)
+            throw new globalThis.Error("The parameter 'country1NoTinExplanation' cannot be null.");
+        else
+            content_.append("Country1NoTinExplanation", country1NoTinExplanation.toString());
+        if (country2TaxJurisdiction === null || country2TaxJurisdiction === undefined)
+            throw new globalThis.Error("The parameter 'country2TaxJurisdiction' cannot be null.");
+        else
+            content_.append("Country2TaxJurisdiction", country2TaxJurisdiction.toString());
+        if (country2TIN === null || country2TIN === undefined)
+            throw new globalThis.Error("The parameter 'country2TIN' cannot be null.");
+        else
+            content_.append("Country2TIN", country2TIN.toString());
+        if (country2NoTinReason === null || country2NoTinReason === undefined)
+            throw new globalThis.Error("The parameter 'country2NoTinReason' cannot be null.");
+        else
+            content_.append("Country2NoTinReason", country2NoTinReason.toString());
+        if (country2NoTinExplanation === null || country2NoTinExplanation === undefined)
+            throw new globalThis.Error("The parameter 'country2NoTinExplanation' cannot be null.");
+        else
+            content_.append("Country2NoTinExplanation", country2NoTinExplanation.toString());
+        if (country3TaxJurisdiction === null || country3TaxJurisdiction === undefined)
+            throw new globalThis.Error("The parameter 'country3TaxJurisdiction' cannot be null.");
+        else
+            content_.append("Country3TaxJurisdiction", country3TaxJurisdiction.toString());
+        if (country3TIN === null || country3TIN === undefined)
+            throw new globalThis.Error("The parameter 'country3TIN' cannot be null.");
+        else
+            content_.append("Country3TIN", country3TIN.toString());
+        if (country3NoTinReason === null || country3NoTinReason === undefined)
+            throw new globalThis.Error("The parameter 'country3NoTinReason' cannot be null.");
+        else
+            content_.append("Country3NoTinReason", country3NoTinReason.toString());
+        if (country3NoTinExplanation === null || country3NoTinExplanation === undefined)
+            throw new globalThis.Error("The parameter 'country3NoTinExplanation' cannot be null.");
+        else
+            content_.append("Country3NoTinExplanation", country3NoTinExplanation.toString());
         if (identification === null || identification === undefined)
             throw new globalThis.Error("The parameter 'identification' cannot be null.");
         else
@@ -1285,14 +1287,20 @@ export class Client {
      * @param file (optional) 
      * @return OK
      */
-    upload(customerId: string, documentType: string, file: FileParameter | undefined): Observable<CustomerDocumentDto> {
-        let url_ = this.baseUrl + "/api/CustomerDocument/upload/{customerId}/{documentType}";
+    upload(customerId: string, documentType: string, branchCode: string, idNo2: string, file: FileParameter | undefined): Observable<CustomerDocumentDto> {
+        let url_ = this.baseUrl + "/api/CustomerDocument/upload/{customerId}/{documentType}/{branchCode}/{idNo2}";
         if (customerId === undefined || customerId === null)
             throw new globalThis.Error("The parameter 'customerId' must be defined.");
         url_ = url_.replace("{customerId}", encodeURIComponent("" + customerId));
         if (documentType === undefined || documentType === null)
             throw new globalThis.Error("The parameter 'documentType' must be defined.");
         url_ = url_.replace("{documentType}", encodeURIComponent("" + documentType));
+        if (branchCode === undefined || branchCode === null)
+            throw new globalThis.Error("The parameter 'branchCode' must be defined.");
+        url_ = url_.replace("{branchCode}", encodeURIComponent("" + branchCode));
+        if (idNo2 === undefined || idNo2 === null)
+            throw new globalThis.Error("The parameter 'idNo2' must be defined.");
+        url_ = url_.replace("{idNo2}", encodeURIComponent("" + idNo2));
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = new FormData();
@@ -1356,11 +1364,14 @@ export class Client {
      * @param employmentCertificate (optional) 
      * @return OK
      */
-    uploadMultiple(customerId: string, idNo2: string, identification: FileParameter | undefined, nationalId: FileParameter | undefined, personalImage: FileParameter | undefined, imageFortheRequesterHoldingTheID: FileParameter | undefined, signitureTemplate: FileParameter | undefined, handwrittenRequest: FileParameter | undefined, employmentCertificate: FileParameter | undefined): Observable<CustomerDocumentDto[]> {
-        let url_ = this.baseUrl + "/api/CustomerDocument/upload-multiple/{customerId}/{idNo2}";
+    uploadMultiple(customerId: string, branchCode: string, idNo2: string, identification: FileParameter | undefined, nationalId: FileParameter | undefined, personalImage: FileParameter | undefined, imageFortheRequesterHoldingTheID: FileParameter | undefined, signitureTemplate: FileParameter | undefined, handwrittenRequest: FileParameter | undefined, employmentCertificate: FileParameter | undefined): Observable<CustomerDocumentDto[]> {
+        let url_ = this.baseUrl + "/api/CustomerDocument/upload-multiple/{customerId}/{branchCode}/{idNo2}";
         if (customerId === undefined || customerId === null)
             throw new globalThis.Error("The parameter 'customerId' must be defined.");
         url_ = url_.replace("{customerId}", encodeURIComponent("" + customerId));
+        if (branchCode === undefined || branchCode === null)
+            throw new globalThis.Error("The parameter 'branchCode' must be defined.");
+        url_ = url_.replace("{branchCode}", encodeURIComponent("" + branchCode));
         if (idNo2 === undefined || idNo2 === null)
             throw new globalThis.Error("The parameter 'idNo2' must be defined.");
         url_ = url_.replace("{idNo2}", encodeURIComponent("" + idNo2));
@@ -1997,6 +2008,7 @@ export class CustMast implements ICustMast {
     custCEngsname?: string | undefined;
     custCEngtname?: string | undefined;
     custCEngfoname?: string | undefined;
+    status?: string | undefined;
     accountMasts?: AccountMast[] | undefined;
     customerFatca?: CustomerFatca;
 
@@ -2058,6 +2070,7 @@ export class CustMast implements ICustMast {
             this.custCEngsname = _data["custCEngsname"];
             this.custCEngtname = _data["custCEngtname"];
             this.custCEngfoname = _data["custCEngfoname"];
+            this.status = _data["status"];
             if (Array.isArray(_data["accountMasts"])) {
                 this.accountMasts = [] as any;
                 for (let item of _data["accountMasts"])
@@ -2123,6 +2136,7 @@ export class CustMast implements ICustMast {
         data["custCEngsname"] = this.custCEngsname;
         data["custCEngtname"] = this.custCEngtname;
         data["custCEngfoname"] = this.custCEngfoname;
+        data["status"] = this.status;
         if (Array.isArray(this.accountMasts)) {
             data["accountMasts"] = [];
             for (let item of this.accountMasts)
@@ -2181,6 +2195,7 @@ export interface ICustMast {
     custCEngsname?: string | undefined;
     custCEngtname?: string | undefined;
     custCEngfoname?: string | undefined;
+    status?: string | undefined;
     accountMasts?: AccountMast[] | undefined;
     customerFatca?: CustomerFatca;
 }

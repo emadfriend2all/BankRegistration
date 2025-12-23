@@ -107,6 +107,8 @@ namespace RegistrationPortal.Server.DTOs
 
         public string? CustCEngfoname { get; set; }
 
+        public string? Status { get; set; }
+
         public DateTime CustDEntrydt { get; set; }
 
         public List<CreateAccountDto>? AccountMasts { get; set; }

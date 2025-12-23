@@ -3,11 +3,13 @@ import { Documentation } from './documentation/documentation';
 import { Crud } from './crud/crud';
 import { Empty } from './empty/empty';
 import { CreateCustomerComponent } from './customer/create-customer.component';
+import { UpdateCustomerComponent } from './customer/update/update-customer.component';
 
 export default [
     { path: 'documentation', component: Documentation },
     { path: 'crud', component: Crud },
     { path: 'empty', component: Empty },
     { path: 'customer/create', component: CreateCustomerComponent },
+    { path: 'customer/update', component: UpdateCustomerComponent },
     { path: '**', redirectTo: '/notfound' }
 ] as Routes;

@@ -22,11 +22,11 @@ import { DialogModule } from 'primeng/dialog';
 import { ImageModule } from 'primeng/image';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { Client, CustMast, AccountMast, CreateAccountDto } from '../../api/client';
-import { CreateCustomerDto } from '../../models/create-customer.dto';
-import { ApiWrapperService } from '../../services/api-wrapper.service';
-import { FormOptionsService } from '../../shared/form-options.service';
-import { IdMaskDirective } from '../../shared/id-mask.directive';
+import { Client, CustMast, AccountMast, CreateAccountDto } from '../../../api/client';
+import { CreateCustomerDto } from '../../../models/create-customer.dto';
+import { ApiWrapperService } from '../../../services/api-wrapper.service';
+import { FormOptionsService } from '../../../shared/form-options.service';
+import { IdMaskDirective } from '../../../shared/id-mask.directive';
 
 @Component({
   selector: 'app-create-customer',
@@ -56,13 +56,12 @@ import { IdMaskDirective } from '../../shared/id-mask.directive';
     IdMaskDirective
   ],
   providers: [MessageService],
-  templateUrl: './create-customer.component.html',
-  styleUrls: ['./create-customer.component.css']
+  templateUrl: './update-customer.component.html',
+  styleUrls: ['./update-customer.component.css']
 })
-export class CreateCustomerComponent implements OnInit {
+export class UpdateCustomerComponent implements OnInit {
   customerForm: FormGroup;
   accountForm: FormGroup;
-  fatcaForm: FormGroup;
   loading = false;
   soleSudanResidencyChecked = false;
   fullName = '';
@@ -115,7 +114,6 @@ export class CreateCustomerComponent implements OnInit {
   }
   
   items: MenuItem[] = [
-    { label: 'معلومات FATCA' },
     { label: 'معلومات الحساب' },
     { label: 'معلومات العميل' },
     { label: 'تأكيد الطلب' }
@@ -200,16 +198,14 @@ export class CreateCustomerComponent implements OnInit {
       personalImage: [null, Validators.required],
       imageFortheRequesterHoldingTheID: [null, Validators.required],
       signitureTemplate: [null, Validators.required],
-      handwrittenRequest: [null, Validators.required], // Optional - not required
-      employmentCertificate: [null], // Optional - not required
-      
-      // Data confirmation field
-      dataConfirmationConfirmed: [false, Validators.requiredTrue]
+      handwrittenRequest: [null, Validators.required],
+      employmentCertificate: [null] // Optional - not required
     });
 
     this.accountForm = this.fb.group({
       branchCCode: ['', Validators.required],
       actCType: ['', Validators.required],
+      cust_i_no: ['', Validators.required],
       currencyCCode: ['SDG', Validators.required],
       actCName: [''],
       actCOcccode: [''],
@@ -230,29 +226,6 @@ export class CreateCustomerComponent implements OnInit {
       actCInternet: [''],
       actCTelebnk: [''],
       groupCCode: ['']
-    });
-
-    this.fatcaForm = this.fb.group({
-      isUsPerson: [''],
-      citizenshipCountries: [''],
-      hasImmigrantVisa: [''],
-      permanentResidencyStates: [''],
-      hasOtherCountriesResidency: [''],
-      ssn: [''],
-      itin: [''],
-      atin: [''],
-      country1TaxJurisdiction: [''],
-      country1TIN: [''],
-      country1NoTinReason: [''],
-      country1NoTinExplanation: [''],
-      country2TaxJurisdiction: [''],
-      country2TIN: [''],
-      country2NoTinReason: [''],
-      country2NoTinExplanation: [''],
-      country3TaxJurisdiction: [''],
-      country3TIN: [''],
-      country3NoTinReason: [''],
-      country3NoTinExplanation: ['']
     });
   }
 
@@ -278,18 +251,18 @@ export class CreateCustomerComponent implements OnInit {
   }
 
   get isAccountStep(): boolean {
-    return this.activeIndex === 1;
-  }
-  
-  get isFatcaStep(): boolean {
     return this.activeIndex === 0;
   }
   
+  get isCustomerStep(): boolean {
+    return this.activeIndex === 1;
+  }
+  
   get stepLabel(): string {
-    if (this.activeIndex === 2) {
+    if (this.activeIndex === 1) {
       return 'حفظ';
     }
-    return this.activeIndex === 3 ? 'إنهاء' : 'التالي';
+    return this.activeIndex === 2 ? 'إنهاء' : 'التالي';
   }
 
   // Getter for age validation error
@@ -301,16 +274,7 @@ export class CreateCustomerComponent implements OnInit {
   get ageErrorMessage(): string {
     const birthDateControl = this.customerForm.get('custDBdate');
     if (birthDateControl?.hasError('minimumAge')) {
-      const error = birthDateControl.getError('minimumAge');
-      const years = error.actualAge;
-      const days = error.remainingDays;
-      if (years === 17 && days > 0) {
-        return `يجب أن يكون العمر 18 عامًا على الأقل. العمر الحالي: ${years} عامًا و ${days} يومًا`;
-      } else if (years === 17) {
-        return `يجب أن يكون العمر 18 عامًا على الأقل. العمر الحالي: ${years} عامًا`;
-      } else {
-        return `يجب أن يكون العمر 18 عامًا على الأقل. العمر الحالي: ${years} عامًا و ${days} يومًا`;
-      }
+      return 'يجب أن يكون العمر 18 سنة على الأقل';
     }
     return '';
   }
@@ -405,31 +369,6 @@ export class CreateCustomerComponent implements OnInit {
       actCInternet: '',
       actCTelebnk: '',
       groupCCode: ''
-    });
-
-    // FATCA form test data
-    this.fatcaForm.patchValue({
-      isUsPerson: 'N',
-      citizenshipCountries: '',
-      hasImmigrantVisa: '',
-      permanentResidencyStates: '',
-      hasOtherCountriesResidency: 'N',
-      soleSudanResidencyConfirmed: 'Y',
-      ssn: '',
-      itin: '',
-      atin: '',
-      country1TaxJurisdiction: '',
-      country1TIN: '',
-      country1NoTinReason: '',
-      country1NoTinExplanation: '',
-      country2TaxJurisdiction: '',
-      country2TIN: '',
-      country2NoTinReason: '',
-      country2NoTinExplanation: '',
-      country3TaxJurisdiction: '',
-      country3TIN: '',
-      country3NoTinReason: '',
-      country3NoTinExplanation: ''
     });
 
     // Update full names
@@ -549,7 +488,7 @@ export class CreateCustomerComponent implements OnInit {
   }
 
   saveCustomerAndAccount(): void {
-    if (this.customerForm.invalid || this.accountForm.invalid || this.fatcaForm.invalid) {
+    if (this.customerForm.invalid || this.accountForm.invalid) {
       this.messageService.add({
         severity: 'warn',
         summary: 'تحقق من البيانات',
@@ -584,12 +523,11 @@ export class CreateCustomerComponent implements OnInit {
 
     const customerData: CreateCustomerDto = {
       ...this.customerForm.value,
-      ...this.fatcaForm.value, // Include FATCA data
       custCName: this.fullName,
       branchCCode: this.customerForm.value.branchCCode || '', // Ensure branchCCode is not undefined
       entryCDate: new Date(),
       tradeCNameenglish: this.englishFullName,
-      status: 'New', // Set status to "New" for new customer requests
+      status: 'Update', // Set status to "Update" for customer update requests
       // Map form field names to DTO field names
       custDBdate: formatDateForServer(this.customerForm.value.custDBdate),
       idDIssdate: formatDateForServer(this.customerForm.value.idDIssdate),
@@ -611,19 +549,12 @@ export class CreateCustomerComponent implements OnInit {
 
     console.log('DTO idDIssdate:', (customerData as any).idDIssdate);
     console.log('DTO idDExpdate:', (customerData as any).idDExpdate);
-    console.log('FATCA data being sent:', {
-      isUsPerson: (customerData as any).isUsPerson,
-      citizenshipCountries: (customerData as any).citizenshipCountries,
-      hasImmigrantVisa: (customerData as any).hasImmigrantVisa,
-      ssn: (customerData as any).ssn,
-      country1TaxJurisdiction: (customerData as any).country1TaxJurisdiction
-    });
 
     // Create customer with account in single request
     this.createCustomerWithDocuments(customerData, accountData).subscribe({
       next: (customer: CustMast) => {
         // Move to confirmation step
-        this.activeIndex = 3;
+        this.activeIndex = 2;
         this.loading = false;
       },
       error: (customerError: any) => {
@@ -940,20 +871,6 @@ export class CreateCustomerComponent implements OnInit {
 
   nextStep(): void {
     if (this.activeIndex === 0) {
-      // Validate FATCA form before proceeding
-      if (this.fatcaForm.invalid) {
-        this.fatcaForm.markAllAsTouched();
-        
-        this.messageService.add({
-          severity: 'warn',
-          summary: 'تحقق من بيانات FATCA',
-          detail: 'يرجى ملء جميع حقول FATCA المطلوبة قبل المتابعة',
-          life: 5000
-        });
-        return;
-      }
-      this.activeIndex = 1; // Go to account step
-    } else if (this.activeIndex === 1) {
       // Validate account form before proceeding
       if (this.accountForm.invalid) {
         this.accountForm.markAllAsTouched();
@@ -965,6 +882,7 @@ export class CreateCustomerComponent implements OnInit {
         // Check each required field and add Arabic field names if missing
         if (controls['branchCCode']?.invalid) missingFields.push('فرع الحساب');
         if (controls['actCType']?.invalid) missingFields.push('نوع الحساب');
+        if (controls['cust_i_no']?.invalid) missingFields.push('رقم الحساب');
         if (controls['currencyCCode']?.invalid) missingFields.push('عملة الحساب');
         if (controls['actCName']?.invalid) missingFields.push('اسم الحساب');
         if (controls['actDOpdate']?.invalid) missingFields.push('تاريخ فتح الحساب');
@@ -979,13 +897,13 @@ export class CreateCustomerComponent implements OnInit {
         });
         return;
       }
-      this.activeIndex = 2; // Go to customer step
-    } else if (this.activeIndex === 2) {
-      // This is the customer step - save all data including FATCA
+      this.activeIndex = 1; // Go to customer step
+    } else if (this.activeIndex === 1) {
+      // This is the save step - save all customer and account data
       this.saveCustomerAndAccount();
-    } else if (this.activeIndex === 3) {
+    } else if (this.activeIndex === 2) {
       // This is the confirmation step - already saved
-      this.activeIndex = 3; // Stay on confirmation
+      this.activeIndex = 2; // Stay on confirmation
     }
   }
 
@@ -1026,15 +944,6 @@ export class CreateCustomerComponent implements OnInit {
     
     // Update the form control
     this.customerForm.get('mobileCNo')?.setValue(value, { emitEvent: false });
-  }
-
-  onResidencyChange(event: any): void {
-    console.log('Residency changed:', event);
-    // Force form control update to ensure UI reflects the change
-    const value = event.value;
-    //this.hasOtherCountriesResidency = value;
-    this.fatcaForm.get('hasOtherCountriesResidency')?.setValue(value, { emitEvent: true });
-    this.fatcaForm.get('hasOtherCountriesResidency')?.markAsTouched();
   }
 
   // Example image methods

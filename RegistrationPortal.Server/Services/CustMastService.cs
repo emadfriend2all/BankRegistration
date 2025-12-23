@@ -110,8 +110,8 @@ namespace RegistrationPortal.Server.Services
                     await _custMastRepository.AddAsync(customer);
                     await _custMastRepository.SaveChangesAsync();
 
-                    // Create FATCA record if FATCA data is provided
-                    if (HasFatcaData(customerDto))
+                    // Create FATCA record if FATCA data is provided and status is not "Update"
+                    if (customerDto.Status != "Update" && HasFatcaData(customerDto))
                     {
                         _logger.LogInformation("Creating FATCA record for customer {CustomerId}", customer.Id);
                         
@@ -125,6 +125,10 @@ namespace RegistrationPortal.Server.Services
                         await _custMastRepository.SaveChangesAsync();
                         
                         _logger.LogInformation("FATCA record created successfully for customer {CustomerId}", customer.Id);
+                    }
+                    else if (customerDto.Status == "Update")
+                    {
+                        _logger.LogInformation("Skipping FATCA validation for customer {CustomerId} due to Update status", customer.Id);
                     }
                     else
                     {

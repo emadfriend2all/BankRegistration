@@ -45,6 +45,10 @@ namespace RegistrationPortal.Server.Data
                 // New string primary key
                 entity.HasKey(e => e.Id)
                     .HasName("pk_cust_mast");
+
+                // Configure index for Status column
+                entity.HasIndex(e => e.Status)
+                    .HasDatabaseName("IX_cust_mast_status");
             });
         }
 

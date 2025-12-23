@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace RegistrationPortal.Server.Entities
 {
@@ -190,6 +191,10 @@ namespace RegistrationPortal.Server.Entities
         [Column("cust_c_engfoname", TypeName = "VARCHAR2(250 BYTE)")] 
         [StringLength(250)]
         public string? CustCEngfoname { get; set; }
+
+        [Column("status", TypeName = "NVARCHAR2(50)")]
+        [StringLength(50)]
+        public string? Status { get; set; }
 
         // Navigation property for related accounts
         public virtual ICollection<AccountMast> AccountMasts { get; set; } = [];
