@@ -13,13 +13,13 @@ import { Subscription } from 'rxjs';
     standalone: true,
     imports: [RouterModule, CommonModule, StyleClassModule, ButtonModule],
     template: ` <div class="layout-topbar">
-        <div class="layout-topbar-logo-container">
+        <div class="layout-topbar-logo-container"style="flex-basis: max-content;">
             <button class="layout-menu-button layout-topbar-action" (click)="layoutService.onMenuToggle()">
                 <i class="pi pi-bars"></i>
             </button>
             <a class="layout-topbar-logo" routerLink="/">
                 <img src="/global/logo.png" alt="SSDB Logo" class="w-8 h-8 mr-2" />
-                <span>مصرف الإدخار والتنمية المصرفية</span>
+                <span style="font-size: medium;">مصرف الإدخار والتنمية الإجتماعية</span>
             </a>
         </div>
 
@@ -38,7 +38,7 @@ import { Subscription } from 'rxjs';
             <div class="layout-topbar-menu hidden lg:block">
                 <div class="layout-topbar-menu-content">
                     <ng-container *ngIf="isAuthenticated; else notLoggedIn">
-                        <button pButton label="Logout" icon="pi pi-sign-out" class="p-button-outlined" (click)="onLogout()"></button>
+                        <button pButton label="تسجيل خروج" icon="pi pi-sign-out" class="p-button-outlined" (click)="onLogout()"></button>
                     </ng-container>
                     <ng-template #notLoggedIn>
                         <button pButton label="Login" icon="pi pi-sign-in" class="p-button-outlined" routerLink="/auth/login"></button>

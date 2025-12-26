@@ -71,8 +71,7 @@ export class FormOptionsService {
   // Account Type Options
   accountTypeOptions = [
     { label: 'حساب جاري', value: '20101' },
-    { label: 'حساب توفير', value: '20102' },
-    { label: 'حساب وديعة', value: '20103' }
+    { label: 'حساب توفير', value: '20102' }
   ];
 
   // Currency Options

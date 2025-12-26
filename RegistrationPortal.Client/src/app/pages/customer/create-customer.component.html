@@ -1,7 +1,8 @@
 <div class="card">
     <h1 class="text-2xl font-bold mb-6 text-center">إنشاء حساب جديد</h1>
-
+<div style="direction: ltr;">
     <p-steps [model]="items" [(activeIndex)]="activeIndex" [readonly]="false"></p-steps>
+</div>
 
     <form [formGroup]="customerForm">
         <!-- Customer Information Step -->
@@ -476,9 +477,9 @@
                         class="p-button-outlined p-button-secondary" (click)="resetForms()"></button>
                 </div>
                 <div class="flex gap-2">
-                    <button pButton pRipple type="button" icon="pi pi-step-backward" label="السابق"
+                    <button pButton pRipple type="button" icon="pi pi-step-forward" label="السابق"
                         class="p-button-outlined" [disabled]="false" (click)="previousStep()"></button>
-                    <button pButton pRipple type="button" icon="pi pi-step-forward" [label]="stepLabel"
+                    <button pButton pRipple type="button" icon="pi pi-step-backward" [label]="stepLabel"
                         [loading]="loading" [disabled]="!customerForm.get('dataConfirmationConfirmed')?.value" (click)="nextStep()"></button>
                 </div>
             </div>
@@ -544,9 +545,9 @@
                         class="p-button-outlined p-button-secondary" (click)="resetForms()"></button>
                 </div>
                 <div class="flex gap-2">
-                    <button pButton pRipple type="button" icon="pi pi-step-backward" label="السابق"
+                    <button pButton pRipple type="button" icon="pi pi-step-forward" label="السابق"
                         class="p-button-outlined" [disabled]="activeIndex === 0" (click)="previousStep()"></button>
-                    <button pButton pRipple type="button" icon="pi pi-step-forward" [label]="stepLabel"
+                    <button pButton pRipple type="button" icon="pi pi-step-backward" [label]="stepLabel"
                         [loading]="loading" (click)="nextStep()"></button>
                 </div>
             </div>
@@ -686,9 +687,9 @@
                         class="p-button-outlined p-button-secondary" (click)="resetForms()"></button>
                 </div>
                 <div class="flex gap-2">
-                    <button pButton pRipple type="button" icon="pi pi-step-backward" label="السابق"
+                    <button pButton pRipple type="button" icon="pi pi-step-forward" label="السابق"
                         class="p-button-outlined" [disabled]="true" (click)="previousStep()"></button>
-                    <button pButton pRipple type="button" icon="pi pi-step-forward" [label]="stepLabel"
+                    <button pButton pRipple type="button" icon="pi pi-step-backward" [label]="stepLabel"
                         [loading]="loading" [disabled]="fatcaForm.invalid" (click)="nextStep()"></button>
                 </div>
             </div>

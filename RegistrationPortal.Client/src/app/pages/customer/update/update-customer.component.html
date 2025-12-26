@@ -1,7 +1,10 @@
 <div class="card">
     <h1 class="text-2xl font-bold mb-6 text-center">تحديث بيانات</h1>
 
-    <p-steps [model]="items" [(activeIndex)]="activeIndex" [readonly]="false"></p-steps>
+    <div style="direction: ltr;">
+        <p-steps [model]="items" [(activeIndex)]="activeIndex" [readonly]="false"></p-steps>
+    </div>
+
 
     <form [formGroup]="customerForm">
         <!-- Customer Information Step -->
@@ -330,8 +333,9 @@
                         <small class="text-gray-600">صورة بطاقة الهوية أو جواز السفر</small>
                         <div class="flex-1">
                             <p-fileupload name="identification" mode="advanced" accept="image/*,.pdf" [auto]="true"
-                                [multiple]="false" maxFileSize="1000000" (onSelect)="onFileChange($event, 'identification')"
-                                chooseLabel="رفع ملف" class="w-full h-full"
+                                [multiple]="false" maxFileSize="1000000"
+                                (onSelect)="onFileChange($event, 'identification')" chooseLabel="رفع ملف"
+                                class="w-full h-full"
                                 [ngClass]="{ 'ng-invalid ng-touched': customerForm.get('identification')?.invalid && customerForm.get('identification')?.touched }">
                             </p-fileupload>
                         </div>
@@ -366,8 +370,9 @@
                         <small class="text-gray-600">صورة شخصية حديثة</small>
                         <div class="flex-1">
                             <p-fileupload name="personalImage" mode="advanced" accept="image/*" [auto]="true"
-                                [multiple]="false" maxFileSize="1000000" (onSelect)="onFileChange($event, 'personalImage')"
-                                chooseLabel="رفع ملف" class="w-full h-full"
+                                [multiple]="false" maxFileSize="1000000"
+                                (onSelect)="onFileChange($event, 'personalImage')" chooseLabel="رفع ملف"
+                                class="w-full h-full"
                                 [ngClass]="{ 'ng-invalid ng-touched': customerForm.get('personalImage')?.invalid && customerForm.get('personalImage')?.touched }">
                             </p-fileupload>
                         </div>
@@ -385,14 +390,15 @@
                         <div class="flex-1">
                             <p-fileupload name="imageFortheRequesterHoldingTheID" mode="advanced" accept="image/*"
                                 [auto]="true" [multiple]="false" maxFileSize="1000000"
-                                (onSelect)="onFileChange($event, 'imageFortheRequesterHoldingTheID')" chooseLabel="رفع ملف"
-                                class="w-full h-full"
+                                (onSelect)="onFileChange($event, 'imageFortheRequesterHoldingTheID')"
+                                chooseLabel="رفع ملف" class="w-full h-full"
                                 [ngClass]="{ 'ng-invalid ng-touched': customerForm.get('imageFortheRequesterHoldingTheID')?.invalid && customerForm.get('imageFortheRequesterHoldingTheID')?.touched }">
                             </p-fileupload>
                         </div>
                         <div class="mt-2">
                             <button pButton pRipple type="button" icon="pi pi-image" label="عرض مثال"
-                                class="p-button-outlined p-button-info" (click)="showExampleImage('imageFortheRequesterHoldingTheID')">
+                                class="p-button-outlined p-button-info"
+                                (click)="showExampleImage('imageFortheRequesterHoldingTheID')">
                             </button>
                         </div>
                     </div>
@@ -430,7 +436,8 @@
                         </div>
                         <div class="mt-2">
                             <button pButton pRipple type="button" icon="pi pi-image" label="عرض مثال"
-                                class="p-button-outlined p-button-info" (click)="showExampleImage('handwrittenRequest')">
+                                class="p-button-outlined p-button-info"
+                                (click)="showExampleImage('handwrittenRequest')">
                             </button>
                         </div>
                     </div>
@@ -440,8 +447,8 @@
                         <label class="font-medium">شهادة العمل</label>
                         <small class="text-gray-600">شهادة العمل الحالي</small>
                         <div class="flex-1">
-                            <p-fileupload name="employmentCertificate" mode="advanced" accept="image/*,.pdf" [auto]="true"
-                                [multiple]="false" maxFileSize="1000000"
+                            <p-fileupload name="employmentCertificate" mode="advanced" accept="image/*,.pdf"
+                                [auto]="true" [multiple]="false" maxFileSize="1000000"
                                 (onSelect)="onFileChange($event, 'employmentCertificate')" chooseLabel="رفع ملف"
                                 class="w-full h-full">
                             </p-fileupload>
@@ -454,7 +461,7 @@
                     </div>
                 </div>
 
-                
+
             </div>
 
             <!-- Action Buttons for Customer Step -->
@@ -465,9 +472,9 @@
                         class="p-button-outlined p-button-secondary" (click)="resetForms()"></button>
                 </div>
                 <div class="flex gap-2">
-                    <button pButton pRipple type="button" icon="pi pi-step-backward" label="السابق"
+                    <button pButton pRipple type="button" icon="pi pi-step-forward" label="السابق"
                         class="p-button-outlined" [disabled]="activeIndex < 1" (click)="previousStep()"></button>
-                    <button pButton pRipple type="button" icon="pi pi-step-forward" [label]="stepLabel"
+                    <button pButton pRipple type="button" icon="pi pi-step-backward" [label]="stepLabel"
                         [loading]="loading" (click)="nextStep()"></button>
                 </div>
             </div>
@@ -535,9 +542,9 @@
                         class="p-button-outlined p-button-secondary" (click)="resetForms()"></button>
                 </div>
                 <div class="flex gap-2">
-                    <button pButton pRipple type="button" icon="pi pi-step-backward" label="السابق"
+                    <button pButton pRipple type="button" icon="pi pi-step-forward" label="السابق"
                         class="p-button-outlined" [disabled]="activeIndex < 1" (click)="previousStep()"></button>
-                    <button pButton pRipple type="button" icon="pi pi-step-forward" [label]="stepLabel"
+                    <button pButton pRipple type="button" icon="pi pi-step-backward" [label]="stepLabel"
                         [loading]="loading" (click)="nextStep()"></button>
                 </div>
             </div>
@@ -563,37 +570,21 @@
     </div>
 
     <!-- Example Image Dialog -->
-    <p-dialog
-    [header]="currentExampleTitle"
-    [(visible)]="displayExampleDialog"
-    [modal]="true"
-    [baseZIndex]="10000"
-    [draggable]="true"
-    [resizable]="false"
-    [style]="{ maxWidth: '90vw', maxHeight: '90vh' }"
-    [contentStyle]="{ padding: '0', overflow: 'hidden' }">
+    <p-dialog [header]="currentExampleTitle" [(visible)]="displayExampleDialog" [modal]="true" [baseZIndex]="10000"
+        [draggable]="true" [resizable]="false" [style]="{ maxWidth: '90vw', maxHeight: '90vh' }"
+        [contentStyle]="{ padding: '0', overflow: 'hidden' }">
 
-    <!-- IMPORTANT: no padding here -->
-    <div class="image-dialog-wrapper">
-        <img
-            [src]="currentExampleImage"
-            [alt]="currentExampleTitle"
-            class="image-dialog-img"
-        />
-    </div>
+        <!-- IMPORTANT: no padding here -->
+        <div class="image-dialog-wrapper">
+            <img [src]="currentExampleImage" [alt]="currentExampleTitle" class="image-dialog-img" />
+        </div>
 
-    <ng-template pTemplate="footer">
-        <button
-            pButton
-            pRipple
-            type="button"
-            icon="pi pi-times"
-            label="إغلاق"
-            class="p-button-outlined"
-            (click)="closeExampleDialog()">
-        </button>
-    </ng-template>
-</p-dialog>
+        <ng-template pTemplate="footer">
+            <button pButton pRipple type="button" icon="pi pi-times" label="إغلاق" class="p-button-outlined"
+                (click)="closeExampleDialog()">
+            </button>
+        </ng-template>
+    </p-dialog>
 
 
 
