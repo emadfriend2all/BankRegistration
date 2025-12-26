@@ -1,0 +1,265 @@
+<div class="view-customers-container" dir="rtl">
+  <!-- Header Section -->
+  <div class="header-section">
+    <div class="header-content">
+      <div class="header-right">
+        <h1 class="page-title">
+          <i class="pi pi-users"></i>
+          جميع العملاء
+        </h1>
+        <p class="page-subtitle">إدارة وعرض جميع سجلات العملاء</p>
+      </div>
+      <div class="header-left">
+        <p-button 
+          label="تصدير" 
+          icon="pi pi-download" 
+          class="p-button-outlined p-button-sm"
+          (click)="exportCustomers()">
+        </p-button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters Section -->
+  <div class="filters-section">
+    <p-card class="filter-card">
+      <div class="filter-row">
+        <div class="filter-item flex-1">
+          <p-inputGroup class="smart-search-group">
+            <p-inputGroupAddon>
+              <i class="pi pi-search"></i>
+            </p-inputGroupAddon>
+            <input 
+              type="text" 
+              pInputText 
+              placeholder="بحث ذكي في جميع الحقول..." 
+              [(ngModel)]="globalFilter"
+              (input)="onFilter()"
+              class="search-input">
+            <p-inputGroupAddon *ngIf="globalFilter && globalFilter.trim()" class="filter-summary">
+              <span class="filter-count">{{ filteredCustomers.length }}</span>
+            </p-inputGroupAddon>
+          </p-inputGroup>
+        </div>
+        <div >
+          <p-select 
+            [options]="statusOptions" 
+            [(ngModel)]="selectedStatus" 
+            placeholder="اختر الحالة"
+            (onChange)="onStatusFilterChange()"
+            appendTo="body">
+          </p-select>
+        </div>
+        <div >
+          <p-select 
+            [options]="reviewStatusOptions" 
+            [(ngModel)]="selectedReviewStatus" 
+            placeholder="اختر حالة المراجعة"
+            (onChange)="onReviewStatusFilterChange()"
+            appendTo="body">
+          </p-select>
+        </div>
+        <div class="filter-item">
+          <p-button 
+            label="مسح" 
+            icon="pi pi-filter-slash" 
+            class="p-button-outlined p-button-sm"
+            [disabled]="!hasActiveFilters()"
+            (click)="clearAllFilters()">
+          </p-button>
+        </div>
+      </div>
+      
+      <!-- Smart Filter Summary -->
+      <div *ngIf="getFilterSummary()" class="filter-summary-row">
+        <div class="summary-content">
+          <i class="pi pi-info-circle"></i>
+          <span>{{ getFilterSummary() }}</span>
+          <small class="filter-hint">(يبحث في جميع الحقول بما فيها المخفية)</small>
+        </div>
+      </div>
+    </p-card>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-section">
+    <p-card>
+      <div class="loading-content">
+        <p-progressBar mode="indeterminate"></p-progressBar>
+        <p-skeleton width="100%" height="4rem" class="mt-3"></p-skeleton>
+        <p-skeleton width="100%" height="4rem" class="mt-2"></p-skeleton>
+        <p-skeleton width="100%" height="4rem" class="mt-2"></p-skeleton>
+      </div>
+    </p-card>
+  </div>
+
+  <!-- Customers Table -->
+  <div *ngIf="!loading" class="table-section">
+    <p-card>
+      <p-table 
+        [value]="filteredCustomers" 
+        [scrollable]="true"
+        scrollHeight="calc(100vh - 400px)"
+        [paginator]="true"
+        [rows]="rows"
+        [first]="first"
+        [totalRecords]="totalRecords"
+        [rowsPerPageOptions]="[5, 10, 25, 50]"
+        (onPage)="onPageChange($event)"
+        [tableStyle]="{'min-width': '50rem'}"
+        class="customers-table">
+        
+        <!-- Empty State -->
+        <ng-template pTemplate="empty">
+          <div class="empty-state">
+            <i class="pi pi-inbox empty-icon"></i>
+            <p class="empty-title">لم يتم العثور على عملاء</p>
+            <p class="empty-message">حاول تعديل معايير البحث أو التصفية</p>
+          </div>
+        </ng-template>
+
+        <!-- Header -->
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 3rem;">#</th>
+            <th style="width: 15rem;">اسم العميل</th>
+            <th style="width: 8rem;">رقم الهوية</th>
+            <th style="width: 10rem;">الجوال</th>
+            <th style="width: 8rem;">الفرع</th>
+            <th style="width: 8rem;">نوع الهوية</th>
+            <th style="width: 10rem;">رقم الهوية</th>
+            <th style="width: 10rem;">رقم الهوية 2</th>
+            <th style="width: 6rem;">الحالة</th>
+            <th style="width: 8rem;">حالة المراجعة</th>
+            <th style="width: 8rem;">الإجراءات</th>
+          </tr>
+        </ng-template>
+
+        <!-- Body -->
+        <ng-template pTemplate="body" let-customer let-rowIndex="rowIndex">
+          <tr>
+            <!-- Row Number -->
+            <td>
+              <span class="row-number">{{ rowIndex + 1 }}</span>
+            </td>
+
+            <!-- Customer Name with Avatar -->
+            <td>
+              <div class="customer-name-cell">
+                <div class="customer-avatar">
+                  {{ getInitials(customer.custCName) }}
+                </div>
+                <div class="customer-info">
+                  <div class="customer-name">{{ customer.custCName }}</div>
+                  <div class="customer-id-display">رقم الهوية: {{ customer.id }}</div>
+                </div>
+              </div>
+            </td>
+
+            <!-- Customer ID -->
+            <td>
+              <p-tag 
+                [value]="customer.custIId.toString()" 
+                severity="info" 
+                class="id-tag">
+              </p-tag>
+            </td>
+
+            <!-- Mobile Number -->
+            <td>
+              <div class="mobile-cell">
+                <i class="pi pi-phone mobile-icon"></i>
+                <span>{{ formatPhoneNumber(customer.mobileCNo) }}</span>
+              </div>
+            </td>
+
+            <!-- Branch Code -->
+            <td>
+              <p-tag 
+                [value]="customer.branchCCode" 
+                severity="secondary" 
+                class="branch-tag">
+              </p-tag>
+            </td>
+
+            <!-- ID Type -->
+            <td>
+              <span class="id-type">{{ customer.idCType || 'غير متوفر' }}</span>
+            </td>
+
+            <!-- ID Number -->
+            <td>
+              <div class="id-number-cell">
+                <span class="id-number">{{ customer.idCNo || 'غير متوفر' }}</span>
+                <i *ngIf="customer.idCNo" class="pi pi-copy copy-icon" 
+                   pTooltip="نسخ رقم الهوية" tooltipPosition="top"></i>
+              </div>
+            </td>
+
+            <!-- ID Number 2 -->
+            <td>
+              <div class="id-number-cell">
+                <span class="id-number">{{ customer.idCNo2 || 'غير متوفر' }}</span>
+                <i *ngIf="customer.idCNo2" class="pi pi-copy copy-icon" 
+                   pTooltip="نسخ رقم الهوية" tooltipPosition="top"></i>
+              </div>
+            </td>
+
+            <!-- Status -->
+            <td>
+              <p-tag 
+                [value]="getCustomerStatus(customer)" 
+                [severity]="getStatusSeverity(getCustomerStatus(customer))" 
+                class="status-tag">
+              </p-tag>
+            </td>
+
+            <!-- Review Status -->
+            <td>
+              <p-tag 
+                [value]="getReviewStatus(customer)" 
+                [severity]="getReviewStatusSeverity(getReviewStatus(customer))" 
+                class="review-status-tag">
+              </p-tag>
+            </td>
+
+            <!-- Actions -->
+            <td>
+              <div class="actions-cell">
+                <p-button 
+                  icon="pi pi-eye" 
+                  label="تفاصيل" 
+                  size="small"
+                  class="p-button-outlined p-button-info"
+                  pTooltip="عرض تفاصيل العميل" 
+                  tooltipPosition="top"
+                  (click)="viewCustomerDetails(customer)">
+                </p-button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-card>
+  </div>
+
+  <!-- Summary Section -->
+  <div *ngIf="!loading && customers.length > 0" class="summary-section">
+    <p-card class="summary-card">
+      <div class="summary-content">
+        <div class="summary-item">
+          <span class="summary-label">إجمالي العملاء:</span>
+          <span class="summary-value">{{ totalRecords }}</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">عرض:</span>
+          <span class="summary-value">{{ customers.length }}</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">الصفحة:</span>
+          <span class="summary-value">{{ Math.floor(first / rows) + 1 }} من {{ Math.ceil(totalRecords / rows) }}</span>
+        </div>
+      </div>
+    </p-card>
+  </div>
+</div>

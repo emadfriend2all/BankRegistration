@@ -1,0 +1,169 @@
+/* RTL-safe CSS for Login Page */
+
+/* Base RTL adjustments for login page */
+[dir="rtl"] {
+  /* Icon margin adjustments */
+  .login-page {
+    .mr-2 {
+      margin-right: 0 !important;
+      margin-left: 0.5rem !important;
+    }
+
+    /* Flex direction adjustments for better RTL flow */
+    .flex {
+      &.items-center {
+        justify-content: center;
+      }
+
+      &.justify-between {
+        justify-content: space-between;
+      }
+
+      &.justify-center {
+        justify-content: center;
+      }
+    }
+
+    /* Text alignment for RTL */
+    .text-center {
+      text-align: center;
+    }
+
+    /* Form field adjustments */
+    .space-y-2 > * + * {
+      margin-top: 0.5rem;
+    }
+
+    .space-y-6 > * + * {
+      margin-top: 1.5rem;
+    }
+
+    .space-y-1 > * + * {
+      margin-top: 0.25rem;
+    }
+
+    /* Error message icon adjustments */
+    .error-message {
+      .flex {
+        .pi-exclamation-triangle {
+          margin-right: 0 !important;
+          margin-left: 0.5rem !important;
+        }
+      }
+    }
+
+    /* Security icon adjustments */
+    .security-info {
+      .flex {
+        .pi-shield {
+          margin-right: 0 !important;
+          margin-left: 0.5rem !important;
+        }
+      }
+    }
+
+    /* Checkbox adjustments */
+    .checkbox-container {
+      .flex {
+        .p-checkbox {
+          margin-right: 0 !important;
+          margin-left: 0.5rem !important;
+        }
+      }
+    }
+
+    /* Input field icon adjustments */
+    .input-field {
+      label {
+        .pi-user,
+        .pi-lock {
+          margin-right: 0 !important;
+          margin-left: 0.5rem !important;
+        }
+      }
+    }
+  }
+}
+
+/* Login page specific RTL utilities */
+.login-page-rtl {
+  direction: rtl;
+  text-align: right;
+
+  /* Ensure proper text alignment */
+  .text-center {
+    text-align: center;
+  }
+
+  /* Icon spacing */
+  .icon-right {
+    margin-left: 0.5rem;
+    margin-right: 0;
+  }
+
+  .icon-left {
+    margin-right: 0.5rem;
+    margin-left: 0;
+  }
+
+  /* Form layout adjustments */
+  .form-row {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  /* Error message styling */
+  .error-container {
+    .error-content {
+      display: flex;
+      align-items: center;
+      flex-direction: row-reverse;
+
+      .error-icon {
+        margin-left: 0.5rem;
+        margin-right: 0;
+      }
+    }
+  }
+
+  /* Security info styling */
+  .security-container {
+    .security-content {
+      display: flex;
+      align-items: center;
+      flex-direction: row-reverse;
+
+      .security-icon {
+        margin-left: 0.5rem;
+        margin-right: 0;
+      }
+    }
+  }
+}
+
+/* Responsive RTL adjustments */
+@media (max-width: 768px) {
+  [dir="rtl"] {
+    .login-page {
+      .form-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+      }
+
+      .error-container .error-content {
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: right;
+      }
+
+      .security-container .security-content {
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: right;
+      }
+    }
+  }
+}

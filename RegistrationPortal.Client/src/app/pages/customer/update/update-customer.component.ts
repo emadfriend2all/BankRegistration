@@ -161,6 +161,7 @@ export class UpdateCustomerComponent implements OnInit {
       custCPadd1: ['', [Validators.required]],
       custCPCity: ['', Validators.required],
       mobileCNo: ['', [Validators.required, Validators.pattern('^[1-9][0-9]{8}$')]],
+      mobileCountryCode: ['+249'],
       emailCAdd: [''],
       idCType: ['', Validators.required],
       idCNo: ['', Validators.required],
@@ -528,6 +529,11 @@ export class UpdateCustomerComponent implements OnInit {
       entryCDate: new Date(),
       tradeCNameenglish: this.englishFullName,
       status: 'Update', // Set status to "Update" for customer update requests
+      // Combine country codes with phone numbers (remove + sign)
+      mobileCNo: this.customerForm.value.mobileCountryCode.replace('+', '') + this.customerForm.value.mobileCNo,
+      homeINumber: this.customerForm.value.homeCountryCode ? 
+        this.customerForm.value.homeCountryCode.replace('+', '') + this.customerForm.value.homeINumber : 
+        this.customerForm.value.homeINumber,
       // Map form field names to DTO field names
       custDBdate: formatDateForServer(this.customerForm.value.custDBdate),
       idDIssdate: formatDateForServer(this.customerForm.value.idDIssdate),
@@ -930,9 +936,8 @@ export class UpdateCustomerComponent implements OnInit {
     const input = event.target as HTMLInputElement;
     let value = input.value.replace(/\D/g, ''); // Remove all non-digits
     
-    // Ensure it starts with 1 and is exactly 9 digits
-    if (value.length > 0 && !value.startsWith('1')) {
-      value = '1' + value.slice(1);
+    if (value.startsWith('0')) {
+      value = '' + value.slice(1);
     }
     
     // Limit to 9 digits

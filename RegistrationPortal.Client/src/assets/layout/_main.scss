@@ -15,3 +15,10 @@
 img {
     max-width: none !important;
 }
+
+/* RTL adjustments */
+[dir="rtl"] {
+    .layout-main-container {
+        transition: margin-right var(--layout-section-transition-duration);
+    }
+}

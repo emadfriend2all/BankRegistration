@@ -1,0 +1,106 @@
+<div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4 login-page">
+    <div class="w-full max-w-md">
+        <!-- Login Card -->
+        <p-card class="shadow-2xl border-0">
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <div class="flex justify-center mb-4">
+                    <img src="/global/logo.png" alt="SSDB Logo" class="w-24 rounded-lg" />
+                </div>
+                <h4 class="text-3xl font-bold text-gray-900 mb-2">مصرف الإدخار والتنمية الإجتماعية</h4>
+                <p class="text-gray-600">مرحباً بعودتك! يرجى تسجيل الدخول إلى حسابك</p>
+            </div>
+
+            <!-- Login Form -->
+            <form (ngSubmit)="onLogin()" class="space-y-6">
+                <!-- Email Field -->
+                <div class="space-y-2 input-field">
+                    <label for="email1" class="block text-sm font-medium text-gray-700">
+                        <i class="pi pi-user icon-right"></i>
+                        <span class="ms-2">إسم المستخدم /البريد الإلكتروني</span>
+                    </label>
+                    <input 
+                        pInputText 
+                        id="email1" 
+                        type="email" 
+                        placeholder="أدخل بريدك الإلكتروني" 
+                        class="w-full"
+                        [(ngModel)]="email" 
+                        name="email"
+                        [class.ng-invalid.ng-dirty]="hasError"
+                        autocomplete="email"
+                    />
+                </div>
+
+                <!-- Password Field -->
+                <div class="space-y-2 input-field">
+                    <label for="password1" class="block text-sm font-medium text-gray-700">
+                        <i class="pi pi-lock icon-right"></i>
+                        <span class="ms-2">كلمة المرور</span>
+                    </label>
+                    <p-password 
+                        id="password1" 
+                        [(ngModel)]="password" 
+                        placeholder="أدخل كلمة المرور" 
+                        [toggleMask]="true" 
+                        [fluid]="true" 
+                        [feedback]="false"
+                        name="password"
+                        autocomplete="current-password"
+                        inputClass="w-full"
+                    ></p-password>
+                </div>
+
+                <!-- Remember Me & Forgot Password -->
+                <div class="flex items-center justify-between form-row">
+                    <div class="flex items-center checkbox-container">
+                        <p-checkbox [(ngModel)]="checked" id="rememberme1" binary class="icon-right"></p-checkbox>
+                        <label for="rememberme1" class="text-sm text-gray-600 cursor-pointer">تذكرني</label>
+                    </div>
+                    <a href="#" class="text-sm text-blue-600 hover:text-blue-800 font-medium">نسيت كلمة المرور؟</a>
+                </div>
+
+                <!-- Error Messages -->
+                <div *ngIf="messages.length > 0" class="space-y-2 error-container">
+                    <div *ngFor="let message of messages" class="p-3 bg-red-50 border border-red-200 rounded-lg">
+                        <div class="flex items-center text-red-700 error-content">
+                            <i class="pi pi-exclamation-triangle error-icon"></i>
+                            <span class="text-sm">{{ message.detail }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button 
+                    type="submit" 
+                    pButton 
+                    label="تسجيل الدخول" 
+                    class="w-full"
+                    [loading]="isLoading" 
+                    [disabled]="isLoading || !email || !password"
+                    severity="primary"
+                    size="large"
+                >
+                </button>
+            </form>
+
+            <!-- Footer -->
+            <div class="mt-8 pt-6 border-t border-gray-200">
+                <div class="text-center space-y-2">
+                    <div class="flex items-center justify-center text-sm text-gray-500 security-container">
+                        <i class="pi pi-shield security-icon text-green-500"></i>
+                        اتصالك آمن ومشفر
+                    </div>
+                    <p class="text-sm text-gray-500">
+                        تحتاج مساعدة؟ <a href="#" class="text-blue-600 hover:text-blue-800 font-medium">اتصل بالدعم الفني</a>
+                    </p>
+                </div>
+            </div>
+        </p-card>
+    </div>
+</div>
+
+<!-- RTL-safe CSS for login page -->
+<style>
+@import './login-rtl.css';
+</style>

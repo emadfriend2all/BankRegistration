@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { AppMenuitem } from './app.menuitem';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
     selector: 'app-menu',
@@ -15,74 +16,77 @@ import { AppMenuitem } from './app.menuitem';
         </ng-container>
     </ul> `
 })
-export class AppMenu {
+export class AppMenu implements OnInit, OnChanges {
     model: MenuItem[] = [];
+    isAuthenticated = false;
+    userRole: string | null = null;
+
+    constructor(private authService: AuthService) {}
 
     ngOnInit() {
+        this.authService.currentUser.subscribe(user => {
+            this.userRole = user?.role || null;
+            this.isAuthenticated = user !== null; // Check if user exists (authenticated)
+            this.updateMenu();
+        });
+        
+        // Initial menu setup
+        this.updateMenu();
+    }
+
+    ngOnChanges() {
+        // Trigger menu update when component changes
+        this.updateMenu();
+    }
+
+    private updateMenu() {
         this.model = [
-            // {
-            //     label: 'Home',
-            //     items: [{ label: 'Dashboard', icon: 'pi pi-fw pi-home', routerLink: ['/'] }]
-            // },
             {
                 label: 'الصفحات',
                 icon: 'pi pi-fw pi-briefcase',
-                routerLink: ['/pages'],
-                items: [
-                    // {
-                    //     label: 'Landing',
-                    //     icon: 'pi pi-fw pi-globe',
-                    //     routerLink: ['/landing']
-                    // },
-                    // {
-                    //     label: 'Auth',
-                    //     icon: 'pi pi-fw pi-user',
-                    //     items: [
-                    //         {
-                    //             label: 'Login',
-                    //             icon: 'pi pi-fw pi-sign-in',
-                    //             routerLink: ['/auth/login']
-                    //         },
-                    //         {
-                    //             label: 'Error',
-                    //             icon: 'pi pi-fw pi-times-circle',
-                    //             routerLink: ['/auth/error']
-                    //         },
-                    //         {
-                    //             label: 'Access Denied',
-                    //             icon: 'pi pi-fw pi-lock',
-                    //             routerLink: ['/auth/access']
-                    //         }
-                    //     ]
-                    // },
-                    {
-                        label: 'طلب إنشاء حساب جديد',
-                        icon: 'pi pi-user-plus',
-                        routerLink: ['/pages/customer/create']
-                    },
-                    {
-                        label: 'تحديث بيانات حسابي',
-                        icon: 'pi pi-user-plus',
-                        routerLink: ['/pages/customer/update']
-                    },
-                    // {
-                    //     label: 'Crud',
-                    //     icon: 'pi pi-fw pi-pencil',
-                    //     routerLink: ['/pages/crud']
-                    // },
-                    // {
-                    //     label: 'Not Found',
-                    //     icon: 'pi pi-fw pi-exclamation-circle',
-                    //     routerLink: ['/pages/notfound']
-                    // },
-                    // {
-                    //     label: 'Empty',
-                    //     icon: 'pi pi-fw pi-circle-off',
-                    //     routerLink: ['/pages/empty']
-                    // }
-                ]
-            },
-            // 
+                visible: true,
+                items: this.getMenuItems()
+            }
         ];
+    }
+
+    private getMenuItems(): MenuItem[] {
+        const items: MenuItem[] = [];
+
+        // Dashboard - available to all users
+        items.push({
+            label: 'الرئيسية',
+            icon: 'pi pi-home',
+            routerLink: ['/'],
+            visible: true
+        });
+
+        // Customer creation and update - available to all users
+        items.push({
+            label: 'إنشاء حساب جديد',
+            icon: 'pi pi-user-plus',
+            routerLink: ['/pages/customer/create'],
+            visible: true
+        });
+        
+        items.push({
+            label: 'تحديث البيانات',
+            icon: 'pi pi-user-edit',
+            routerLink: ['/pages/customer/update'],
+            visible: true
+        });
+        
+        // Authenticated users - role-based menu items
+        if (this.isAuthenticated) {
+            // All authenticated users can view customers list
+            items.push({
+                label: 'العملاء',
+                icon: 'pi pi-users',
+                routerLink: ['/pages/customers'],
+                visible: true
+            });
+        }
+
+        return items;
     }
 }

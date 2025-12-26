@@ -1,7 +1,8 @@
 import { Injectable, Inject } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
-import type { AccountMast, CustMast } from '../api/client';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Client, API_BASE_URL } from '../api/client';
+import { CustMast, CustMastDto, CustMastDtoPaginatedResultDto, LoginDto, AccountMast, GetCustMastByIdDto, UpdateCustomerReviewDto } from '../api/client';
 
 @Injectable({
   providedIn: 'root'
@@ -10,24 +11,15 @@ export class ApiWrapperService {
   private client: any;
 
   constructor(
-    @Inject('API_BASE_URL') private baseUrl: string,
+    @Inject(API_BASE_URL) private baseUrl: string,
     private http: HttpClient
   ) {
-    // Initialize client with a simple approach
-    this.initializeClient();
+    // Initialize client synchronously
+    this.client = new Client(this.http, this.baseUrl);
   }
 
   getBaseUrl(): string {
     return this.baseUrl;
-  }
-
-  private initializeClient() {
-    // Use a direct approach without require
-    import('../api/client').then(({ Client }) => {
-      this.client = new Client(this.http, this.baseUrl);
-    }).catch(err => {
-      console.error('Failed to load API client:', err);
-    });
   }
 
   private ensureClient() {
@@ -86,7 +78,47 @@ export class ApiWrapperService {
     return this.ensureClient().custMastDELETE(branchCode, custId);
   }
 
+  // New method for paginated customers
+  custMastGETPaginated(
+    pageNumber: number | undefined,
+    pageSize: number | undefined,
+    searchTerm: string | undefined,
+    sortBy: string | undefined,
+    sortDescending: boolean | undefined,
+    status: string | undefined,
+    reviewStatus: string | undefined
+  ): Observable<CustMastDtoPaginatedResultDto> {
+    return this.ensureClient().custMastGET(pageNumber, pageSize, searchTerm, sortBy, sortDescending, status, reviewStatus);
+  }
+
+  // New method for getting customer by ID
+  custMastGET2(id: string): Observable<GetCustMastByIdDto> {
+    return this.ensureClient().custMastGET2(id);
+  }
+
   accounts(branchCode: string, custId: number): Observable<AccountMast[]> {
     return this.ensureClient().accounts(branchCode, custId);
+  }
+
+  // Authentication methods
+  login(body: LoginDto | undefined): Observable<any> {
+    return this.ensureClient().login(body);
+  }
+
+  register(body: any): Observable<any> {
+    return this.ensureClient().register(body);
+  }
+
+  validateToken(): Observable<any> {
+    return this.ensureClient().validateToken();
+  }
+
+  me(): Observable<any> {
+    return this.ensureClient().me();
+  }
+
+  // Review method for customer review functionality
+  review(body: UpdateCustomerReviewDto | undefined): Observable<boolean> {
+    return this.ensureClient().review(body);
   }
 }

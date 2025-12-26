@@ -32,7 +32,7 @@ namespace RegistrationPortal.Server.Entities
         public string? OriginalFileName { get; set; }
 
         [Column("file_size", TypeName = "NUMBER")]
-        public long FileSize { get; set; }
+        public decimal FileSize { get; set; }
 
         [Column("mime_type", TypeName = "VARCHAR2(100 BYTE)")]
         [StringLength(100)]

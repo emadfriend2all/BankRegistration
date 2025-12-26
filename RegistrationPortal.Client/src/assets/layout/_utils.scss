@@ -22,4 +22,22 @@
     &.p-toast-top-center {
         top: 100px;
     }
+
+    /* RTL adjustments using logical properties */
+    [dir="rtl"] & {
+        &.p-toast-top-right {
+            inset-inline-start: 20px;
+            inset-inline-end: auto;
+        }
+
+        &.p-toast-top-left {
+            inset-inline-start: auto;
+            inset-inline-end: 20px;
+        }
+
+        &.p-toast-top-center {
+            inset-inline-start: 50%;
+            transform: translateX(50%);
+        }
+    }
 }

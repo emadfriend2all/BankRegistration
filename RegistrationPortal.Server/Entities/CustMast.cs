@@ -196,6 +196,14 @@ namespace RegistrationPortal.Server.Entities
         [StringLength(50)]
         public string? Status { get; set; }
 
+        [Column("review_status", TypeName = "NVARCHAR2(50)")]
+        [StringLength(50)]
+        public string? ReviewStatus { get; set; }
+
+        [Column("reviewed_by", TypeName = "NVARCHAR2(100)")]
+        [StringLength(100)]
+        public string? ReviewedBy { get; set; }
+
         // Navigation property for related accounts
         public virtual ICollection<AccountMast> AccountMasts { get; set; } = [];
 

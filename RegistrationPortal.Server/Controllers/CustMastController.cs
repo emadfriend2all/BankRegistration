@@ -1,8 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
-using RegistrationPortal.Server.Entities;
-using RegistrationPortal.Server.Services;
+using Microsoft.AspNetCore.Authorization;
 using RegistrationPortal.Server.DTOs;
-using Microsoft.AspNetCore.Http.HttpResults;
+using RegistrationPortal.Server.Services;
+using RegistrationPortal.Server.Constants;
+using RegistrationPortal.Server.Attributes;
+using RegistrationPortal.Server.DTOs.Pagination;
+using RegistrationPortal.Server.Entities;
+using System.Security.Claims;
 
 namespace RegistrationPortal.Server.Controllers
 {
@@ -11,18 +15,34 @@ namespace RegistrationPortal.Server.Controllers
     public class CustMastController : ControllerBase
     {
         private readonly ICustMastService _custMastService;
+        private readonly IAuthService _authService;
 
-        public CustMastController(ICustMastService custMastService)
+        public CustMastController(ICustMastService custMastService, IAuthService authService)
         {
             _custMastService = custMastService;
+            _authService = authService;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CustMast>>> GetAllCustomers()
+        [RequirePermission(Permissions.Customers.List)]
+        public async Task<ActionResult<PaginatedResultDto<CustMastDto>>> GetAllCustomers([FromQuery] PaginationParameters parameters)
         {
             try
             {
-                var customers = await _custMastService.GetAllCustomersAsync();
+                // Get user role from JWT token
+                var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+                
+                // Get current user information including branch
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+                string? userBranch = null;
+                
+                if (userIdClaim != null)
+                {
+                    var currentUser = await _authService.GetUserByIdAsync(int.Parse(userIdClaim.Value));
+                    userBranch = currentUser?.Branch;
+                }
+                
+                var customers = await _custMastService.GetAllCustomersAsync(parameters, userRole, userBranch);
                 return Ok(customers);
             }
             catch (Exception ex)
@@ -31,12 +51,12 @@ namespace RegistrationPortal.Server.Controllers
             }
         }
 
-        [HttpGet("{branchCode}/{custId}")]
-        public async Task<ActionResult<CustMast>> GetCustomer(string branchCode, decimal custId)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<GetCustMastByIdDto>> GetCustomerById(string id)
         {
             try
             {
-                var customer = await _custMastService.GetCustomerAsync(branchCode, custId);
+                var customer = await _custMastService.GetCustomerByIdAsync(id);
                 if (customer == null)
                     return NotFound();
 
@@ -121,6 +141,40 @@ namespace RegistrationPortal.Server.Controllers
             try
             {
                 var result = await _custMastService.DeleteCustomerAsync(branchCode, custId);
+                if (!result)
+                    return NotFound();
+
+                return Ok(true);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = "Internal server error", message = ex.Message });
+            }
+        }
+
+        [HttpPut("review")]
+        [RequirePermission(Permissions.Customers.Review)]
+        public async Task<ActionResult<bool>> UpdateCustomerReview([FromBody] UpdateCustomerReviewDto reviewDto)
+        {
+            try
+            {
+                // Get current user from JWT token
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+                if (userIdClaim == null)
+                {
+                    return Unauthorized(new { error = "User not authenticated" });
+                }
+
+                var currentUser = await _authService.GetUserByIdAsync(int.Parse(userIdClaim.Value));
+                if (currentUser == null)
+                {
+                    return Unauthorized(new { error = "User not found" });
+                }
+
+                // Get reviewedBy from current user username
+                var reviewedBy = currentUser.Username;
+
+                var result = await _custMastService.UpdateCustomerReviewAsync(reviewDto, reviewedBy);
                 if (!result)
                     return NotFound();
 

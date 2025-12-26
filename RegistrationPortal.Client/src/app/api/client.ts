@@ -460,10 +460,248 @@ export class Client {
     }
 
     /**
+     * @param body (optional) 
      * @return OK
      */
-    custMastAll(): Observable<CustMast[]> {
-        let url_ = this.baseUrl + "/api/CustMast";
+    login(body: LoginDto | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/Auth/login";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processLogin(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processLogin(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processLogin(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return _observableOf(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    register(body: RegisterDto | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/Auth/register";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processRegister(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processRegister(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processRegister(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return _observableOf(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
+     * @param body (optional) 
+     * @return OK
+     */
+    validateToken(body: string | undefined): Observable<void> {
+        let url_ = this.baseUrl + "/api/Auth/validate-token";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processValidateToken(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processValidateToken(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processValidateToken(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return _observableOf(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    me(): Observable<void> {
+        let url_ = this.baseUrl + "/api/Auth/me";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processMe(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processMe(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processMe(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return _observableOf(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @param searchTerm (optional) 
+     * @param sortBy (optional) 
+     * @param sortDescending (optional) 
+     * @param status (optional) 
+     * @param reviewStatus (optional) 
+     * @return OK
+     */
+    custMastGET(pageNumber: number | undefined, pageSize: number | undefined, searchTerm: string | undefined, sortBy: string | undefined, sortDescending: boolean | undefined, status: string | undefined, reviewStatus: string | undefined): Observable<CustMastDtoPaginatedResultDto> {
+        let url_ = this.baseUrl + "/api/CustMast?";
+        if (pageNumber === null)
+            throw new globalThis.Error("The parameter 'pageNumber' cannot be null.");
+        else if (pageNumber !== undefined)
+            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize === null)
+            throw new globalThis.Error("The parameter 'pageSize' cannot be null.");
+        else if (pageSize !== undefined)
+            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
+        if (searchTerm === null)
+            throw new globalThis.Error("The parameter 'searchTerm' cannot be null.");
+        else if (searchTerm !== undefined)
+            url_ += "SearchTerm=" + encodeURIComponent("" + searchTerm) + "&";
+        if (sortBy === null)
+            throw new globalThis.Error("The parameter 'sortBy' cannot be null.");
+        else if (sortBy !== undefined)
+            url_ += "SortBy=" + encodeURIComponent("" + sortBy) + "&";
+        if (sortDescending === null)
+            throw new globalThis.Error("The parameter 'sortDescending' cannot be null.");
+        else if (sortDescending !== undefined)
+            url_ += "SortDescending=" + encodeURIComponent("" + sortDescending) + "&";
+        if (status === null)
+            throw new globalThis.Error("The parameter 'status' cannot be null.");
+        else if (status !== undefined)
+            url_ += "Status=" + encodeURIComponent("" + status) + "&";
+        if (reviewStatus === null)
+            throw new globalThis.Error("The parameter 'reviewStatus' cannot be null.");
+        else if (reviewStatus !== undefined)
+            url_ += "ReviewStatus=" + encodeURIComponent("" + reviewStatus) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -475,20 +713,20 @@ export class Client {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processCustMastAll(response_);
+            return this.processCustMastGET(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processCustMastAll(response_ as any);
+                    return this.processCustMastGET(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<CustMast[]>;
+                    return _observableThrow(e) as any as Observable<CustMastDtoPaginatedResultDto>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<CustMast[]>;
+                return _observableThrow(response_) as any as Observable<CustMastDtoPaginatedResultDto>;
         }));
     }
 
-    protected processCustMastAll(response: HttpResponseBase): Observable<CustMast[]> {
+    protected processCustMastGET(response: HttpResponseBase): Observable<CustMastDtoPaginatedResultDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -499,14 +737,7 @@ export class Client {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(CustMast.fromJS(item));
-            }
-            else {
-                result200 = null as any;
-            }
+            result200 = CustMastDtoPaginatedResultDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -984,8 +1215,123 @@ export class Client {
     /**
      * @return OK
      */
-    custMastGET(branchCode: string, custId: number): Observable<CustMast> {
-        let url_ = this.baseUrl + "/api/CustMast/{branchCode}/{custId}";
+    custMastGET2(id: string): Observable<GetCustMastByIdDto> {
+        let url_ = this.baseUrl + "/api/CustMast/{id}";
+        if (id === undefined || id === null)
+            throw new globalThis.Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCustMastGET2(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCustMastGET2(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<GetCustMastByIdDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<GetCustMastByIdDto>;
+        }));
+    }
+
+    protected processCustMastGET2(response: HttpResponseBase): Observable<GetCustMastByIdDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = GetCustMastByIdDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    branch2(branchCode: string): Observable<CustMast[]> {
+        let url_ = this.baseUrl + "/api/CustMast/branch/{branchCode}";
+        if (branchCode === undefined || branchCode === null)
+            throw new globalThis.Error("The parameter 'branchCode' must be defined.");
+        url_ = url_.replace("{branchCode}", encodeURIComponent("" + branchCode));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processBranch2(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processBranch2(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<CustMast[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<CustMast[]>;
+        }));
+    }
+
+    protected processBranch2(response: HttpResponseBase): Observable<CustMast[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(CustMast.fromJS(item));
+            }
+            else {
+                result200 = null as any;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    accounts(branchCode: string, custId: number): Observable<AccountMast[]> {
+        let url_ = this.baseUrl + "/api/CustMast/{branchCode}/{custId}/accounts";
         if (branchCode === undefined || branchCode === null)
             throw new globalThis.Error("The parameter 'branchCode' must be defined.");
         url_ = url_.replace("{branchCode}", encodeURIComponent("" + branchCode));
@@ -1003,20 +1349,20 @@ export class Client {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processCustMastGET(response_);
+            return this.processAccounts(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processCustMastGET(response_ as any);
+                    return this.processAccounts(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<CustMast>;
+                    return _observableThrow(e) as any as Observable<AccountMast[]>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<CustMast>;
+                return _observableThrow(response_) as any as Observable<AccountMast[]>;
         }));
     }
 
-    protected processCustMastGET(response: HttpResponseBase): Observable<CustMast> {
+    protected processAccounts(response: HttpResponseBase): Observable<AccountMast[]> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -1027,7 +1373,14 @@ export class Client {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = CustMast.fromJS(resultData200);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(AccountMast.fromJS(item));
+            }
+            else {
+                result200 = null as any;
+            }
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -1159,38 +1512,40 @@ export class Client {
     }
 
     /**
+     * @param body (optional) 
      * @return OK
      */
-    branch2(branchCode: string): Observable<CustMast[]> {
-        let url_ = this.baseUrl + "/api/CustMast/branch/{branchCode}";
-        if (branchCode === undefined || branchCode === null)
-            throw new globalThis.Error("The parameter 'branchCode' must be defined.");
-        url_ = url_.replace("{branchCode}", encodeURIComponent("" + branchCode));
+    review(body: UpdateCustomerReviewDto | undefined): Observable<boolean> {
+        let url_ = this.baseUrl + "/api/CustMast/review";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(body);
+
         let options_ : any = {
+            body: content_,
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
+                "Content-Type": "application/json",
                 "Accept": "application/json"
             })
         };
 
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processBranch2(response_);
+        return this.http.request("put", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processReview(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processBranch2(response_ as any);
+                    return this.processReview(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<CustMast[]>;
+                    return _observableThrow(e) as any as Observable<boolean>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<CustMast[]>;
+                return _observableThrow(response_) as any as Observable<boolean>;
         }));
     }
 
-    protected processBranch2(response: HttpResponseBase): Observable<CustMast[]> {
+    protected processReview(response: HttpResponseBase): Observable<boolean> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -1201,78 +1556,8 @@ export class Client {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(CustMast.fromJS(item));
-            }
-            else {
-                result200 = null as any;
-            }
-            return _observableOf(result200);
-            }));
-        } else if (status !== 200 && status !== 204) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            }));
-        }
-        return _observableOf(null as any);
-    }
-
-    /**
-     * @return OK
-     */
-    accounts(branchCode: string, custId: number): Observable<AccountMast[]> {
-        let url_ = this.baseUrl + "/api/CustMast/{branchCode}/{custId}/accounts";
-        if (branchCode === undefined || branchCode === null)
-            throw new globalThis.Error("The parameter 'branchCode' must be defined.");
-        url_ = url_.replace("{branchCode}", encodeURIComponent("" + branchCode));
-        if (custId === undefined || custId === null)
-            throw new globalThis.Error("The parameter 'custId' must be defined.");
-        url_ = url_.replace("{custId}", encodeURIComponent("" + custId));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ : any = {
-            observe: "response",
-            responseType: "blob",
-            headers: new HttpHeaders({
-                "Accept": "application/json"
-            })
-        };
-
-        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processAccounts(response_);
-        })).pipe(_observableCatch((response_: any) => {
-            if (response_ instanceof HttpResponseBase) {
-                try {
-                    return this.processAccounts(response_ as any);
-                } catch (e) {
-                    return _observableThrow(e) as any as Observable<AccountMast[]>;
-                }
-            } else
-                return _observableThrow(response_) as any as Observable<AccountMast[]>;
-        }));
-    }
-
-    protected processAccounts(response: HttpResponseBase): Observable<AccountMast[]> {
-        const status = response.status;
-        const responseBlob =
-            response instanceof HttpResponse ? response.body :
-            (response as any).error instanceof Blob ? (response as any).error : undefined;
-
-        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            let result200: any = null;
-            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(AccountMast.fromJS(item));
-            }
-            else {
-                result200 = null as any;
-            }
+                result200 = resultData200 !== undefined ? resultData200 : null as any;
+    
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -1632,6 +1917,58 @@ export class Client {
     /**
      * @return OK
      */
+    migrateUrls(): Observable<boolean> {
+        let url_ = this.baseUrl + "/api/CustomerDocument/migrate-urls";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processMigrateUrls(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processMigrateUrls(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<boolean>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<boolean>;
+        }));
+    }
+
+    protected processMigrateUrls(response: HttpResponseBase): Observable<boolean> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = resultData200 !== undefined ? resultData200 : null as any;
+    
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
+     * @return OK
+     */
     download(id: string): Observable<void> {
         let url_ = this.baseUrl + "/api/CustomerDocument/download/{id}";
         if (id === undefined || id === null)
@@ -1661,6 +1998,460 @@ export class Client {
     }
 
     protected processDownload(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return _observableOf(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    statistics(): Observable<DashboardStatisticsDto> {
+        let url_ = this.baseUrl + "/api/Dashboard/statistics";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processStatistics(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processStatistics(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<DashboardStatisticsDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<DashboardStatisticsDto>;
+        }));
+    }
+
+    protected processStatistics(response: HttpResponseBase): Observable<DashboardStatisticsDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = DashboardStatisticsDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
+     * @param days (optional) 
+     * @return OK
+     */
+    dailyRequests(days: number | undefined): Observable<DashboardGraphDataDto> {
+        let url_ = this.baseUrl + "/api/Dashboard/daily-requests?";
+        if (days === null)
+            throw new globalThis.Error("The parameter 'days' cannot be null.");
+        else if (days !== undefined)
+            url_ += "days=" + encodeURIComponent("" + days) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDailyRequests(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDailyRequests(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<DashboardGraphDataDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<DashboardGraphDataDto>;
+        }));
+    }
+
+    protected processDailyRequests(response: HttpResponseBase): Observable<DashboardGraphDataDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = DashboardGraphDataDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    files(path: string): Observable<void> {
+        let url_ = this.baseUrl + "/api/Files/{path}";
+        if (path === undefined || path === null)
+            throw new globalThis.Error("The parameter 'path' must be defined.");
+        url_ = url_.replace("{path}", encodeURIComponent("" + path));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processFiles(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processFiles(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processFiles(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return _observableOf(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    user(): Observable<void> {
+        let url_ = this.baseUrl + "/api/User";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUser(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUser(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processUser(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return _observableOf(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    user2(id: number): Observable<void> {
+        let url_ = this.baseUrl + "/api/User/{id}";
+        if (id === undefined || id === null)
+            throw new globalThis.Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processUser2(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processUser2(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processUser2(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return _observableOf(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    activate(id: number): Observable<void> {
+        let url_ = this.baseUrl + "/api/User/{id}/activate";
+        if (id === undefined || id === null)
+            throw new globalThis.Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processActivate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processActivate(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processActivate(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return _observableOf(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    deactivate(id: number): Observable<void> {
+        let url_ = this.baseUrl + "/api/User/{id}/deactivate";
+        if (id === undefined || id === null)
+            throw new globalThis.Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDeactivate(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDeactivate(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processDeactivate(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return _observableOf(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    roles(id: number): Observable<void> {
+        let url_ = this.baseUrl + "/api/User/{id}/roles";
+        if (id === undefined || id === null)
+            throw new globalThis.Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processRoles(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processRoles(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processRoles(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return _observableOf(null as any);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    /**
+     * @return OK
+     */
+    permissions(id: number): Observable<void> {
+        let url_ = this.baseUrl + "/api/User/{id}/permissions";
+        if (id === undefined || id === null)
+            throw new globalThis.Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processPermissions(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processPermissions(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processPermissions(response: HttpResponseBase): Observable<void> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -1826,6 +2617,62 @@ export interface IAccountMast {
     authCBy?: string | undefined;
     closeCReason?: string | undefined;
     custMast?: CustMast;
+}
+
+export class AccountMastDto implements IAccountMastDto {
+    id!: string;
+    branchCCode!: string;
+    actCType?: string | undefined;
+    custINo?: number | undefined;
+    currencyCCode?: string | undefined;
+    actCName?: string | undefined;
+
+    constructor(data?: IAccountMastDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.branchCCode = _data["branchCCode"];
+            this.actCType = _data["actCType"];
+            this.custINo = _data["custINo"];
+            this.currencyCCode = _data["currencyCCode"];
+            this.actCName = _data["actCName"];
+        }
+    }
+
+    static fromJS(data: any): AccountMastDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new AccountMastDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["branchCCode"] = this.branchCCode;
+        data["actCType"] = this.actCType;
+        data["custINo"] = this.custINo;
+        data["currencyCCode"] = this.currencyCCode;
+        data["actCName"] = this.actCName;
+        return data;
+    }
+}
+
+export interface IAccountMastDto {
+    id: string;
+    branchCCode: string;
+    actCType?: string | undefined;
+    custINo?: number | undefined;
+    currencyCCode?: string | undefined;
+    actCName?: string | undefined;
 }
 
 export class CreateAccountDto implements ICreateAccountDto {
@@ -2009,6 +2856,8 @@ export class CustMast implements ICustMast {
     custCEngtname?: string | undefined;
     custCEngfoname?: string | undefined;
     status?: string | undefined;
+    reviewStatus?: string | undefined;
+    reviewedBy?: string | undefined;
     accountMasts?: AccountMast[] | undefined;
     customerFatca?: CustomerFatca;
 
@@ -2071,6 +2920,8 @@ export class CustMast implements ICustMast {
             this.custCEngtname = _data["custCEngtname"];
             this.custCEngfoname = _data["custCEngfoname"];
             this.status = _data["status"];
+            this.reviewStatus = _data["reviewStatus"];
+            this.reviewedBy = _data["reviewedBy"];
             if (Array.isArray(_data["accountMasts"])) {
                 this.accountMasts = [] as any;
                 for (let item of _data["accountMasts"])
@@ -2137,6 +2988,8 @@ export class CustMast implements ICustMast {
         data["custCEngtname"] = this.custCEngtname;
         data["custCEngfoname"] = this.custCEngfoname;
         data["status"] = this.status;
+        data["reviewStatus"] = this.reviewStatus;
+        data["reviewedBy"] = this.reviewedBy;
         if (Array.isArray(this.accountMasts)) {
             data["accountMasts"] = [];
             for (let item of this.accountMasts)
@@ -2196,8 +3049,334 @@ export interface ICustMast {
     custCEngtname?: string | undefined;
     custCEngfoname?: string | undefined;
     status?: string | undefined;
+    reviewStatus?: string | undefined;
+    reviewedBy?: string | undefined;
     accountMasts?: AccountMast[] | undefined;
     customerFatca?: CustomerFatca;
+}
+
+export class CustMastDto implements ICustMastDto {
+    id!: string;
+    branchCCode!: string;
+    custIId?: number | undefined;
+    custCName!: string;
+    custDEntrydt?: Date | undefined;
+    custCFname?: string | undefined;
+    custCSname?: string | undefined;
+    custCTname?: string | undefined;
+    custCFoname?: string | undefined;
+    custCMname?: string | undefined;
+    custDBdate?: Date | undefined;
+    custCSex?: string | undefined;
+    custCReligion?: string | undefined;
+    custCCaste?: string | undefined;
+    custCMaritalsts?: string | undefined;
+    custCPadd1?: string | undefined;
+    custCPCity?: string | undefined;
+    mobileCNo?: string | undefined;
+    emailCAdd?: string | undefined;
+    idCType?: string | undefined;
+    idCNo?: string | undefined;
+    idDIssdate?: Date | undefined;
+    idCIssplace?: string | undefined;
+    idDExpdate?: Date | undefined;
+    custCAuthority?: string | undefined;
+    husbCName?: string | undefined;
+    countryCCode?: string | undefined;
+    placeCBirth?: string | undefined;
+    custCNationality?: string | undefined;
+    custCWife1?: string | undefined;
+    idCType2?: string | undefined;
+    idCNo2?: string | undefined;
+    custCOccupation?: string | undefined;
+    homeINumber?: number | undefined;
+    custIIdentify?: string | undefined;
+    custCCountrybrith?: string | undefined;
+    custCStatebrith?: string | undefined;
+    custCCitizenship?: string | undefined;
+    custCEmployer?: string | undefined;
+    custFIncome?: number | undefined;
+    custCHigheducation?: string | undefined;
+    custFAvgmonth?: number | undefined;
+    tradeCNameenglish?: string | undefined;
+    custCEngfname?: string | undefined;
+    custCEngsname?: string | undefined;
+    custCEngtname?: string | undefined;
+    custCEngfoname?: string | undefined;
+    status?: string | undefined;
+    reviewStatus?: string | undefined;
+    reviewedBy?: string | undefined;
+    accountMasts?: AccountMastDto[] | undefined;
+    customerDocuments?: CustomerDocumentDto[] | undefined;
+
+    constructor(data?: ICustMastDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.branchCCode = _data["branchCCode"];
+            this.custIId = _data["custIId"];
+            this.custCName = _data["custCName"];
+            this.custDEntrydt = _data["custDEntrydt"] ? new Date(_data["custDEntrydt"].toString()) : undefined as any;
+            this.custCFname = _data["custCFname"];
+            this.custCSname = _data["custCSname"];
+            this.custCTname = _data["custCTname"];
+            this.custCFoname = _data["custCFoname"];
+            this.custCMname = _data["custCMname"];
+            this.custDBdate = _data["custDBdate"] ? new Date(_data["custDBdate"].toString()) : undefined as any;
+            this.custCSex = _data["custCSex"];
+            this.custCReligion = _data["custCReligion"];
+            this.custCCaste = _data["custCCaste"];
+            this.custCMaritalsts = _data["custCMaritalsts"];
+            this.custCPadd1 = _data["custCPadd1"];
+            this.custCPCity = _data["custCPCity"];
+            this.mobileCNo = _data["mobileCNo"];
+            this.emailCAdd = _data["emailCAdd"];
+            this.idCType = _data["idCType"];
+            this.idCNo = _data["idCNo"];
+            this.idDIssdate = _data["idDIssdate"] ? new Date(_data["idDIssdate"].toString()) : undefined as any;
+            this.idCIssplace = _data["idCIssplace"];
+            this.idDExpdate = _data["idDExpdate"] ? new Date(_data["idDExpdate"].toString()) : undefined as any;
+            this.custCAuthority = _data["custCAuthority"];
+            this.husbCName = _data["husbCName"];
+            this.countryCCode = _data["countryCCode"];
+            this.placeCBirth = _data["placeCBirth"];
+            this.custCNationality = _data["custCNationality"];
+            this.custCWife1 = _data["custCWife1"];
+            this.idCType2 = _data["idCType2"];
+            this.idCNo2 = _data["idCNo2"];
+            this.custCOccupation = _data["custCOccupation"];
+            this.homeINumber = _data["homeINumber"];
+            this.custIIdentify = _data["custIIdentify"];
+            this.custCCountrybrith = _data["custCCountrybrith"];
+            this.custCStatebrith = _data["custCStatebrith"];
+            this.custCCitizenship = _data["custCCitizenship"];
+            this.custCEmployer = _data["custCEmployer"];
+            this.custFIncome = _data["custFIncome"];
+            this.custCHigheducation = _data["custCHigheducation"];
+            this.custFAvgmonth = _data["custFAvgmonth"];
+            this.tradeCNameenglish = _data["tradeCNameenglish"];
+            this.custCEngfname = _data["custCEngfname"];
+            this.custCEngsname = _data["custCEngsname"];
+            this.custCEngtname = _data["custCEngtname"];
+            this.custCEngfoname = _data["custCEngfoname"];
+            this.status = _data["status"];
+            this.reviewStatus = _data["reviewStatus"];
+            this.reviewedBy = _data["reviewedBy"];
+            if (Array.isArray(_data["accountMasts"])) {
+                this.accountMasts = [] as any;
+                for (let item of _data["accountMasts"])
+                    this.accountMasts!.push(AccountMastDto.fromJS(item));
+            }
+            if (Array.isArray(_data["customerDocuments"])) {
+                this.customerDocuments = [] as any;
+                for (let item of _data["customerDocuments"])
+                    this.customerDocuments!.push(CustomerDocumentDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): CustMastDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CustMastDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["branchCCode"] = this.branchCCode;
+        data["custIId"] = this.custIId;
+        data["custCName"] = this.custCName;
+        data["custDEntrydt"] = this.custDEntrydt ? this.custDEntrydt.toISOString() : undefined as any;
+        data["custCFname"] = this.custCFname;
+        data["custCSname"] = this.custCSname;
+        data["custCTname"] = this.custCTname;
+        data["custCFoname"] = this.custCFoname;
+        data["custCMname"] = this.custCMname;
+        data["custDBdate"] = this.custDBdate ? this.custDBdate.toISOString() : undefined as any;
+        data["custCSex"] = this.custCSex;
+        data["custCReligion"] = this.custCReligion;
+        data["custCCaste"] = this.custCCaste;
+        data["custCMaritalsts"] = this.custCMaritalsts;
+        data["custCPadd1"] = this.custCPadd1;
+        data["custCPCity"] = this.custCPCity;
+        data["mobileCNo"] = this.mobileCNo;
+        data["emailCAdd"] = this.emailCAdd;
+        data["idCType"] = this.idCType;
+        data["idCNo"] = this.idCNo;
+        data["idDIssdate"] = this.idDIssdate ? this.idDIssdate.toISOString() : undefined as any;
+        data["idCIssplace"] = this.idCIssplace;
+        data["idDExpdate"] = this.idDExpdate ? this.idDExpdate.toISOString() : undefined as any;
+        data["custCAuthority"] = this.custCAuthority;
+        data["husbCName"] = this.husbCName;
+        data["countryCCode"] = this.countryCCode;
+        data["placeCBirth"] = this.placeCBirth;
+        data["custCNationality"] = this.custCNationality;
+        data["custCWife1"] = this.custCWife1;
+        data["idCType2"] = this.idCType2;
+        data["idCNo2"] = this.idCNo2;
+        data["custCOccupation"] = this.custCOccupation;
+        data["homeINumber"] = this.homeINumber;
+        data["custIIdentify"] = this.custIIdentify;
+        data["custCCountrybrith"] = this.custCCountrybrith;
+        data["custCStatebrith"] = this.custCStatebrith;
+        data["custCCitizenship"] = this.custCCitizenship;
+        data["custCEmployer"] = this.custCEmployer;
+        data["custFIncome"] = this.custFIncome;
+        data["custCHigheducation"] = this.custCHigheducation;
+        data["custFAvgmonth"] = this.custFAvgmonth;
+        data["tradeCNameenglish"] = this.tradeCNameenglish;
+        data["custCEngfname"] = this.custCEngfname;
+        data["custCEngsname"] = this.custCEngsname;
+        data["custCEngtname"] = this.custCEngtname;
+        data["custCEngfoname"] = this.custCEngfoname;
+        data["status"] = this.status;
+        data["reviewStatus"] = this.reviewStatus;
+        data["reviewedBy"] = this.reviewedBy;
+        if (Array.isArray(this.accountMasts)) {
+            data["accountMasts"] = [];
+            for (let item of this.accountMasts)
+                data["accountMasts"].push(item ? item.toJSON() : undefined as any);
+        }
+        if (Array.isArray(this.customerDocuments)) {
+            data["customerDocuments"] = [];
+            for (let item of this.customerDocuments)
+                data["customerDocuments"].push(item ? item.toJSON() : undefined as any);
+        }
+        return data;
+    }
+}
+
+export interface ICustMastDto {
+    id: string;
+    branchCCode: string;
+    custIId?: number | undefined;
+    custCName: string;
+    custDEntrydt?: Date | undefined;
+    custCFname?: string | undefined;
+    custCSname?: string | undefined;
+    custCTname?: string | undefined;
+    custCFoname?: string | undefined;
+    custCMname?: string | undefined;
+    custDBdate?: Date | undefined;
+    custCSex?: string | undefined;
+    custCReligion?: string | undefined;
+    custCCaste?: string | undefined;
+    custCMaritalsts?: string | undefined;
+    custCPadd1?: string | undefined;
+    custCPCity?: string | undefined;
+    mobileCNo?: string | undefined;
+    emailCAdd?: string | undefined;
+    idCType?: string | undefined;
+    idCNo?: string | undefined;
+    idDIssdate?: Date | undefined;
+    idCIssplace?: string | undefined;
+    idDExpdate?: Date | undefined;
+    custCAuthority?: string | undefined;
+    husbCName?: string | undefined;
+    countryCCode?: string | undefined;
+    placeCBirth?: string | undefined;
+    custCNationality?: string | undefined;
+    custCWife1?: string | undefined;
+    idCType2?: string | undefined;
+    idCNo2?: string | undefined;
+    custCOccupation?: string | undefined;
+    homeINumber?: number | undefined;
+    custIIdentify?: string | undefined;
+    custCCountrybrith?: string | undefined;
+    custCStatebrith?: string | undefined;
+    custCCitizenship?: string | undefined;
+    custCEmployer?: string | undefined;
+    custFIncome?: number | undefined;
+    custCHigheducation?: string | undefined;
+    custFAvgmonth?: number | undefined;
+    tradeCNameenglish?: string | undefined;
+    custCEngfname?: string | undefined;
+    custCEngsname?: string | undefined;
+    custCEngtname?: string | undefined;
+    custCEngfoname?: string | undefined;
+    status?: string | undefined;
+    reviewStatus?: string | undefined;
+    reviewedBy?: string | undefined;
+    accountMasts?: AccountMastDto[] | undefined;
+    customerDocuments?: CustomerDocumentDto[] | undefined;
+}
+
+export class CustMastDtoPaginatedResultDto implements ICustMastDtoPaginatedResultDto {
+    data?: CustMastDto[] | undefined;
+    currentPage?: number;
+    pageSize?: number;
+    totalCount?: number;
+    totalPages?: number;
+    readonly hasPreviousPage?: boolean;
+    readonly hasNextPage?: boolean;
+
+    constructor(data?: ICustMastDtoPaginatedResultDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["data"])) {
+                this.data = [] as any;
+                for (let item of _data["data"])
+                    this.data!.push(CustMastDto.fromJS(item));
+            }
+            this.currentPage = _data["currentPage"];
+            this.pageSize = _data["pageSize"];
+            this.totalCount = _data["totalCount"];
+            this.totalPages = _data["totalPages"];
+            (this as any).hasPreviousPage = _data["hasPreviousPage"];
+            (this as any).hasNextPage = _data["hasNextPage"];
+        }
+    }
+
+    static fromJS(data: any): CustMastDtoPaginatedResultDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CustMastDtoPaginatedResultDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.data)) {
+            data["data"] = [];
+            for (let item of this.data)
+                data["data"].push(item ? item.toJSON() : undefined as any);
+        }
+        data["currentPage"] = this.currentPage;
+        data["pageSize"] = this.pageSize;
+        data["totalCount"] = this.totalCount;
+        data["totalPages"] = this.totalPages;
+        data["hasPreviousPage"] = this.hasPreviousPage;
+        data["hasNextPage"] = this.hasNextPage;
+        return data;
+    }
+}
+
+export interface ICustMastDtoPaginatedResultDto {
+    data?: CustMastDto[] | undefined;
+    currentPage?: number;
+    pageSize?: number;
+    totalCount?: number;
+    totalPages?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
 }
 
 export class CustomerDocumentDto implements ICustomerDocumentDto {
@@ -2402,6 +3581,554 @@ export interface ICustomerFatca {
     createdAt?: Date;
     updatedAt?: Date;
     customer?: CustMast;
+}
+
+export class DailyRequestDataDto implements IDailyRequestDataDto {
+    date?: string | undefined;
+    count?: number;
+
+    constructor(data?: IDailyRequestDataDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.date = _data["date"];
+            this.count = _data["count"];
+        }
+    }
+
+    static fromJS(data: any): DailyRequestDataDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new DailyRequestDataDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["date"] = this.date;
+        data["count"] = this.count;
+        return data;
+    }
+}
+
+export interface IDailyRequestDataDto {
+    date?: string | undefined;
+    count?: number;
+}
+
+export class DashboardGraphDataDto implements IDashboardGraphDataDto {
+    dailyRequests?: DailyRequestDataDto[] | undefined;
+
+    constructor(data?: IDashboardGraphDataDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["dailyRequests"])) {
+                this.dailyRequests = [] as any;
+                for (let item of _data["dailyRequests"])
+                    this.dailyRequests!.push(DailyRequestDataDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): DashboardGraphDataDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new DashboardGraphDataDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.dailyRequests)) {
+            data["dailyRequests"] = [];
+            for (let item of this.dailyRequests)
+                data["dailyRequests"].push(item ? item.toJSON() : undefined as any);
+        }
+        return data;
+    }
+}
+
+export interface IDashboardGraphDataDto {
+    dailyRequests?: DailyRequestDataDto[] | undefined;
+}
+
+export class DashboardStatisticsDto implements IDashboardStatisticsDto {
+    newCustomersCount?: number;
+    newCustomersPercentage?: number;
+    updateCustomersCount?: number;
+    updateCustomersPercentage?: number;
+    totalCustomersCount?: number;
+    pendingReviewsCount?: number;
+    pendingReviewsPercentage?: number;
+    approvedReviewsCount?: number;
+    approvedReviewsPercentage?: number;
+    rejectedReviewsCount?: number;
+    rejectedReviewsPercentage?: number;
+
+    constructor(data?: IDashboardStatisticsDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.newCustomersCount = _data["newCustomersCount"];
+            this.newCustomersPercentage = _data["newCustomersPercentage"];
+            this.updateCustomersCount = _data["updateCustomersCount"];
+            this.updateCustomersPercentage = _data["updateCustomersPercentage"];
+            this.totalCustomersCount = _data["totalCustomersCount"];
+            this.pendingReviewsCount = _data["pendingReviewsCount"];
+            this.pendingReviewsPercentage = _data["pendingReviewsPercentage"];
+            this.approvedReviewsCount = _data["approvedReviewsCount"];
+            this.approvedReviewsPercentage = _data["approvedReviewsPercentage"];
+            this.rejectedReviewsCount = _data["rejectedReviewsCount"];
+            this.rejectedReviewsPercentage = _data["rejectedReviewsPercentage"];
+        }
+    }
+
+    static fromJS(data: any): DashboardStatisticsDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new DashboardStatisticsDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["newCustomersCount"] = this.newCustomersCount;
+        data["newCustomersPercentage"] = this.newCustomersPercentage;
+        data["updateCustomersCount"] = this.updateCustomersCount;
+        data["updateCustomersPercentage"] = this.updateCustomersPercentage;
+        data["totalCustomersCount"] = this.totalCustomersCount;
+        data["pendingReviewsCount"] = this.pendingReviewsCount;
+        data["pendingReviewsPercentage"] = this.pendingReviewsPercentage;
+        data["approvedReviewsCount"] = this.approvedReviewsCount;
+        data["approvedReviewsPercentage"] = this.approvedReviewsPercentage;
+        data["rejectedReviewsCount"] = this.rejectedReviewsCount;
+        data["rejectedReviewsPercentage"] = this.rejectedReviewsPercentage;
+        return data;
+    }
+}
+
+export interface IDashboardStatisticsDto {
+    newCustomersCount?: number;
+    newCustomersPercentage?: number;
+    updateCustomersCount?: number;
+    updateCustomersPercentage?: number;
+    totalCustomersCount?: number;
+    pendingReviewsCount?: number;
+    pendingReviewsPercentage?: number;
+    approvedReviewsCount?: number;
+    approvedReviewsPercentage?: number;
+    rejectedReviewsCount?: number;
+    rejectedReviewsPercentage?: number;
+}
+
+export class GetCustMastByIdDto implements IGetCustMastByIdDto {
+    id!: string;
+    branchCCode!: string;
+    custINo?: number | undefined;
+    custCName!: string;
+    custCFname?: string | undefined;
+    custCSname?: string | undefined;
+    custCTname?: string | undefined;
+    custCFoname?: string | undefined;
+    custCMname?: string | undefined;
+    custDBdate?: Date | undefined;
+    custCSex?: string | undefined;
+    custCReligion?: string | undefined;
+    custCCaste?: string | undefined;
+    custCMaritalsts?: string | undefined;
+    custCPadd1?: string | undefined;
+    custCPCity?: string | undefined;
+    mobileCNo?: string | undefined;
+    emailCAdd?: string | undefined;
+    idCType?: string | undefined;
+    idCNo?: string | undefined;
+    idDIssdate?: Date | undefined;
+    idCIssplace?: string | undefined;
+    idDExpdate?: Date | undefined;
+    custCAuthority?: string | undefined;
+    husbCName?: string | undefined;
+    countryCCode?: string | undefined;
+    placeCBirth?: string | undefined;
+    custCNationality?: string | undefined;
+    custCWife1?: string | undefined;
+    idCType2?: string | undefined;
+    idCNo2?: string | undefined;
+    custCOccupation?: string | undefined;
+    homeINumber?: string | undefined;
+    custIIdentify?: string | undefined;
+    custCCountrybrith?: string | undefined;
+    custCStatebrith?: string | undefined;
+    custCCitizenship?: string | undefined;
+    custCEmployer?: string | undefined;
+    custFIncome?: number | undefined;
+    custCHigheducation?: string | undefined;
+    custFAvgmonth?: number | undefined;
+    tradeCNameenglish?: string | undefined;
+    custCEngfname?: string | undefined;
+    custCEngsname?: string | undefined;
+    custCEngtname?: string | undefined;
+    custCEngfoname?: string | undefined;
+    status?: string | undefined;
+    reviewStatus?: string | undefined;
+    reviewedBy?: string | undefined;
+    custDEntrydt?: Date;
+    accountMasts?: AccountMastDto[] | undefined;
+    customerDocuments?: CustomerDocumentDto[] | undefined;
+
+    constructor(data?: IGetCustMastByIdDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.branchCCode = _data["branchCCode"];
+            this.custINo = _data["custINo"];
+            this.custCName = _data["custCName"];
+            this.custCFname = _data["custCFname"];
+            this.custCSname = _data["custCSname"];
+            this.custCTname = _data["custCTname"];
+            this.custCFoname = _data["custCFoname"];
+            this.custCMname = _data["custCMname"];
+            this.custDBdate = _data["custDBdate"] ? new Date(_data["custDBdate"].toString()) : undefined as any;
+            this.custCSex = _data["custCSex"];
+            this.custCReligion = _data["custCReligion"];
+            this.custCCaste = _data["custCCaste"];
+            this.custCMaritalsts = _data["custCMaritalsts"];
+            this.custCPadd1 = _data["custCPadd1"];
+            this.custCPCity = _data["custCPCity"];
+            this.mobileCNo = _data["mobileCNo"];
+            this.emailCAdd = _data["emailCAdd"];
+            this.idCType = _data["idCType"];
+            this.idCNo = _data["idCNo"];
+            this.idDIssdate = _data["idDIssdate"] ? new Date(_data["idDIssdate"].toString()) : undefined as any;
+            this.idCIssplace = _data["idCIssplace"];
+            this.idDExpdate = _data["idDExpdate"] ? new Date(_data["idDExpdate"].toString()) : undefined as any;
+            this.custCAuthority = _data["custCAuthority"];
+            this.husbCName = _data["husbCName"];
+            this.countryCCode = _data["countryCCode"];
+            this.placeCBirth = _data["placeCBirth"];
+            this.custCNationality = _data["custCNationality"];
+            this.custCWife1 = _data["custCWife1"];
+            this.idCType2 = _data["idCType2"];
+            this.idCNo2 = _data["idCNo2"];
+            this.custCOccupation = _data["custCOccupation"];
+            this.homeINumber = _data["homeINumber"];
+            this.custIIdentify = _data["custIIdentify"];
+            this.custCCountrybrith = _data["custCCountrybrith"];
+            this.custCStatebrith = _data["custCStatebrith"];
+            this.custCCitizenship = _data["custCCitizenship"];
+            this.custCEmployer = _data["custCEmployer"];
+            this.custFIncome = _data["custFIncome"];
+            this.custCHigheducation = _data["custCHigheducation"];
+            this.custFAvgmonth = _data["custFAvgmonth"];
+            this.tradeCNameenglish = _data["tradeCNameenglish"];
+            this.custCEngfname = _data["custCEngfname"];
+            this.custCEngsname = _data["custCEngsname"];
+            this.custCEngtname = _data["custCEngtname"];
+            this.custCEngfoname = _data["custCEngfoname"];
+            this.status = _data["status"];
+            this.reviewStatus = _data["reviewStatus"];
+            this.reviewedBy = _data["reviewedBy"];
+            this.custDEntrydt = _data["custDEntrydt"] ? new Date(_data["custDEntrydt"].toString()) : undefined as any;
+            if (Array.isArray(_data["accountMasts"])) {
+                this.accountMasts = [] as any;
+                for (let item of _data["accountMasts"])
+                    this.accountMasts!.push(AccountMastDto.fromJS(item));
+            }
+            if (Array.isArray(_data["customerDocuments"])) {
+                this.customerDocuments = [] as any;
+                for (let item of _data["customerDocuments"])
+                    this.customerDocuments!.push(CustomerDocumentDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): GetCustMastByIdDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetCustMastByIdDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["branchCCode"] = this.branchCCode;
+        data["custINo"] = this.custINo;
+        data["custCName"] = this.custCName;
+        data["custCFname"] = this.custCFname;
+        data["custCSname"] = this.custCSname;
+        data["custCTname"] = this.custCTname;
+        data["custCFoname"] = this.custCFoname;
+        data["custCMname"] = this.custCMname;
+        data["custDBdate"] = this.custDBdate ? this.custDBdate.toISOString() : undefined as any;
+        data["custCSex"] = this.custCSex;
+        data["custCReligion"] = this.custCReligion;
+        data["custCCaste"] = this.custCCaste;
+        data["custCMaritalsts"] = this.custCMaritalsts;
+        data["custCPadd1"] = this.custCPadd1;
+        data["custCPCity"] = this.custCPCity;
+        data["mobileCNo"] = this.mobileCNo;
+        data["emailCAdd"] = this.emailCAdd;
+        data["idCType"] = this.idCType;
+        data["idCNo"] = this.idCNo;
+        data["idDIssdate"] = this.idDIssdate ? this.idDIssdate.toISOString() : undefined as any;
+        data["idCIssplace"] = this.idCIssplace;
+        data["idDExpdate"] = this.idDExpdate ? this.idDExpdate.toISOString() : undefined as any;
+        data["custCAuthority"] = this.custCAuthority;
+        data["husbCName"] = this.husbCName;
+        data["countryCCode"] = this.countryCCode;
+        data["placeCBirth"] = this.placeCBirth;
+        data["custCNationality"] = this.custCNationality;
+        data["custCWife1"] = this.custCWife1;
+        data["idCType2"] = this.idCType2;
+        data["idCNo2"] = this.idCNo2;
+        data["custCOccupation"] = this.custCOccupation;
+        data["homeINumber"] = this.homeINumber;
+        data["custIIdentify"] = this.custIIdentify;
+        data["custCCountrybrith"] = this.custCCountrybrith;
+        data["custCStatebrith"] = this.custCStatebrith;
+        data["custCCitizenship"] = this.custCCitizenship;
+        data["custCEmployer"] = this.custCEmployer;
+        data["custFIncome"] = this.custFIncome;
+        data["custCHigheducation"] = this.custCHigheducation;
+        data["custFAvgmonth"] = this.custFAvgmonth;
+        data["tradeCNameenglish"] = this.tradeCNameenglish;
+        data["custCEngfname"] = this.custCEngfname;
+        data["custCEngsname"] = this.custCEngsname;
+        data["custCEngtname"] = this.custCEngtname;
+        data["custCEngfoname"] = this.custCEngfoname;
+        data["status"] = this.status;
+        data["reviewStatus"] = this.reviewStatus;
+        data["reviewedBy"] = this.reviewedBy;
+        data["custDEntrydt"] = this.custDEntrydt ? this.custDEntrydt.toISOString() : undefined as any;
+        if (Array.isArray(this.accountMasts)) {
+            data["accountMasts"] = [];
+            for (let item of this.accountMasts)
+                data["accountMasts"].push(item ? item.toJSON() : undefined as any);
+        }
+        if (Array.isArray(this.customerDocuments)) {
+            data["customerDocuments"] = [];
+            for (let item of this.customerDocuments)
+                data["customerDocuments"].push(item ? item.toJSON() : undefined as any);
+        }
+        return data;
+    }
+}
+
+export interface IGetCustMastByIdDto {
+    id: string;
+    branchCCode: string;
+    custINo?: number | undefined;
+    custCName: string;
+    custCFname?: string | undefined;
+    custCSname?: string | undefined;
+    custCTname?: string | undefined;
+    custCFoname?: string | undefined;
+    custCMname?: string | undefined;
+    custDBdate?: Date | undefined;
+    custCSex?: string | undefined;
+    custCReligion?: string | undefined;
+    custCCaste?: string | undefined;
+    custCMaritalsts?: string | undefined;
+    custCPadd1?: string | undefined;
+    custCPCity?: string | undefined;
+    mobileCNo?: string | undefined;
+    emailCAdd?: string | undefined;
+    idCType?: string | undefined;
+    idCNo?: string | undefined;
+    idDIssdate?: Date | undefined;
+    idCIssplace?: string | undefined;
+    idDExpdate?: Date | undefined;
+    custCAuthority?: string | undefined;
+    husbCName?: string | undefined;
+    countryCCode?: string | undefined;
+    placeCBirth?: string | undefined;
+    custCNationality?: string | undefined;
+    custCWife1?: string | undefined;
+    idCType2?: string | undefined;
+    idCNo2?: string | undefined;
+    custCOccupation?: string | undefined;
+    homeINumber?: string | undefined;
+    custIIdentify?: string | undefined;
+    custCCountrybrith?: string | undefined;
+    custCStatebrith?: string | undefined;
+    custCCitizenship?: string | undefined;
+    custCEmployer?: string | undefined;
+    custFIncome?: number | undefined;
+    custCHigheducation?: string | undefined;
+    custFAvgmonth?: number | undefined;
+    tradeCNameenglish?: string | undefined;
+    custCEngfname?: string | undefined;
+    custCEngsname?: string | undefined;
+    custCEngtname?: string | undefined;
+    custCEngfoname?: string | undefined;
+    status?: string | undefined;
+    reviewStatus?: string | undefined;
+    reviewedBy?: string | undefined;
+    custDEntrydt?: Date;
+    accountMasts?: AccountMastDto[] | undefined;
+    customerDocuments?: CustomerDocumentDto[] | undefined;
+}
+
+export class LoginDto implements ILoginDto {
+    username!: string;
+    password!: string;
+
+    constructor(data?: ILoginDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.username = _data["username"];
+            this.password = _data["password"];
+        }
+    }
+
+    static fromJS(data: any): LoginDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new LoginDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["username"] = this.username;
+        data["password"] = this.password;
+        return data;
+    }
+}
+
+export interface ILoginDto {
+    username: string;
+    password: string;
+}
+
+export class RegisterDto implements IRegisterDto {
+    username!: string;
+    email!: string;
+    password!: string;
+    firstName?: string | undefined;
+    lastName?: string | undefined;
+
+    constructor(data?: IRegisterDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.username = _data["username"];
+            this.email = _data["email"];
+            this.password = _data["password"];
+            this.firstName = _data["firstName"];
+            this.lastName = _data["lastName"];
+        }
+    }
+
+    static fromJS(data: any): RegisterDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new RegisterDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["username"] = this.username;
+        data["email"] = this.email;
+        data["password"] = this.password;
+        data["firstName"] = this.firstName;
+        data["lastName"] = this.lastName;
+        return data;
+    }
+}
+
+export interface IRegisterDto {
+    username: string;
+    email: string;
+    password: string;
+    firstName?: string | undefined;
+    lastName?: string | undefined;
+}
+
+export class UpdateCustomerReviewDto implements IUpdateCustomerReviewDto {
+    customerId!: string;
+    reviewStatus!: string;
+
+    constructor(data?: IUpdateCustomerReviewDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.customerId = _data["customerId"];
+            this.reviewStatus = _data["reviewStatus"];
+        }
+    }
+
+    static fromJS(data: any): UpdateCustomerReviewDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateCustomerReviewDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["customerId"] = this.customerId;
+        data["reviewStatus"] = this.reviewStatus;
+        return data;
+    }
+}
+
+export interface IUpdateCustomerReviewDto {
+    customerId: string;
+    reviewStatus: string;
 }
 
 export interface FileParameter {

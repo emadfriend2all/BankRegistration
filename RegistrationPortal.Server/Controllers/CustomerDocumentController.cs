@@ -152,6 +152,20 @@ namespace RegistrationPortal.Server.Controllers
             }
         }
 
+        [HttpGet("migrate-urls")]
+        public async Task<ActionResult<bool>> MigrateDocumentUrls()
+        {
+            try
+            {
+                var result = await _documentService.UpdateDocumentUrlsToWebFormat();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
         [HttpGet("download/{id}")]
         public async Task<IActionResult> DownloadDocument(string id)
         {
@@ -161,10 +175,11 @@ namespace RegistrationPortal.Server.Controllers
                 if (document == null)
                     return NotFound();
 
-                if (!System.IO.File.Exists(document.FileUrl))
+                var filePath = await _documentService.GetDocumentFilePathAsync(id);
+                if (string.IsNullOrEmpty(filePath) || !System.IO.File.Exists(filePath))
                     return NotFound("File not found on server");
 
-                var fileBytes = await System.IO.File.ReadAllBytesAsync(document.FileUrl);
+                var fileBytes = await System.IO.File.ReadAllBytesAsync(filePath);
                 return File(fileBytes, document.MimeType ?? "application/octet-stream", document.OriginalFileName);
             }
             catch (Exception ex)

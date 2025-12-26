@@ -1,0 +1,661 @@
+<div class="customer-details-container">
+  <!-- Header Toolbar -->
+  <p-toolbar class="customer-toolbar">
+    <div class="p-toolbar-group-start">
+      <p-button 
+        icon="pi pi-arrow-right" 
+        label="العودة" 
+        class="p-button-outlined"
+        (click)="goBack()">
+      </p-button>
+    </div>
+    <div class="p-toolbar-group-center">
+      <h2 class="page-title" *ngIf="!loading && !error && customer">
+        تفاصيل العميل: {{ customer.custCName }}
+      </h2>
+    </div>
+    <div class="p-toolbar-group-end">
+      <!-- Review Buttons - Only visible to users with review permission -->
+      <div *ngIf="canReviewCustomer" class="flex gap-2">
+        <p-button 
+          icon="pi pi-check" 
+          label="موافقة" 
+          severity="success"
+          [loading]="reviewLoading"
+          (click)="approveCustomer()"
+          pTooltip="الموافقة على العميل">
+        </p-button>
+        
+        <p-button 
+          icon="pi pi-times" 
+          label="رفض" 
+          severity="danger"
+          [loading]="reviewLoading"
+          (click)="rejectCustomer()"
+          pTooltip="رفض العميل">
+        </p-button>
+      </div>
+      
+      
+    </div>
+  </p-toolbar>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <p-progressSpinner></p-progressSpinner>
+    <p>جاري تحميل بيانات العميل...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error" class="error-container">
+    <p-message severity="error" [text]="error"></p-message>
+  </div>
+
+  <!-- Customer Details Content -->
+  <div *ngIf="!loading && !error && customer" class="customer-content">
+    
+    <!-- Customer Info Section with Personal Image -->
+    <div class="customer-header-section">
+      <div class="customer-info-card">
+        <p-card class="info-card">
+          <ng-template pTemplate="header">
+            <div class="card-header">
+              <i class="pi pi-user"></i>
+              <span>معلومات العميل الأساسية</span>
+            </div>
+          </ng-template>
+          
+          <div class="customer-basic-info">
+            <div class="info-grid">
+              <div class="info-item">
+                <label>الاسم الكامل</label>
+                <span>{{ customer.custCName }}</span>
+              </div>
+              <div class="info-item">
+                <label>الاسم بالإنجليزية</label>
+                <span>{{ customer.tradeCNameenglish }}</span>
+              </div>
+              <div class="info-item">
+                <label>رقم العميل</label>
+                <span>{{ customer.custINo }}</span>
+              </div>
+              <div class="info-item">
+                <label>الفرع</label>
+                <span>{{ customer.branchCCode }}</span>
+              </div>
+              <div class="info-item">
+                <label>الحالة</label>
+                <p-tag [value]="getStatusLabel(customer.status)" [severity]="getStatusSeverity(customer.status)"></p-tag>
+              </div>
+              <div class="info-item">
+                <label>حالة المراجعة</label>
+                <p-tag [value]="getReviewStatusLabel(customer.reviewStatus)" [severity]="getReviewStatusSeverity(customer.reviewStatus)"></p-tag>
+              </div>
+              <div class="info-item" *ngIf="customer.reviewedBy">
+                <label>المراجع بواسطة</label>
+                <span>{{ customer.reviewedBy }}</span>
+              </div>
+              <div class="info-item">
+                <label>تاريخ الإدخال</label>
+                <span>{{ formatDate(customer.custDEntrydt) }}</span>
+              </div>
+            </div>
+          </div>
+        </p-card>
+      </div>
+
+      <!-- Personal Image -->
+      <div class="personal-image-section">
+        <p-card class="image-card">
+          <ng-template pTemplate="header">
+            <div class="card-header">
+              <i class="pi pi-image"></i>
+              <span>الصورة الشخصية</span>
+            </div>
+          </ng-template>
+          
+          <div class="personal-image-container">
+            <p-image 
+              *ngIf="getPersonalImage()"
+              [src]="getPersonalImage()?.fileUrl"
+              [alt]="getPersonalImage()?.originalFileName"
+              width="250"
+              height="300"
+              preview="true"
+              appendTo="body">
+            </p-image>
+            <div *ngIf="!getPersonalImage()" class="no-image-placeholder">
+              <i class="pi pi-user"></i>
+              <span>لا توجد صورة شخصية</span>
+            </div>
+          </div>
+        </p-card>
+      </div>
+    </div>
+
+    <!-- Identity Documents Section -->
+    <div class="identity-documents-section">
+      <p-card>
+        <ng-template pTemplate="header">
+          <div class="card-header">
+            <i class="pi pi-id-card"></i>
+            <span>وثائق الهوية</span>
+          </div>
+        </ng-template>
+        
+        <div class="identity-documents-grid">
+          <!-- Passport Document -->
+          <div class="identity-document-card">
+            <p-fieldset legend="جواز السفر" *ngIf="getPassportDocument()">
+              <div class="document-info">
+                <div class="document-image">
+                  <p-image 
+                    [src]="getPassportDocument()?.fileUrl"
+                    [alt]="getPassportDocument()?.originalFileName"
+                    width="200"
+                    height="150"
+                    preview="true"
+                    appendTo="body">
+                  </p-image>
+                </div>
+                <div class="document-details">
+                  <p><strong>رقم جواز السفر:</strong> {{ customer.idCNo }}</p>
+                  <p><strong>مكان الإصدار:</strong> {{ customer.idCIssplace }}</p>
+                  <p><strong>تاريخ الإصدار:</strong> {{ formatDate(customer.idDIssdate) }}</p>
+                  <p><strong>تاريخ الانتهاء:</strong> {{ formatDate(customer.idDExpdate) }}</p>
+                  <div class="document-actions">
+                    <p-button 
+                      icon="pi pi-eye" 
+                      label="عرض" 
+                      size="small"
+                      class="p-button-outlined"
+                      (click)="viewDocument(getPassportDocument()!)">
+                    </p-button>
+                    <p-button 
+                      icon="pi pi-download" 
+                      label="تحميل" 
+                      size="small"
+                      class="p-button-outlined"
+                      (click)="downloadDocument(getPassportDocument()!)">
+                    </p-button>
+                  </div>
+                </div>
+              </div>
+            </p-fieldset>
+            
+            <div *ngIf="!getPassportDocument()" class="no-document">
+              <i class="pi pi-id-card"></i>
+              <span>لا يوجد جواز سفر</span>
+            </div>
+          </div>
+
+          <!-- National ID Document -->
+          <div class="identity-document-card">
+            <p-fieldset legend="بطاقة الهوية الوطنية" *ngIf="getNationalIdDocument()">
+              <div class="document-info">
+                <div class="document-image">
+                  <p-image 
+                    [src]="getNationalIdDocument()?.fileUrl"
+                    [alt]="getNationalIdDocument()?.originalFileName"
+                    width="200"
+                    height="150"
+                    preview="true"
+                    appendTo="body">
+                  </p-image>
+                </div>
+                <div class="document-details">
+                  <p><strong>رقم الهوية:</strong> {{ customer.idCNo2 }}</p>
+                  <p><strong>نوع الهوية:</strong> {{ customer.idCType2 }}</p>
+                  <p><strong>حجم الملف:</strong> {{ formatFileSize(getNationalIdDocument()!.fileSize) }}</p>
+                  <p><strong>تاريخ الرفع:</strong> {{ formatDate(getNationalIdDocument()!.createdAt) }}</p>
+                  <div class="document-actions">
+                    <p-button 
+                      icon="pi pi-eye" 
+                      label="عرض" 
+                      size="small"
+                      class="p-button-outlined"
+                      (click)="viewDocument(getNationalIdDocument()!)">
+                    </p-button>
+                    <p-button 
+                      icon="pi pi-download" 
+                      label="تحميل" 
+                      size="small"
+                      class="p-button-outlined"
+                      (click)="downloadDocument(getNationalIdDocument()!)">
+                    </p-button>
+                  </div>
+                </div>
+              </div>
+            </p-fieldset>
+            
+            <div *ngIf="!getNationalIdDocument()" class="no-document">
+              <i class="pi pi-id-card"></i>
+              <span>لا توجد بطاقة هوية وطنية</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Additional Identity Documents Slider -->
+        <div *ngIf="identityDocuments.length > 0" class="additional-documents">
+          <h4>وثائق هوية إضافية</h4>
+          <p-galleria 
+            [value]="identityImages" 
+            [showItemNavigators]="true"
+            [showThumbnails]="false"
+            [showIndicators]="true"
+            [showItemNavigatorsOnHover]="true"
+            [circular]="true"
+            [responsiveOptions]="responsiveOptions"
+            class="flex items-center justify-center">
+            <ng-template pTemplate="item" let-item>
+              <div class="flex items-center justify-center w-full" style="height: 600px;">
+                <p-image 
+                  [src]="item.itemImageSrc" 
+                  [preview]="true" 
+                  appendTo="body"
+                  style="height: 600px;"
+                  [alt]="item.alt" 
+                  [title]="item.title" />
+              </div>
+            </ng-template>
+          </p-galleria>
+        </div>
+      </p-card>
+    </div>
+
+    <!-- Personal Information Section -->
+    <div class="personal-info-section">
+      <p-card>
+        <ng-template pTemplate="header">
+          <div class="card-header">
+            <i class="pi pi-info-circle"></i>
+            <span>المعلومات الشخصية</span>
+          </div>
+        </ng-template>
+        
+        <div class="info-section-grid">
+          <p-fieldset legend="الاسماء">
+            <div class="names-grid">
+              <div class="name-item">
+                <label>الاسم الأول:</label>
+                <span>{{ customer.custCFname }}</span>
+              </div>
+              <div class="name-item">
+                <label>اسم الأب:</label>
+                <span>{{ customer.custCSname }}</span>
+              </div>
+              <div class="name-item">
+                <label>اسم الجد:</label>
+                <span>{{ customer.custCTname }}</span>
+              </div>
+              <div class="name-item">
+                <label>اسم العائلة:</label>
+                <span>{{ customer.custCFoname }}</span>
+              </div>
+              <div class="name-item">
+                <label>اسم الأم:</label>
+                <span>{{ customer.custCMname }}</span>
+              </div>
+            </div>
+          </p-fieldset>
+
+          <p-fieldset legend="المعلومات الشخصية">
+            <div class="personal-details-grid">
+              <div class="detail-item">
+                <label>الجنس:</label>
+                <span>{{ getGenderLabel(customer.custCSex) }}</span>
+              </div>
+              <div class="detail-item">
+                <label>تاريخ الميلاد:</label>
+                <span>{{ formatDate(customer.custDBdate) }}</span>
+              </div>
+              <div class="detail-item">
+                <label>الحالة الاجتماعية:</label>
+                <span>{{ getMaritalStatusLabel(customer.custCMaritalsts) }}</span>
+              </div>
+              <div class="detail-item">
+                <label>الديانة:</label>
+                <span>{{ customer.custCReligion }}</span>
+              </div>
+              <div class="detail-item">
+                <label>الطائفة:</label>
+                <span>{{ customer.custCCaste || 'غير محدد' }}</span>
+              </div>
+            </div>
+          </p-fieldset>
+
+          <p-fieldset legend="معلومات الاتصال">
+            <div class="contact-details-grid">
+              <div class="detail-item">
+                <label>الجوال:</label>
+                <span>{{ customer.mobileCNo }}</span>
+              </div>
+              <div class="detail-item">
+                <label>البريد الإلكتروني:</label>
+                <span>{{ customer.emailCAdd }}</span>
+              </div>
+              <div class="detail-item">
+                <label>العنوان:</label>
+                <span>{{ customer.custCPadd1 }}</span>
+              </div>
+              <div class="detail-item">
+                <label>المدينة:</label>
+                <span>{{ customer.custCPCity }}</span>
+              </div>
+            </div>
+          </p-fieldset>
+
+          <p-fieldset legend="معلومات الميلاد والجنسية">
+            <div class="birth-details-grid">
+              <div class="detail-item">
+                <label>مكان الميلاد:</label>
+                <span>{{ customer.placeCBirth }}</span>
+              </div>
+              <div class="detail-item">
+                <label>دولة الميلاد:</label>
+                <span>{{ customer.custCCountrybrith }}</span>
+              </div>
+              <div class="detail-item">
+                <label>ولاية الميلاد:</label>
+                <span>{{ customer.custCStatebrith }}</span>
+              </div>
+              <div class="detail-item">
+                <label>الجنسية:</label>
+                <span>{{ customer.custCNationality }}</span>
+              </div>
+              <div class="detail-item">
+                <label>الجنسية المزدوجة:</label>
+                <span>{{ customer.custCCitizenship || 'غير محدد' }}</span>
+              </div>
+            </div>
+          </p-fieldset>
+        </div>
+      </p-card>
+    </div>
+
+    <!-- Professional Information Section -->
+    <div class="professional-info-section">
+      <p-card>
+        <ng-template pTemplate="header">
+          <div class="card-header">
+            <i class="pi pi-briefcase"></i>
+            <span>المعلومات المهنية</span>
+          </div>
+        </ng-template>
+        
+        <div class="professional-grid">
+          <p-fieldset legend="المعلومات المهنية">
+            <div class="professional-details">
+              <div class="detail-item">
+                <label>المهنة:</label>
+                <span>{{ customer.custCOccupation }}</span>
+              </div>
+              <div class="detail-item">
+                <label>صاحب العمل:</label>
+                <span>{{ customer.custCEmployer }}</span>
+              </div>
+              <div class="detail-item">
+                <label>المؤهل التعليمي:</label>
+                <span>{{ customer.custCHigheducation }}</span>
+              </div>
+              <div class="detail-item">
+                <label>الدخل الشهري:</label>
+                <span>{{ customer.custFIncome || 'غير محدد' }}</span>
+              </div>
+              <div class="detail-item">
+                <label>متوسط الدخل الشهري:</label>
+                <span>{{ customer.custFAvgmonth || 'غير محدد' }}</span>
+              </div>
+            </div>
+          </p-fieldset>
+
+          <p-fieldset legend="معلومات إضافية">
+            <div class="additional-details">
+              <div class="detail-item">
+                <label>السلطة:</label>
+                <span>{{ customer.custCAuthority || 'غير محدد' }}</span>
+              </div>
+              <div class="detail-item">
+                <label>اسم الزوج:</label>
+                <span>{{ customer.husbCName || 'غير محدد' }}</span>
+              </div>
+              <div class="detail-item">
+                <label>اسم الزوجة:</label>
+                <span>{{ customer.custCWife1 || 'غير محدد' }}</span>
+              </div>
+              <div class="detail-item">
+                <label>رقم المنزل:</label>
+                <span>{{ customer.homeINumber || 'غير محدد' }}</span>
+              </div>
+            </div>
+          </p-fieldset>
+        </div>
+      </p-card>
+    </div>
+
+    <!-- Accounts and Other Documents Section -->
+    <div class="accounts-documents-section">
+      <div class="accounts-documents-grid">
+        <!-- Customer Accounts -->
+        <p-card class="accounts-card">
+          <ng-template pTemplate="header">
+            <div class="card-header">
+              <i class="pi pi-wallet"></i>
+              <span>الحسابات البنكية</span>
+              <p-badge [value]="customer.accountMasts?.length || 0" severity="info"></p-badge>
+            </div>
+          </ng-template>
+          
+          <p-table 
+            [value]="customer.accountMasts" 
+            [scrollable]="true"
+            scrollHeight="300px"
+            *ngIf="customer.accountMasts && customer.accountMasts.length > 0">
+            <ng-template pTemplate="header">
+              <tr>
+                <th>رقم الحساب</th>
+                <th>نوع الحساب</th>
+                <th>الفرع</th>
+                <th>العملة</th>
+                <th>اسم الحساب</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-account>
+              <tr>
+                <td>{{ account.id }}</td>
+                <td>{{ account.actCType }}</td>
+                <td>{{ account.branchCCode }}</td>
+                <td>{{ account.currencyCCode }}</td>
+                <td>{{ account.actCName || 'غير محدد' }}</td>
+              </tr>
+            </ng-template>
+          </p-table>
+          
+          <div *ngIf="!customer.accountMasts || customer.accountMasts.length === 0" class="no-data">
+            <i class="pi pi-wallet"></i>
+            <span>لا توجد حسابات بنكية</span>
+          </div>
+        </p-card>
+
+        <!-- Other Documents -->
+        <p-card class="documents-card">
+          <ng-template pTemplate="header">
+            <div class="card-header">
+              <i class="pi pi-file"></i>
+              <span>الوثائق الأخرى</span>
+              <p-badge [value]="otherDocuments.length" severity="info"></p-badge>
+            </div>
+          </ng-template>
+          
+          <div class="documents-grid" *ngIf="otherDocuments.length > 0">
+            <div class="document-item" *ngFor="let document of otherDocuments">
+              <div class="document-preview">
+                <p-image 
+                  [src]="document.fileUrl"
+                  [alt]="document.originalFileName"
+                  width="100"
+                  height="80"
+                  preview="true"
+                  appendTo="body">
+                </p-image>
+              </div>
+              <div class="document-info">
+                <h5>{{ getDocumentTypeLabel(document.documentType) }}</h5>
+                <p>{{ document.originalFileName }}</p>
+                <p-badge [value]="formatFileSize(document.fileSize)" severity="info"></p-badge>
+                <div class="document-actions">
+                  <p-button 
+                    icon="pi pi-eye" 
+                    size="small"
+                    class="p-button-outlined"
+                    (click)="viewDocument(document)">
+                  </p-button>
+                  <p-button 
+                    icon="pi pi-download" 
+                    size="small"
+                    class="p-button-outlined"
+                    (click)="downloadDocument(document)">
+                  </p-button>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div *ngIf="otherDocuments.length === 0" class="no-data">
+            <i class="pi pi-file"></i>
+            <span>لا توجد وثائق أخرى</span>
+          </div>
+        </p-card>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Confirmation Dialog -->
+<p-dialog
+  [(visible)]="confirmDialogVisible"
+  [modal]="true"
+  [dismissableMask]="true"
+  [closable]="false"
+  [rtl]="true"
+  [style]="{ width: '26rem' }"
+  contentStyleClass="p-0"
+>
+  <!-- Header -->
+  <ng-template pTemplate="header">
+    <div class="flex items-center gap-2">
+      <i class="pi pi-exclamation-triangle text-yellow-600 text-xl"></i>
+      <span class="font-semibold text-lg">{{ getConfirmHeader() }}</span>
+    </div>
+  </ng-template>
+
+  <!-- Content -->
+  <div class="p-4 space-y-4 text-sm">
+    <div class="text-center">
+      <p class="text-gray-700 leading-relaxed">{{ getConfirmMessage() }}</p>
+    </div>
+    
+    
+  </div>
+
+  <!-- Footer -->
+  <ng-template pTemplate="footer">
+    <div class="flex justify-end gap-2 w-full">
+      <p-button
+        label="نعم، تأكيد"
+        icon="pi pi-check"
+        severity="danger"
+        [loading]="reviewLoading"
+        (click)="confirmReview()"
+      ></p-button>
+
+      <p-button
+        label="إلغاء"
+        icon="pi pi-ban"
+        severity="secondary"
+        outlined
+        [disabled]="reviewLoading"
+        (click)="cancelReview()"
+      ></p-button>
+    </div>
+  </ng-template>
+</p-dialog>
+
+<!-- Toast for notifications -->
+<p-toast position="top-center"></p-toast>
+
+<style>
+/* Review dialog styling */
+.review-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.review-actions .p-button {
+  min-width: 100px;
+}
+
+/* Confirmation dialog styling */
+.confirm-form {
+  text-align: center;
+  padding: 1rem 0;
+}
+
+.confirm-message {
+  margin-bottom: 2rem;
+}
+
+.confirm-message p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #374151;
+  margin: 0;
+}
+
+.confirm-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.confirm-actions .p-button {
+  min-width: 120px;
+}
+
+.review-form .field {
+  margin-bottom: 1rem;
+}
+
+.review-form .field label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #374151;
+}
+</style>
+
+<style>
+/* Remove custom galleria styles - using PrimeNG and Tailwind only */
+
+/* Card headers styling */
+::ng-deep .p-card .p-card-header {
+  background: #f8f9fa !important;
+  color: #212529 !important;
+  
+  padding: 0.75rem 1rem !important;
+  min-height: auto !important;
+  height: auto !important;
+  border-bottom: 1px solid #dee2e6 !important;
+}
+
+::ng-deep .p-card .p-card-title {
+  color: #212529 !important;
+  font-weight: 600 !important;
+  margin-bottom: 5px;
+  margin: 0 !important;
+  font-size: 1rem !important;
+}
+</style>

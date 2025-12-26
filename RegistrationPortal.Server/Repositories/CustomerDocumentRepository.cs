@@ -28,6 +28,11 @@ namespace RegistrationPortal.Server.Repositories
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<CustomerDocument>> GetAllAsync()
+        {
+            return await _dbSet.ToListAsync();
+        }
+
         public async Task<CustomerDocument> AddAsync(CustomerDocument entity)
         {
             await _dbSet.AddAsync(entity);

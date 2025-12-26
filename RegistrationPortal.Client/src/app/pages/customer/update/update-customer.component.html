@@ -139,7 +139,12 @@
                     <div class="flex flex-wrap gap-2 w-full md:w-1/3">
                         <label for="mobileCNo" class="required">رقم الهاتف المحمول</label>
                         <p-inputgroup>
-                            <p-inputgroup-addon>+249</p-inputgroup-addon>
+                            <p-inputgroup-addon [ngStyle]="{'padding': '0', 'min-width': '80px'}">
+                                <p-select formControlName="mobileCountryCode" [options]="countryCodeOptions"
+                                    optionLabel="label" optionValue="value" placeholder="كود"
+                                    [ngStyle]="{'min-width': '70px', 'border': 'none', 'background': 'transparent', 'padding': '0 4px', 'height': '100%', 'font-size': '0.875rem'}">
+                                </p-select>
+                            </p-inputgroup-addon>
                             <input pInputText id="mobileCNo" formControlName="mobileCNo" placeholder="912345678"
                                 maxlength="9" pattern="[1-9][0-9]{8}" (keypress)="onPhoneNumberKeyPress($event)"
                                 (input)="onPhonMobileInput($event)"

@@ -17,7 +17,8 @@ namespace RegistrationPortal.Server.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.10")
+                .UseCollation("BINARY_CI")
+                .HasAnnotation("ProductVersion", "11.2.0.1.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             OracleModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -396,6 +397,16 @@ namespace RegistrationPortal.Server.Migrations
                         .HasColumnType("VARCHAR2(100 BYTE)")
                         .HasColumnName("place_c_birth");
 
+                    b.Property<string>("ReviewStatus")
+                        .HasMaxLength(50)
+                        .HasColumnType("NVARCHAR2(50)")
+                        .HasColumnName("review_status");
+
+                    b.Property<string>("ReviewedBy")
+                        .HasMaxLength(100)
+                        .HasColumnType("NVARCHAR2(100)")
+                        .HasColumnName("reviewed_by");
+
                     b.Property<string>("Status")
                         .HasMaxLength(50)
                         .HasColumnType("NVARCHAR2(50)")
@@ -610,6 +621,263 @@ namespace RegistrationPortal.Server.Migrations
                     b.ToTable("customer_fatca", "SSDBONLINE");
                 });
 
+            modelBuilder.Entity("RegistrationPortal.Server.Entities.Identity.Permission", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("NUMBER(10)")
+                        .HasColumnName("PERMISSION_ID");
+
+                    OraclePropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Action")
+                        .HasMaxLength(50)
+                        .HasColumnType("NVARCHAR2(50)")
+                        .HasColumnName("ACTION");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TIMESTAMP(7)")
+                        .HasColumnName("CREATED_AT")
+                        .HasDefaultValueSql("SYSDATE");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(200)
+                        .HasColumnType("NVARCHAR2(200)")
+                        .HasColumnName("DESCRIPTION");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("NUMBER(1)")
+                        .HasDefaultValue(true)
+                        .HasColumnName("IS_ACTIVE");
+
+                    b.Property<string>("Module")
+                        .HasMaxLength(50)
+                        .HasColumnType("NVARCHAR2(50)")
+                        .HasColumnName("MODULE");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("NVARCHAR2(100)")
+                        .HasColumnName("NAME");
+
+                    b.HasKey("Id")
+                        .HasName("PK_PERMISSIONS");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasDatabaseName("IX_PERMISSIONS_NAME");
+
+                    b.HasIndex("Module", "Action")
+                        .IsUnique()
+                        .HasDatabaseName("IX_PERMISSIONS_MODULE_ACTION")
+                        .HasFilter("MODULE IS NOT NULL AND ACTION IS NOT NULL");
+
+                    b.ToTable("PERMISSIONS", (string)null);
+                });
+
+            modelBuilder.Entity("RegistrationPortal.Server.Entities.Identity.Role", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("NUMBER(10)")
+                        .HasColumnName("ROLE_ID");
+
+                    OraclePropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TIMESTAMP(7)")
+                        .HasColumnName("CREATED_AT")
+                        .HasDefaultValueSql("SYSDATE");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(200)
+                        .HasColumnType("NVARCHAR2(200)")
+                        .HasColumnName("DESCRIPTION");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("NUMBER(1)")
+                        .HasDefaultValue(true)
+                        .HasColumnName("IS_ACTIVE");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("NVARCHAR2(50)")
+                        .HasColumnName("NAME");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("TIMESTAMP(7)")
+                        .HasColumnName("UPDATED_AT");
+
+                    b.HasKey("Id")
+                        .HasName("PK_ROLES");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasDatabaseName("IX_ROLES_NAME");
+
+                    b.ToTable("ROLES", (string)null);
+                });
+
+            modelBuilder.Entity("RegistrationPortal.Server.Entities.Identity.RolePermission", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("NUMBER(10)")
+                        .HasColumnName("ROLE_PERMISSION_ID");
+
+                    OraclePropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("GrantedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TIMESTAMP(7)")
+                        .HasColumnName("GRANTED_AT")
+                        .HasDefaultValueSql("SYSDATE");
+
+                    b.Property<int?>("GrantedBy")
+                        .HasColumnType("NUMBER(10)")
+                        .HasColumnName("GRANTED_BY");
+
+                    b.Property<int>("PermissionId")
+                        .HasColumnType("NUMBER(10)")
+                        .HasColumnName("PERMISSION_ID");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("NUMBER(10)")
+                        .HasColumnName("ROLE_ID");
+
+                    b.HasKey("Id")
+                        .HasName("PK_ROLE_PERMISSIONS");
+
+                    b.HasIndex("PermissionId");
+
+                    b.HasIndex("RoleId", "PermissionId")
+                        .IsUnique()
+                        .HasDatabaseName("IX_ROLE_PERMISSIONS_ROLE_PERMISSION");
+
+                    b.ToTable("ROLE_PERMISSIONS", (string)null);
+                });
+
+            modelBuilder.Entity("RegistrationPortal.Server.Entities.Identity.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("NUMBER(10)")
+                        .HasColumnName("USER_ID");
+
+                    OraclePropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Branch")
+                        .HasMaxLength(50)
+                        .HasColumnType("NVARCHAR2(50)")
+                        .HasColumnName("BRANCH");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TIMESTAMP(7)")
+                        .HasColumnName("CREATED_AT")
+                        .HasDefaultValueSql("SYSDATE");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("NVARCHAR2(100)")
+                        .HasColumnName("EMAIL");
+
+                    b.Property<string>("FirstName")
+                        .HasMaxLength(50)
+                        .HasColumnType("NVARCHAR2(50)")
+                        .HasColumnName("FIRST_NAME");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("NUMBER(1)")
+                        .HasDefaultValue(true)
+                        .HasColumnName("IS_ACTIVE");
+
+                    b.Property<DateTime?>("LastLoginAt")
+                        .HasColumnType("TIMESTAMP(7)")
+                        .HasColumnName("LAST_LOGIN_AT");
+
+                    b.Property<string>("LastName")
+                        .HasMaxLength(50)
+                        .HasColumnType("NVARCHAR2(50)")
+                        .HasColumnName("LAST_NAME");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("NVARCHAR2(255)")
+                        .HasColumnName("PASSWORD_HASH");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("TIMESTAMP(7)")
+                        .HasColumnName("UPDATED_AT");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("NVARCHAR2(50)")
+                        .HasColumnName("USERNAME");
+
+                    b.HasKey("Id")
+                        .HasName("PK_USERS");
+
+                    b.HasIndex("Email")
+                        .IsUnique()
+                        .HasDatabaseName("IX_USERS_EMAIL");
+
+                    b.HasIndex("Username")
+                        .IsUnique()
+                        .HasDatabaseName("IX_USERS_USERNAME");
+
+                    b.ToTable("USERS", (string)null);
+                });
+
+            modelBuilder.Entity("RegistrationPortal.Server.Entities.Identity.UserRole", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("NUMBER(10)")
+                        .HasColumnName("USER_ROLE_ID");
+
+                    OraclePropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("AssignedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TIMESTAMP(7)")
+                        .HasColumnName("ASSIGNED_AT")
+                        .HasDefaultValueSql("SYSDATE");
+
+                    b.Property<int?>("AssignedBy")
+                        .HasColumnType("NUMBER(10)")
+                        .HasColumnName("ASSIGNED_BY");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("NUMBER(10)")
+                        .HasColumnName("ROLE_ID");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("NUMBER(10)")
+                        .HasColumnName("USER_ID");
+
+                    b.HasKey("Id")
+                        .HasName("PK_USER_ROLES");
+
+                    b.HasIndex("RoleId");
+
+                    b.HasIndex("UserId", "RoleId")
+                        .IsUnique()
+                        .HasDatabaseName("IX_USER_ROLES_USER_ROLE");
+
+                    b.ToTable("USER_ROLES", (string)null);
+                });
+
             modelBuilder.Entity("RegistrationPortal.Server.Entities.AccountMast", b =>
                 {
                     b.HasOne("RegistrationPortal.Server.Entities.CustMast", "CustMast")
@@ -646,11 +914,70 @@ namespace RegistrationPortal.Server.Migrations
                     b.Navigation("Customer");
                 });
 
+            modelBuilder.Entity("RegistrationPortal.Server.Entities.Identity.RolePermission", b =>
+                {
+                    b.HasOne("RegistrationPortal.Server.Entities.Identity.Permission", "Permission")
+                        .WithMany("RolePermissions")
+                        .HasForeignKey("PermissionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_ROLE_PERMISSIONS_PERMISSION");
+
+                    b.HasOne("RegistrationPortal.Server.Entities.Identity.Role", "Role")
+                        .WithMany("RolePermissions")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_ROLE_PERMISSIONS_ROLE");
+
+                    b.Navigation("Permission");
+
+                    b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("RegistrationPortal.Server.Entities.Identity.UserRole", b =>
+                {
+                    b.HasOne("RegistrationPortal.Server.Entities.Identity.Role", "Role")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_USER_ROLES_ROLE");
+
+                    b.HasOne("RegistrationPortal.Server.Entities.Identity.User", "User")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_USER_ROLES_USER");
+
+                    b.Navigation("Role");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("RegistrationPortal.Server.Entities.CustMast", b =>
                 {
                     b.Navigation("AccountMasts");
 
                     b.Navigation("CustomerFatca");
+                });
+
+            modelBuilder.Entity("RegistrationPortal.Server.Entities.Identity.Permission", b =>
+                {
+                    b.Navigation("RolePermissions");
+                });
+
+            modelBuilder.Entity("RegistrationPortal.Server.Entities.Identity.Role", b =>
+                {
+                    b.Navigation("RolePermissions");
+
+                    b.Navigation("UserRoles");
+                });
+
+            modelBuilder.Entity("RegistrationPortal.Server.Entities.Identity.User", b =>
+                {
+                    b.Navigation("UserRoles");
                 });
 #pragma warning restore 612, 618
         }

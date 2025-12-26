@@ -3,10 +3,14 @@ using RegistrationPortal.Server.Data;
 using RegistrationPortal.Server.Entities;
 using RegistrationPortal.Server.Repositories;
 using RegistrationPortal.Server.DTOs;
+using RegistrationPortal.Server.DTOs.Pagination;
 using Mapster;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
 using System.Linq;
 using System.Transactions;
+using System.Data;
+using Oracle.ManagedDataAccess.Client;
 
 namespace RegistrationPortal.Server.Services
 {
@@ -16,13 +20,108 @@ namespace RegistrationPortal.Server.Services
         private readonly IAccountMastRepository _accountMastRepository;
         private readonly ICustomerDocumentService _customerDocumentService;
         private readonly ILogger<CustMastService> _logger;
+        private readonly IConfiguration _configuration;
 
-        public CustMastService(ICustMastRepository custMastRepository, IAccountMastRepository accountMastRepository, ICustomerDocumentService customerDocumentService, ILogger<CustMastService> logger)
+        public CustMastService(ICustMastRepository custMastRepository, IAccountMastRepository accountMastRepository, ICustomerDocumentService customerDocumentService, ILogger<CustMastService> logger, IConfiguration configuration)
         {
             _custMastRepository = custMastRepository;
             _accountMastRepository = accountMastRepository;
             _customerDocumentService = customerDocumentService;
             _logger = logger;
+            _configuration = configuration;
+        }
+
+        public async Task<GetCustMastByIdDto?> GetCustomerByIdAsync(string id)
+        {
+            var customer = await _custMastRepository.GetCustomerByIdAsync(id);
+            if (customer == null)
+                return null;
+
+            // Get customer documents
+            var documents = await _customerDocumentService.GetCustomerDocumentsAsync(customer.Id);
+            var documentDtos = documents.Select(d => new CustomerDocumentDto
+            {
+                Id = d.Id,
+                CustomerId = d.CustomerId,
+                DocumentType = d.DocumentType,
+                FileUrl = d.FileUrl,
+                OriginalFileName = d.OriginalFileName,
+                FileSize = d.FileSize,
+                MimeType = d.MimeType,
+                CreatedAt = d.CreatedAt,
+                UpdatedAt = d.UpdatedAt
+            }).ToList();
+
+            // Get customer accounts using the correct repository method
+            var accounts = await _accountMastRepository.GetByCustomerAsync(customer.BranchCCode, customer.CustIId);
+            var accountDtos = accounts.Select(a => new AccountMastDto
+            {
+                Id = a.Id,
+                BranchCCode = a.BranchCCode,
+                ActCType = a.ActCType,
+                CustINo = a.CustINo,
+                CurrencyCCode = a.CurrencyCCode,
+                ActCName = a.ActCName
+            }).ToList();
+
+            // Map customer to GetCustMastByIdDto
+            var customerDto = new GetCustMastByIdDto
+            {
+                Id = customer.Id,
+                BranchCCode = customer.BranchCCode,
+                CustINo = customer.CustIId,
+                CustCName = customer.CustCName,
+                CustCFname = customer.CustCFname,
+                CustCSname = customer.CustCSname,
+                CustCTname = customer.CustCTname,
+                CustCFoname = customer.CustCFoname,
+                CustCMname = customer.CustCMname,
+                CustDBdate = customer.CustDBdate,
+                CustCSex = customer.CustCSex,
+                CustCReligion = customer.CustCReligion,
+                CustCCaste = customer.CustCCaste,
+                CustCMaritalsts = customer.CustCMaritalsts,
+                CustCPadd1 = customer.CustCPadd1,
+                CustCPCity = customer.CustCPCity,
+                MobileCNo = customer.MobileCNo,
+                EmailCAdd = customer.EmailCAdd,
+                IdCType = customer.IdCType,
+                IdCNo = customer.IdCNo,
+                IdDIssdate = customer.IdDIssdate,
+                IdCIssplace = customer.IdCIssplace,
+                IdDExpdate = customer.IdDExpdate,
+                CustCAuthority = customer.CustCAuthority,
+                HusbCName = customer.HusbCName,
+                CountryCCode = customer.CountryCCode,
+                PlaceCBirth = customer.PlaceCBirth,
+                CustCNationality = customer.CustCNationality,
+                CustCWife1 = customer.CustCWife1,
+                IdCType2 = customer.IdCType2,
+                IdCNo2 = customer.IdCNo2,
+                CustCOccupation = customer.CustCOccupation,
+                HomeINumber = customer.HomeINumber?.ToString(),
+                CustIIdentify = customer.CustIIdentify,
+                CustCCountrybrith = customer.CustCCountrybrith,
+                CustCStatebrith = customer.CustCStatebrith,
+                CustCCitizenship = customer.CustCCitizenship,
+                CustCEmployer = customer.CustCEmployer,
+                CustFIncome = customer.CustFIncome,
+                CustCHigheducation = customer.CustCHigheducation,
+                CustFAvgmonth = customer.CustFAvgmonth,
+                TradeCNameenglish = customer.TradeCNameenglish,
+                CustCEngfname = customer.CustCEngfname,
+                CustCEngsname = customer.CustCEngsname,
+                CustCEngtname = customer.CustCEngtname,
+                CustCEngfoname = customer.CustCEngfoname,
+                Status = customer.Status,
+                ReviewStatus = customer.ReviewStatus,
+                ReviewedBy = customer.ReviewedBy,
+                CustDEntrydt = customer.CustDEntrydt,
+                AccountMasts = accountDtos,
+                CustomerDocuments = documentDtos
+            };
+
+            return customerDto;
         }
 
         public async Task<CustMast?> GetCustomerAsync(string branchCode, decimal custId)
@@ -30,9 +129,25 @@ namespace RegistrationPortal.Server.Services
             return await _custMastRepository.GetByBranchAndIdAsync(branchCode, custId);
         }
 
-        public async Task<IEnumerable<CustMast>> GetAllCustomersAsync()
+        public async Task<PaginatedResultDto<CustMastDto>> GetAllCustomersAsync(PaginationParameters parameters, string? userRole = null, string? userBranch = null)
         {
-            return await _custMastRepository.GetAllAsync();
+            // Process comma-separated status values
+            var statusValues = ProcessCommaSeparatedValues(parameters.Status);
+            var reviewStatusValues = ProcessCommaSeparatedValues(parameters.ReviewStatus);
+            
+            // Apply role-based filtering logic
+            var (effectiveStatus, effectiveReviewStatus) = ApplyRoleBasedFiltering(userRole, statusValues, reviewStatusValues);
+            
+            return await _custMastRepository.GetAllCustomersPaginatedAsync(
+                parameters.PageNumber, 
+                parameters.PageSize, 
+                parameters.SearchTerm, 
+                parameters.SortBy, 
+                parameters.SortDescending,
+                effectiveStatus,
+                effectiveReviewStatus,
+                userRole,
+                userBranch);
         }
 
         public async Task<IEnumerable<CustMast>> GetCustomersByBranchAsync(string branchCode)
@@ -89,6 +204,9 @@ namespace RegistrationPortal.Server.Services
                 {
                     // Map DTO to entity
                     var customer = customerDto.Adapt<CustMast>();
+
+                    // Set default review status to Pending
+                    customer.ReviewStatus = "Pending";
 
                     // Validate for duplicates before creating
                     await ValidateCustomerDuplicatesAsync(customer);
@@ -269,9 +387,125 @@ namespace RegistrationPortal.Server.Services
             }
         }
 
+        public async Task<bool> UpdateCustomerReviewAsync(UpdateCustomerReviewDto reviewDto, string reviewedBy)
+        {
+            try
+            {
+                // Use a direct database update to avoid tracking conflicts
+                using var connection = CreateNewConnection();
+                await connection.OpenAsync();
+
+                var updateSql = @"
+                    UPDATE SSDBONLINE.""cust_mast"" 
+                    SET ""review_status"" = :reviewStatus, 
+                        ""reviewed_by"" = :reviewedBy
+                    WHERE ""id"" = :customerId";
+
+                using var command = connection.CreateCommand();
+                command.CommandText = updateSql;
+
+                var reviewStatusParam = new OracleParameter("reviewStatus", OracleDbType.Varchar2);
+                reviewStatusParam.Value = reviewDto.ReviewStatus;
+                reviewStatusParam.Direction = ParameterDirection.Input;
+                
+                var reviewedByParam = new OracleParameter("reviewedBy", OracleDbType.Varchar2);
+                reviewedByParam.Value = reviewedBy;
+                reviewedByParam.Direction = ParameterDirection.Input;
+                
+                var customerIdParam = new OracleParameter("customerId", OracleDbType.Varchar2);
+                customerIdParam.Value = reviewDto.CustomerId;
+                customerIdParam.Direction = ParameterDirection.Input;
+
+                command.Parameters.Add(reviewStatusParam);
+                command.Parameters.Add(reviewedByParam);
+                command.Parameters.Add(customerIdParam);
+
+                var rowsAffected = await command.ExecuteNonQueryAsync();
+                
+                return rowsAffected > 0;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         public async Task<IEnumerable<AccountMast>> GetCustomerAccountsAsync(string branchCode, decimal custId)
         {
             return await _custMastRepository.GetCustomerAccountsAsync(branchCode, custId);
+        }
+
+        private OracleConnection CreateNewConnection()
+        {
+            var connectionString = _configuration.GetConnectionString("OracleConnection");
+            return new OracleConnection(connectionString);
+        }
+        
+        private string? ProcessCommaSeparatedValues(string? commaSeparatedValues)
+        {
+            if (string.IsNullOrWhiteSpace(commaSeparatedValues))
+                return null;
+                
+            var values = commaSeparatedValues.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                .Select(v => v.Trim())
+                .Where(v => !string.IsNullOrWhiteSpace(v))
+                .ToList();
+                
+            return values.Any() ? string.Join(",", values) : null;
+        }
+        
+        private (string? status, string? reviewStatus) ApplyRoleBasedFiltering(string? userRole, string? statusValues, string? reviewStatusValues)
+        {
+            var effectiveStatus = statusValues;
+            var effectiveReviewStatus = reviewStatusValues;
+            
+            if (!string.IsNullOrWhiteSpace(userRole))
+            {
+                switch (userRole)
+                {
+                    case "Reviewer":
+                        // Reviewer can only see Pending records, override any provided reviewStatus
+                        effectiveReviewStatus = "Pending";
+                        break;
+                    case "Manager":
+                        // Manager can see Approved or Rejected records only
+                        // If manager provides specific filter, validate it only contains Approved/Rejected
+                        if (!string.IsNullOrWhiteSpace(reviewStatusValues))
+                        {
+                            var requestedStatuses = reviewStatusValues.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                                .Select(v => v.Trim())
+                                .Where(v => !string.IsNullOrWhiteSpace(v))
+                                .ToList();
+                            
+                            // Filter out any Pending requests and keep only Approved/Rejected
+                            var allowedStatuses = requestedStatuses
+                                .Where(s => s.Equals("Approved", StringComparison.OrdinalIgnoreCase) || 
+                                           s.Equals("Rejected", StringComparison.OrdinalIgnoreCase))
+                                .ToList();
+                            
+                            if (allowedStatuses.Any())
+                            {
+                                effectiveReviewStatus = string.Join(",", allowedStatuses);
+                            }
+                            else
+                            {
+                                // If no valid statuses provided, default to both Approved and Rejected
+                                effectiveReviewStatus = "Approved,Rejected";
+                            }
+                        }
+                        else
+                        {
+                            // If no filter provided, show both Approved and Rejected
+                            effectiveReviewStatus = "Approved,Rejected";
+                        }
+                        break;
+                    case "Admin":
+                        // Admin can see all records, no filtering needed
+                        break;
+                }
+            }
+            
+            return (effectiveStatus, effectiveReviewStatus);
         }
     }
 }

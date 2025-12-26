@@ -24,6 +24,11 @@ namespace RegistrationPortal.Server.Repositories
             return await _dbSet.ToListAsync();
         }
 
+        public async Task<IQueryable<T>> GetAllQueryableAsync()
+        {
+            return await Task.FromResult(_dbSet.AsQueryable());
+        }
+
         public async Task<T> AddAsync(T entity)
         {
             await _dbSet.AddAsync(entity);

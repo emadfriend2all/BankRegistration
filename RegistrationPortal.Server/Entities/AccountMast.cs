@@ -23,7 +23,7 @@ namespace RegistrationPortal.Server.Entities
         [StringLength(10)]
         public string ActCType { get; set; } = string.Empty;
 
-        [Column("cust_i_no")]
+        [Column("cust_i_no", TypeName = "DECIMAL(18,2)")]
         public decimal CustINo { get; set; }
 
         [Column("currency_c_code")]
@@ -71,10 +71,10 @@ namespace RegistrationPortal.Server.Entities
         [StringLength(50)]
         public string? ActCOpmode { get; set; }
 
-        [Column("act_i_introid")]
+        [Column("act_i_introid", TypeName = "DECIMAL(18,2)")]
         public decimal? ActIIntroid { get; set; }
 
-        [Column("act_i_trbrcode")]
+        [Column("act_i_trbrcode", TypeName = "DECIMAL(18,2)")]
         public decimal? ActITrbrcode { get; set; }
 
         [Column("act_d_closdt")]

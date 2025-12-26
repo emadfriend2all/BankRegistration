@@ -9,7 +9,7 @@ namespace RegistrationPortal.Server.DTOs
         public string DocumentType { get; set; } = string.Empty;
         public string FileUrl { get; set; } = string.Empty;
         public string? OriginalFileName { get; set; }
-        public long FileSize { get; set; }
+        public decimal FileSize { get; set; }
         public string? MimeType { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }

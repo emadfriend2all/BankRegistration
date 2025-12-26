@@ -5,7 +5,7 @@ VisualStudioVersion = 17.13.35919.96
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RegistrationPortal.Server", "RegistrationPortal.Server\RegistrationPortal.Server.csproj", "{06F02A3B-B497-42C8-8890-B8614C6E2EDB}"
 EndProject
-Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "RegistrationPortal.Client", "RegistrationPortal.Angular\RegistrationPortal.Client.esproj", "{D4FA08AF-2B9F-4BCC-C821-144C6CE60132}"
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "RegistrationPortal.Client", "RegistrationPortal.Client\RegistrationPortal.Client.esproj", "{D4FA08AF-2B9F-4BCC-C821-144C6CE60132}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -9,6 +9,34 @@
     }
   },
   "profiles": {
+    "Server Only": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "launchUrl": "swagger",
+      "applicationUrl": "https://localhost:7232;http://localhost:5071",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "Client Only": {
+      "commandName": "Executable",
+      "executablePath": "cmd",
+      "commandLineArgs": "/c cd ..\\RegistrationPortal.Client && npm start",
+      "workingDirectory": "$(ProjectDir)",
+      "launchBrowser": true
+    },
+    "Both (Server + Client)": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "launchUrl": "swagger",
+      "applicationUrl": "https://localhost:7232;http://localhost:5071",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.SpaProxy"
+      }
+    },
     "http": {
       "commandName": "Project",
       "dotnetRunMessages": true,
