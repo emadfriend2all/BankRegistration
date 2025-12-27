@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
 using RegistrationPortal.Server.Entities;
 using RegistrationPortal.Server.DTOs;
 using RegistrationPortal.Server.Repositories;
@@ -10,11 +11,13 @@ namespace RegistrationPortal.Server.Services
         private readonly ICustomerDocumentRepository _documentRepository;
         private readonly ILogger<CustomerDocumentService> _logger;
         private readonly string _baseStoragePath;
+        private readonly IConfiguration _configuration;
 
-        public CustomerDocumentService(ICustomerDocumentRepository documentRepository, ILogger<CustomerDocumentService> logger)
+        public CustomerDocumentService(ICustomerDocumentRepository documentRepository, ILogger<CustomerDocumentService> logger, IConfiguration configuration)
         {
             _documentRepository = documentRepository;
             _logger = logger;
+            _configuration = configuration;
             _baseStoragePath = Path.Combine(Directory.GetCurrentDirectory(), "Files");
         }
 
@@ -88,7 +91,8 @@ namespace RegistrationPortal.Server.Services
                     {
                         var relativePath = Path.GetRelativePath(_baseStoragePath, physicalPath);
                         // Use absolute URL that works with direct API calls
-                        document.FileUrl = $"https://localhost:7232/api/Files/{relativePath.Replace("\\", "/")}";
+                        var serverUrl = _configuration["ServerUrl"];
+                        document.FileUrl = $"{serverUrl}/api/Files/{relativePath.Replace("\\", "/")}";
                         
                         // Update the original file name in the database to match the actual file
                         var actualFileName = Path.GetFileName(physicalPath);
@@ -308,7 +312,8 @@ namespace RegistrationPortal.Server.Services
                         {
                             var fileInfo = new FileInfo(document.FileUrl);
                             var relativePath = Path.GetRelativePath(_baseStoragePath, document.FileUrl);
-                            document.FileUrl = $"https://localhost:7232/api/Files/{relativePath.Replace("\\", "/")}";
+                            var serverUrl = _configuration["ServerUrl"];
+                            document.FileUrl = $"{serverUrl}/api/Files/{relativePath.Replace("\\", "/")}";
                             await _documentRepository.UpdateAsync(document);
                             updated = true;
                         }

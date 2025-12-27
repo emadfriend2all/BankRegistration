@@ -29,6 +29,7 @@
               pInputText 
               placeholder="بحث ذكي في جميع الحقول..." 
               [(ngModel)]="globalFilter"
+              name="globalFilter"
               (input)="onFilter()"
               class="search-input">
             <p-inputGroupAddon *ngIf="globalFilter && globalFilter.trim()" class="filter-summary">
@@ -40,6 +41,7 @@
           <p-select 
             [options]="statusOptions" 
             [(ngModel)]="selectedStatus" 
+            name="selectedStatus"
             placeholder="اختر الحالة"
             (onChange)="onStatusFilterChange()"
             appendTo="body">
@@ -49,6 +51,7 @@
           <p-select 
             [options]="reviewStatusOptions" 
             [(ngModel)]="selectedReviewStatus" 
+            name="selectedReviewStatus"
             placeholder="اختر حالة المراجعة"
             (onChange)="onReviewStatusFilterChange()"
             appendTo="body">

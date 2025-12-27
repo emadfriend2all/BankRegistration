@@ -17,7 +17,7 @@
                 "build": {
                     "builder": "@angular-devkit/build-angular:application",
                     "options": {
-                        "outputPath": "dist/registrationportal.client",
+                        "outputPath": "../RegistrationPortal.Server/wwwroot",
                         "index": "src/index.html",
                         "browser": "src/main.ts",
                         "polyfills": [
@@ -25,6 +25,7 @@
                         ],
                         "tsConfig": "tsconfig.app.json",
                         "inlineStyleLanguage": "scss",
+                        "deployUrl": "/",
                         "assets": [
                             {
                                 "glob": "**/*",
@@ -51,14 +52,16 @@
                 "serve": {
                     "builder": "@angular-devkit/build-angular:dev-server",
                     "options": {
-                        "proxyConfig": "proxy.conf.json"
+                        "proxyConfig": "public/config/development.json"
                     },
                     "configurations": {
                         "production": {
-                            "buildTarget": "registrationportal.client:build:production"
+                            "buildTarget": "registrationportal.client:build:production",
+                            "proxyConfig": "public/config/production.json"
                         },
                         "development": {
-                            "buildTarget": "registrationportal.client:build:development"
+                            "buildTarget": "registrationportal.client:build:development",
+                            "proxyConfig": "public/config/development.json"
                         }
                     },
                     "defaultConfiguration": "development"

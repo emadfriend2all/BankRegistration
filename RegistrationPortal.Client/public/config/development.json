@@ -1,0 +1,18 @@
+{
+    "api": {
+        "baseUrl": "https://localhost:7232",
+        "proxy": {
+            "/api/*": {
+                "target": "https://localhost:7232",
+                "secure": true,
+                "changeOrigin": true,
+                "logLevel": "debug"
+            }
+        }
+    },
+    "app": {
+        "rtl": true,
+        "darkModeSelector": ".app-dark",
+        "theme": "aura"
+    }
+}

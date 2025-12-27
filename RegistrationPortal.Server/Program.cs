@@ -277,6 +277,54 @@ builder.Services.AddAuthorization(options =>
 
 var app = builder.Build();
 
+// Ensure database is created and run migrations
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<RegistrationPortalDbContext>();
+    try
+    {
+        // For Oracle, we need to check if database exists first
+        var canConnect = await context.Database.CanConnectAsync();
+        if (!canConnect)
+        {
+            Console.WriteLine("Database does not exist. Creating new database...");
+            await context.Database.EnsureCreatedAsync();
+            Console.WriteLine("Database created successfully");
+        }
+        else
+        {
+            Console.WriteLine("Database already exists and is accessible");
+        }
+        
+        // Run pending migrations with better error handling
+        Console.WriteLine("Running database migrations...");
+        try
+        {
+            await context.Database.MigrateAsync();
+            Console.WriteLine("Migrations completed successfully");
+        }
+        catch (Exception migrationEx)
+        {
+            Console.WriteLine($"Migration warning: {migrationEx.Message}");
+            Console.WriteLine("This might be expected if tables already exist");
+            // Continue anyway - the application might still work
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Database operation failed: {ex.Message}");
+        if (ex.Message.Contains("ORA-00955") || ex.Message.Contains("already exists"))
+        {
+            Console.WriteLine("Object already exists - this is expected for existing databases");
+        }
+        else
+        {
+            Console.WriteLine("Continuing with application startup...");
+        }
+        // Continue anyway - let the application handle database issues at runtime
+    }
+}
+
 // Seed data on application startup
 using (var scope = app.Services.CreateScope())
 {
@@ -288,11 +336,15 @@ app.UseDefaultFiles();
 app.UseStaticFiles();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
+//if (app.Environment.IsDevelopment())
+//{
     app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "RegistrationPortal API V1");
+        c.RoutePrefix = "swagger";
+    });
+//}
 
 // Use CORS policy
 app.UseCors("AllowAngularApp");
@@ -306,6 +358,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+// Fallback to Angular index.html for SPA routing
 app.MapFallbackToFile("/index.html");
 
 app.Run();
