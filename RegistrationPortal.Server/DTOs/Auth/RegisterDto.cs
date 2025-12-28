@@ -22,4 +22,7 @@ public class RegisterDto
 
     [StringLength(50, ErrorMessage = "Last name cannot be longer than 50 characters")]
     public string? LastName { get; set; }
+
+    [StringLength(50, ErrorMessage = "Branch cannot be longer than 50 characters")]
+    public string? Branch { get; set; }
 }

@@ -19,6 +19,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("login")]
+    [AllowAnonymous]
     public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
     {
         try
@@ -53,6 +54,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("register")]
+    [AllowAnonymous]
     public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
     {
         try
@@ -87,6 +89,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("validate-token")]
+    [Authorize]
     public async Task<IActionResult> ValidateToken([FromBody] string token)
     {
         try

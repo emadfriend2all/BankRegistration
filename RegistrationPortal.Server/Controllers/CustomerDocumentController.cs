@@ -1,11 +1,15 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using RegistrationPortal.Server.Services;
+using RegistrationPortal.Server.Attributes;
+using RegistrationPortal.Server.Constants;
 using RegistrationPortal.Server.DTOs;
+using RegistrationPortal.Server.Services;
 
 namespace RegistrationPortal.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class CustomerDocumentController : ControllerBase
     {
         private readonly ICustomerDocumentService _documentService;
@@ -16,6 +20,7 @@ namespace RegistrationPortal.Server.Controllers
         }
 
         [HttpPost("upload/{customerId}/{documentType}/{branchCode}/{idNo2}")]
+        [AllowAnonymous]
         public async Task<ActionResult<CustomerDocumentDto>> UploadDocument(string customerId, string documentType, string branchCode, string idNo2, IFormFile file)
         {
             try
@@ -41,6 +46,7 @@ namespace RegistrationPortal.Server.Controllers
         }
 
         [HttpPost("upload-multiple/{customerId}/{branchCode}/{idNo2}")]
+        [AllowAnonymous]
         public async Task<ActionResult<List<CustomerDocumentDto>>> UploadMultipleDocuments(string customerId, string branchCode, string idNo2, [FromForm] UploadCustomerDocumentsDto documents)
         {
             try
@@ -82,6 +88,7 @@ namespace RegistrationPortal.Server.Controllers
         }
 
         [HttpGet("customer/{customerId}")]
+        [RequirePermission(Permissions.Customers.ViewDetails)]
         public async Task<ActionResult<IEnumerable<CustomerDocumentDto>>> GetCustomerDocuments(string customerId)
         {
             try
@@ -108,6 +115,7 @@ namespace RegistrationPortal.Server.Controllers
         }
 
         [HttpGet("{id}")]
+        [RequirePermission(Permissions.Customers.ViewDetails)]
         public async Task<ActionResult<CustomerDocumentDto>> GetDocument(string id)
         {
             try
@@ -136,6 +144,7 @@ namespace RegistrationPortal.Server.Controllers
         }
 
         [HttpDelete("{id}")]
+        [RequirePermission(Permissions.Customers.Delete)]
         public async Task<ActionResult<bool>> DeleteDocument(string id)
         {
             try
@@ -153,6 +162,7 @@ namespace RegistrationPortal.Server.Controllers
         }
 
         [HttpGet("migrate-urls")]
+        [RequirePermission(Permissions.System.Maintenance)]
         public async Task<ActionResult<bool>> MigrateDocumentUrls()
         {
             try
@@ -167,6 +177,7 @@ namespace RegistrationPortal.Server.Controllers
         }
 
         [HttpGet("download/{id}")]
+        [RequirePermission(Permissions.Customers.ViewDetails)]
         public async Task<IActionResult> DownloadDocument(string id)
         {
             try

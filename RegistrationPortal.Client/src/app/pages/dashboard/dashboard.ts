@@ -4,6 +4,7 @@ import { Router, RouterModule } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
+import { PermissionService } from '../../services/permission.service';
 import { Client } from '../../api/client';
 import { DashboardStatisticsComponent } from './components/dashboard-statistics.component';
 import { DailyRequestsGraphComponent } from './components/daily-requests-graph.component';
@@ -13,7 +14,7 @@ import { DailyRequestsGraphComponent } from './components/daily-requests-graph.c
     imports: [CommonModule, ButtonModule, RouterModule, FormsModule, DashboardStatisticsComponent, DailyRequestsGraphComponent],
     template: `
         <!-- Anonymous users - Full screen layout without grid constraint -->
-        <ng-container *ngIf="!isAuthenticated">
+        <ng-container *ngIf="!canViewDashboard">
             <!-- Professional Background -->
             <div class="fixed inset-0 bg-gradient-to-br from-blue-50 via-white to-indigo-50 -z-10"></div>
             
@@ -101,7 +102,7 @@ import { DailyRequestsGraphComponent } from './components/daily-requests-graph.c
         </ng-container>
 
         <!-- Authenticated users - Grid layout with widgets -->
-        <ng-container *ngIf="isAuthenticated">
+        <ng-container *ngIf="canViewDashboard">
             <div class="space-y-8">
                 <!-- Dashboard Statistics -->
                 <app-dashboard-statistics />
@@ -113,18 +114,21 @@ import { DailyRequestsGraphComponent } from './components/daily-requests-graph.c
     `
 })
 export class Dashboard implements OnInit {
+    canViewDashboard = false;
     isAuthenticated = false;
     userRole: string | null = null;
 
     constructor(
         private authService: AuthService,
-        private router: Router
+        private router: Router,
+        private permissionService: PermissionService
     ) {}
 
     ngOnInit() {
         this.authService.currentUser.subscribe(user => {
+            this.isAuthenticated = !!user;
             this.userRole = user?.role || null;
-            this.isAuthenticated = this.authService.isAuthenticated;
+            this.canViewDashboard = this.permissionService.hasPermission('dashboard.view');
         });
     }
 }

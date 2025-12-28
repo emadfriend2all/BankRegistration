@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using RegistrationPortal.Server.Constants;
 using RegistrationPortal.Server.Entities;
 using RegistrationPortal.Server.Services;
 
@@ -6,6 +8,7 @@ namespace RegistrationPortal.Server.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class AccountMastController : ControllerBase
     {
         private readonly IAccountMastService _accountMastService;
@@ -16,6 +19,7 @@ namespace RegistrationPortal.Server.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = Permissions.Accounts.List)]
         public async Task<ActionResult<IEnumerable<AccountMast>>> GetAllAccounts()
         {
             try
@@ -30,6 +34,7 @@ namespace RegistrationPortal.Server.Controllers
         }
 
         [HttpGet("{branchCode}/{actType}/{custNo}/{currencyCode}")]
+        [Authorize(Policy = Permissions.Accounts.List)]
         public async Task<ActionResult<AccountMast>> GetAccount(string branchCode, string actType, decimal custNo, string currencyCode)
         {
             try
@@ -47,6 +52,7 @@ namespace RegistrationPortal.Server.Controllers
         }
 
         [HttpGet("customer/{branchCode}/{custNo}")]
+        [Authorize(Policy = Permissions.Accounts.List)]
         public async Task<ActionResult<IEnumerable<AccountMast>>> GetAccountsByCustomer(string branchCode, decimal custNo)
         {
             try
@@ -61,6 +67,7 @@ namespace RegistrationPortal.Server.Controllers
         }
 
         [HttpGet("branch/{branchCode}")]
+        [Authorize(Policy = Permissions.Accounts.List)]
         public async Task<ActionResult<IEnumerable<AccountMast>>> GetAccountsByBranch(string branchCode)
         {
             try
@@ -75,6 +82,7 @@ namespace RegistrationPortal.Server.Controllers
         }
 
         [HttpPost]
+        [Authorize(Policy = Permissions.Accounts.Create)]
         public async Task<ActionResult<AccountMast>> CreateAccount(AccountMast account)
         {
             try
@@ -97,6 +105,7 @@ namespace RegistrationPortal.Server.Controllers
         }
 
         [HttpPut("{branchCode}/{actType}/{custNo}/{currencyCode}")]
+        [Authorize(Policy = Permissions.Accounts.Update)]
         public async Task<ActionResult<AccountMast>> UpdateAccount(string branchCode, string actType, decimal custNo, string currencyCode, AccountMast account)
         {
             try
@@ -121,6 +130,7 @@ namespace RegistrationPortal.Server.Controllers
         }
 
         [HttpDelete("{branchCode}/{actType}/{custNo}/{currencyCode}")]
+        [Authorize(Policy = Permissions.Accounts.Delete)]
         public async Task<ActionResult<bool>> DeleteAccount(string branchCode, string actType, decimal custNo, string currencyCode)
         {
             try

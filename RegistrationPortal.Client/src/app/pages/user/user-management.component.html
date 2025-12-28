@@ -1,0 +1,210 @@
+<div class="card">
+    <div class="flex justify-content-between align-items-center mb-4">
+        <h5>إدارة المستخدمين</h5>
+        <div class="flex gap-2">
+            <p-select [options]="statusOptions" [(ngModel)]="selectedStatus" placeholder="الحالة"
+                (onChange)="loadUsers()" styleClass="w-8rem">
+            </p-select>
+            <input pInputText [(ngModel)]="searchTerm" placeholder="بحث..." (keyup.enter)="loadUsers()"
+                class="w-12rem" />
+            <p-button label="بحث" icon="pi pi-search" (click)="loadUsers()">
+            </p-button>
+            <p-button label="مستخدم جديد" icon="pi pi-user-plus" (click)="openCreateUserDialog()">
+            </p-button>
+        </div>
+    </div>
+
+    <p-table [value]="users" [loading]="loading" [paginator]="true" [rows]="pageSize" [totalRecords]="totalRecords"
+        [first]="first" (onPage)="onPageChange($event)" [rowsPerPageOptions]="[10, 20, 50]" responsiveLayout="scroll">
+
+        <ng-template pTemplate="header">
+            <tr>
+                <th>المعرف</th>
+                <th>اسم المستخدم</th>
+                <th>البريد الإلكتروني</th>
+                <th>الاسم الكامل</th>
+                <th>الحالة</th>
+                <th>الفرع</th>
+                <th>الأدوار</th>
+                <th>تاريخ الإنشاء</th>
+                <th>الإجراءات</th>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-user>
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.firstName }} {{ user.lastName }}</td>
+                <td>
+                    <p-tag [value]="user.isActive ? 'نشط' : 'غير نشط'"
+                        [severity]="user.isActive ? 'success' : 'danger'">
+                    </p-tag>
+                </td>
+                <td>
+                    <p-tag [value]="user.branch"
+                        [severity]="user.branch ? 'success' : 'default'">
+                    </p-tag>
+                </td>
+                <td>
+                    <div class="flex flex-wrap gap-1">
+                        <p-tag *ngFor="let role of user.roles" [value]="role" severity="info" styleClass="text-xs">
+                        </p-tag>
+                    </div>
+                </td>
+                <td>{{ user.createdAt | date:'yyyy/MM/dd' }}</td>
+                <td>
+                    <div class="flex gap-2">
+                        <p-button icon="pi pi-user-plus" size="small" severity="info" label="تعيين دور"
+                            (click)="openAssignRoleDialog(user)" [disabled]="!canAssignRoles()">
+                        </p-button>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+
+<!-- Create User Dialog -->
+<p-dialog [(visible)]="createUserDialogVisible" [modal]="true" [draggable]="false" [resizable]="false" [closable]="true"
+    [dismissableMask]="true" [focusOnShow]="true" [style]="{ width: '540px' }" [contentStyle]="{ padding: '1.5rem' }"
+    header="👤 إنشاء مستخدم جديد">
+
+    <form class="p-fluid" autocomplete="off">
+
+        <!-- Personal Information -->
+        <div>
+            <h6 class="text-700 mb-3">المعلومات الشخصية</h6>
+
+            <div class="flex gap-3">
+                <div class="flex-1">
+                    <div class="field">
+                        <label for="firstName" class="block font-medium mb-2">الاسم الأول</label>
+                        <input pInputText id="firstName" name="firstName" [(ngModel)]="userForm.firstName"
+                            placeholder="الاسم الأول" class="w-full" />
+                    </div>
+                </div>
+
+                <div class="flex-1">
+                    <div class="field">
+                        <label for="lastName" class="block font-medium mb-2">اسم العائلة</label>
+                        <input pInputText id="lastName" name="lastName" [(ngModel)]="userForm.lastName"
+                            placeholder="اسم العائلة" class="w-full" />
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+        <!-- Account Information -->
+        <div class="mb-4 mt-4">
+            <h6 class="text-700 mb-3">معلومات الحساب</h6>
+
+            <div class="field mb-3">
+                <label for="username" class="block font-medium mb-2">
+                    اسم المستخدم <span class="text-red-500">*</span>
+                </label>
+
+                <input pInputText id="username" name="username" required maxlength="50" [(ngModel)]="userForm.username"
+                    #usernameModel="ngModel" placeholder="مثال: user123" class="w-full" autocomplete="off"
+                    [class.p-invalid]="usernameModel.invalid && usernameModel.touched" />
+
+                <small class="p-error block mt-1"
+                    *ngIf="usernameModel.invalid && (usernameModel.dirty || usernameModel.touched)">
+                    اسم المستخدم مطلوب
+                </small>
+            </div>
+
+            <div class="field mb-3">
+                <label for="email" class="block font-medium mb-2">
+                    البريد الإلكتروني <span class="text-red-500">*</span>
+                </label>
+
+                <input pInputText id="email" name="email" type="email" required maxlength="100"
+                    [(ngModel)]="userForm.email" #emailModel="ngModel" placeholder="example@domain.com" class="w-full"
+                    autocomplete="off" [class.p-invalid]="emailModel.invalid && emailModel.touched" />
+
+                <small class="p-error block mt-1"
+                    *ngIf="emailModel.invalid && (emailModel.dirty || emailModel.touched)">
+                    البريد الإلكتروني مطلوب
+                </small>
+            </div>
+
+            <div class="field mb-3">
+                <label for="password" class="block font-medium mb-2">
+                    كلمة المرور <span class="text-red-500">*</span>
+                </label>
+
+                <div class="flex align-items-center gap-2">
+                    <input pInputText [type]="showPassword ? 'text' : 'password'" id="password" name="password" required
+                        minlength="6" [(ngModel)]="userForm.password" #passwordModel="ngModel" placeholder="••••••"
+                        class="w-full" autocomplete="off"
+                        [class.p-invalid]="passwordModel.invalid && passwordModel.touched" />
+
+                    <p-button [icon]="showPassword ? 'pi pi-eye-slash' : 'pi pi-eye'"
+                        (click)="$event.preventDefault(); showPassword = !showPassword" severity="secondary"
+                        [text]="true" [rounded]="true"
+                        [ariaLabel]="showPassword ? 'إخفاء كلمة المرور' : 'إظهار كلمة المرور'">
+                    </p-button>
+                </div>
+
+                <small class="p-error block mt-1"
+                    *ngIf="passwordModel.invalid && (passwordModel.dirty || passwordModel.touched)">
+                    كلمة المرور مطلوبة (6 أحرف على الأقل)
+                </small>
+            </div>
+        </div>
+
+        <!-- Organization Information -->
+        <div class="mb-4">
+            <h6 class="text-700 mb-3">المعلومات التنظيمية</h6>
+
+            <div class="field mb-3">
+                <label for="branch" class="block font-medium mb-2">الفرع</label>
+
+                <p-select id="branch" name="branch" [options]="branchOptions" optionLabel="label" optionValue="value"
+                    appendTo="body" [(ngModel)]="userForm.branch" placeholder="اختر الفرع" styleClass="w-full">
+                </p-select>
+            </div>
+        </div>
+
+
+
+    </form>
+
+    <!-- Footer -->
+    <ng-template pTemplate="footer">
+        <div class="flex justify-content-end gap-2">
+            <p-button label="إلغاء" icon="pi pi-times" severity="secondary" (click)="createUserDialogVisible = false">
+            </p-button>
+
+            <p-button label="إنشاء المستخدم" icon="pi pi-check" (click)="saveUser()" [loading]="savingUser">
+            </p-button>
+        </div>
+    </ng-template>
+
+</p-dialog>
+
+
+<!-- Assign Role Dialog -->
+<p-dialog [(visible)]="assignRoleDialogVisible" header="تعيين دور للمستخدم" [modal]="true" [style]="{width: '450px'}"
+    [closable]="true">
+
+    <div class="field">
+        <label for="role">اختر الدور</label>
+        <p-select id="role" [options]="availableRoles" [(ngModel)]="selectedRole" [optionLabel]="'name'"
+            [optionValue]="'id'" placeholder="اختر دوراً" styleClass="w-full" appendTo="body">
+        </p-select>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <p-button label="إلغاء" icon="pi pi-times" (click)="assignRoleDialogVisible = false" severity="secondary">
+        </p-button>
+        <p-button label="تعيين" icon="pi pi-check" (click)="assignRole()" [loading]="assigningRole">
+        </p-button>
+    </ng-template>
+</p-dialog>
+
+<p-toast></p-toast>

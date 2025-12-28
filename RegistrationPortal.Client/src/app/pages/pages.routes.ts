@@ -8,6 +8,9 @@ import { UpdateCustomerComponent } from './customer/update/update-customer.compo
 import { ViewAllCustomersComponent } from './customer/view-all-customers.component';
 import { CustomerDetailsComponent } from './customer/customer-details.component';
 import { AuthService } from '../services/auth.service';
+import { permissionGuard } from '../guards/permission.guard';
+import { UserManagementComponent } from './user/user-management.component';
+import { RoleManagementComponent } from './role/role-management.component';
 
 // Create a simple guard function inline to avoid import issues
 const authGuard: CanActivateFn = (route, state) => {
@@ -36,7 +39,14 @@ export default [
     { path: 'empty', component: Empty },
     { path: 'customer/create', component: CreateCustomerComponent },
     { path: 'customer/update', component: UpdateCustomerComponent },
-    { path: 'customers', component: ViewAllCustomersComponent, canActivate: [authGuard] },
+        { 
+        path: 'customers', 
+        component: ViewAllCustomersComponent, 
+        canActivate: [authGuard, permissionGuard], 
+        data: { permission: 'customers.list' } 
+    },
     { path: 'customer/:id', component: CustomerDetailsComponent, canActivate: [authGuard] },
+    { path: 'users', component: UserManagementComponent, canActivate: [authGuard] },
+    { path: 'roles', component: RoleManagementComponent, canActivate: [authGuard] },
     { path: '**', redirectTo: '/notfound' }
 ] as Routes;

@@ -67,7 +67,7 @@ export class UpdateCustomerComponent implements OnInit {
   fullName = '';
   englishFullName = '';
   activeIndex: number = Number(0);
-  isTesting = true; // Set this to true for testing
+  isTesting = false; // Set this to true for testing
   
   // File upload properties
   uploadedFiles: any[] = [];
@@ -177,7 +177,7 @@ export class UpdateCustomerComponent implements OnInit {
       idCType2: ['NATIONAL_ID'],
       idCNo2: ['', [Validators.required, Validators.pattern('^[0-9]{11}$')]], // Required and exactly 11 digits
       custCOccupation: ['', Validators.required],
-      homeINumber: [null],
+      homeINumber: [''],
       homeCountryCode: ['+249'],
       custIIdentify: [''],
       custCCountrybrith: ['', Validators.required],

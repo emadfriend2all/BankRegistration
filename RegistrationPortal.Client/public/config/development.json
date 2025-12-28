@@ -1,9 +1,9 @@
 {
     "api": {
-        "baseUrl": "https://localhost:7232",
+        "baseUrl": "https://localhost:4885",
         "proxy": {
             "/api/*": {
-                "target": "https://localhost:7232",
+                "target": "https://localhost:4885",
                 "secure": true,
                 "changeOrigin": true,
                 "logLevel": "debug"

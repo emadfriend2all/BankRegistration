@@ -52,6 +52,7 @@ namespace RegistrationPortal.Server.Controllers
         }
 
         [HttpGet("{id}")]
+        [RequirePermission(Permissions.Customers.ViewDetails)]
         public async Task<ActionResult<GetCustMastByIdDto>> GetCustomerById(string id)
         {
             try
@@ -69,6 +70,7 @@ namespace RegistrationPortal.Server.Controllers
         }
 
         [HttpGet("branch/{branchCode}")]
+        [RequirePermission(Permissions.Customers.List)]
         public async Task<ActionResult<IEnumerable<CustMast>>> GetCustomersByBranch(string branchCode)
         {
             try
@@ -83,6 +85,7 @@ namespace RegistrationPortal.Server.Controllers
         }
 
         [HttpGet("{branchCode}/{custId}/accounts")]
+        [RequirePermission(Permissions.Customers.ViewDetails)]
         public async Task<ActionResult<IEnumerable<AccountMast>>> GetCustomerAccounts(string branchCode, decimal custId)
         {
             try
@@ -115,6 +118,7 @@ namespace RegistrationPortal.Server.Controllers
         }
 
         [HttpPut("{branchCode}/{custId}")]
+        [RequirePermission(Permissions.Customers.Update)]
         public async Task<ActionResult<CustMast>> UpdateCustomer(string branchCode, decimal custId, CustMast customer)
         {
             try
@@ -136,6 +140,7 @@ namespace RegistrationPortal.Server.Controllers
         }
 
         [HttpDelete("{branchCode}/{custId}")]
+        [RequirePermission(Permissions.Customers.Delete)]
         public async Task<ActionResult<bool>> DeleteCustomer(string branchCode, decimal custId)
         {
             try

@@ -10,6 +10,7 @@ export interface User {
   email: string;
   name: string;
   role?: string;
+  permissions: string[];
 }
 
 @Injectable({
@@ -119,42 +120,24 @@ export class AuthService {
   }
 
   private extractUserFromResponse(response: any): User | null {
-    // Adjust this based on your actual API response structure
-    const userData = response?.user || response;
-    const rolesArray = response?.roles || response?.Roles || [];
-    
-    if (userData) {
-      // First try to get role from userData properties
-      let role = userData.role || userData.userRole || userData.userType || 
-                   userData.Role || userData.UserRole || userData.UserType ||
-                   (userData.roles && userData.roles.length > 0 ? userData.roles[0] : undefined);
-      
-      // If still no role found, try the roles array from response
-      if (!role && rolesArray.length > 0) {
-        role = rolesArray[0];
-      }
-      
-      console.log('Extracting user data:', {
-        userData,
-        rolesArray,
-        extractedRole: role,
-        allProperties: Object.keys(response || {})
-      });
-      
-      // Debug: Log the actual token to see its claims
-      const token = this.extractTokenFromResponse(response);
-      if (token) {
-        this.debugTokenClaims(token);
-      }
-      
+    const token = this.extractTokenFromResponse(response);
+    if (!token) return null;
+
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const permissions = payload?.permission || [];
+
       return {
-        id: userData.id || userData.userId || '',
-        email: userData.email || '',
-        name: userData.name || userData.userName || userData.displayName || '',
-        role: role
+        id: payload.nameid || '',
+        email: payload.email || '',
+        name: payload.unique_name || '',
+        role: payload.role || '',
+        permissions: Array.isArray(permissions) ? permissions : [permissions]
       };
+    } catch (error) {
+      console.error('Error decoding token:', error);
+      return null;
     }
-    return null;
   }
 
   private debugTokenClaims(token: string): void {

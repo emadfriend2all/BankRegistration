@@ -22,7 +22,7 @@ public static class Roles
         [Manager] = new List<string>
         {
             // Customer permissions - can review customer
-            Permissions.Customers.Read, Permissions.Customers.List,Permissions.Customers.ViewDetails,
+            Permissions.Customers.List,Permissions.Customers.ViewDetails,
             
             // Dashboard permissions - without anonymous buttons
             Permissions.Dashboard.View
@@ -31,7 +31,7 @@ public static class Roles
         [Reviewer] = new List<string>
         {
             // Review permissions + view all customers
-            Permissions.Customers.Review, Permissions.Customers.Create, Permissions.Customers.Read, 
+            Permissions.Customers.Review, Permissions.Customers.Create, 
             Permissions.Customers.Update, Permissions.Customers.List, Permissions.Customers.ViewDetails,
             
             // Dashboard permissions - without anonymous buttons

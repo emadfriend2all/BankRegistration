@@ -93,14 +93,6 @@ public class RequireCustomerCreatePermissionAttribute : AuthorizeAttribute
     }
 }
 
-public class RequireCustomerReadPermissionAttribute : AuthorizeAttribute
-{
-    public RequireCustomerReadPermissionAttribute()
-    {
-        Policy = Permissions.Customers.Read;
-    }
-}
-
 public class RequireCustomerUpdatePermissionAttribute : AuthorizeAttribute
 {
     public RequireCustomerUpdatePermissionAttribute()
@@ -122,14 +114,6 @@ public class RequireAccountCreatePermissionAttribute : AuthorizeAttribute
     public RequireAccountCreatePermissionAttribute()
     {
         Policy = Permissions.Accounts.Create;
-    }
-}
-
-public class RequireAccountReadPermissionAttribute : AuthorizeAttribute
-{
-    public RequireAccountReadPermissionAttribute()
-    {
-        Policy = Permissions.Accounts.Read;
     }
 }
 
@@ -157,14 +141,6 @@ public class RequireUserCreatePermissionAttribute : AuthorizeAttribute
     }
 }
 
-public class RequireUserReadPermissionAttribute : AuthorizeAttribute
-{
-    public RequireUserReadPermissionAttribute()
-    {
-        Policy = Permissions.Users.Read;
-    }
-}
-
 public class RequireUserUpdatePermissionAttribute : AuthorizeAttribute
 {
     public RequireUserUpdatePermissionAttribute()
@@ -173,27 +149,11 @@ public class RequireUserUpdatePermissionAttribute : AuthorizeAttribute
     }
 }
 
-public class RequireUserDeletePermissionAttribute : AuthorizeAttribute
-{
-    public RequireUserDeletePermissionAttribute()
-    {
-        Policy = Permissions.Users.Delete;
-    }
-}
-
 public class RequireRoleCreatePermissionAttribute : AuthorizeAttribute
 {
     public RequireRoleCreatePermissionAttribute()
     {
         Policy = Permissions.Roles.Create;
-    }
-}
-
-public class RequireRoleReadPermissionAttribute : AuthorizeAttribute
-{
-    public RequireRoleReadPermissionAttribute()
-    {
-        Policy = Permissions.Roles.Read;
     }
 }
 

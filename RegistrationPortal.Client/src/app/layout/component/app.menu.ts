@@ -1,14 +1,16 @@
 import { Component, OnInit, OnChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { AppMenuitem } from './app.menuitem';
 import { AuthService } from '../../services/auth.service';
+import { PermissionService } from '../../services/permission.service';
 
 @Component({
     selector: 'app-menu',
     standalone: true,
-    imports: [CommonModule, AppMenuitem, RouterModule],
+    imports: [CommonModule, AppMenuitem, RouterModule, FormsModule],
     template: `<ul class="layout-menu">
         <ng-container *ngFor="let item of model; let i = index">
             <li app-menuitem *ngIf="!item.separator" [item]="item" [index]="i" [root]="true"></li>
@@ -21,7 +23,7 @@ export class AppMenu implements OnInit, OnChanges {
     isAuthenticated = false;
     userRole: string | null = null;
 
-    constructor(private authService: AuthService) {}
+    constructor(private authService: AuthService, private permissionService: PermissionService) {}
 
     ngOnInit() {
         this.authService.currentUser.subscribe(user => {
@@ -78,12 +80,27 @@ export class AppMenu implements OnInit, OnChanges {
         
         // Authenticated users - role-based menu items
         if (this.isAuthenticated) {
-            // All authenticated users can view customers list
             items.push({
                 label: 'العملاء',
                 icon: 'pi pi-users',
                 routerLink: ['/pages/customers'],
-                visible: true
+                visible: this.permissionService.hasPermission('customers.list')
+            });
+
+            // User Management - Requires permission
+            items.push({
+                label: 'إدارة المستخدمين',
+                icon: 'pi pi-user',
+                routerLink: ['/pages/users'],
+                visible: this.permissionService.hasPermission('users.list')
+            });
+
+            // Role Management - Requires permission
+            items.push({
+                label: 'إدارة الأدوار',
+                icon: 'pi pi-shield',
+                routerLink: ['/pages/roles'],
+                visible: this.permissionService.hasPermission('roles.list')
             });
         }
 
