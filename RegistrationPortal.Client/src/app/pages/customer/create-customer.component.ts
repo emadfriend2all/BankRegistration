@@ -26,6 +26,7 @@ import { Client, CustMast, AccountMast, CreateAccountDto } from '../../api/clien
 import { CreateCustomerDto } from '../../models/create-customer.dto';
 import { ApiWrapperService } from '../../services/api-wrapper.service';
 import { FormOptionsService } from '../../shared/form-options.service';
+import { ConfigService } from '../../services/config.service';
 import { IdMaskDirective } from '../../shared/id-mask.directive';
 
 @Component({
@@ -68,7 +69,10 @@ export class CreateCustomerComponent implements OnInit {
   fullName = '';
   englishFullName = '';
   activeIndex: number = Number(0);
-  isTesting = false; // Set this to true for testing
+  
+  get isTesting(): boolean {
+    return this.configService.getIsTesting();
+  }
   
   // File upload properties
   uploadedFiles: any[] = [];
@@ -145,6 +149,7 @@ export class CreateCustomerComponent implements OnInit {
     private messageService: MessageService,
     private apiWrapper: ApiWrapperService,
     private formOptionsService: FormOptionsService,
+    private configService: ConfigService,
     private http: HttpClient
   ) {
     this.customerForm = this.fb.group({

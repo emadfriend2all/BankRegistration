@@ -16,8 +16,13 @@ using Mapster;
 using RegistrationPortal.Server.Middleware;
 using RegistrationPortal.Server.Constants;
 using RegistrationPortal.Server.Attributes;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Configure Serilog
+builder.Host.UseSerilog((context, configuration) =>
+    configuration.ReadFrom.Configuration(context.Configuration));
 
 // Configure Mapster
 MappingConfig.Configure();
@@ -25,15 +30,37 @@ MappingConfig.Configure();
 // Add services to the container.
 builder.Services.AddControllers();
 
-// Configure CORS for Angular development server
+// Configure CORS from appsettings
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngularApp", policy =>
     {
-        policy.WithOrigins("http://localhost:4200", "http://localhost:52332")
-              .AllowAnyHeader()
-              .AllowAnyMethod()
-              .AllowCredentials();
+        var corsSettings = builder.Configuration.GetSection("Cors");
+        var allowedOrigins = corsSettings.GetSection("AllowedOrigins").Get<string[]>() ?? new[] { "http://localhost:4200", "http://localhost:52332" };
+        var allowedMethods = corsSettings.GetSection("AllowedMethods").Get<string[]>() ?? new[] { "GET", "POST", "PUT", "DELETE", "OPTIONS" };
+        var allowedHeaders = corsSettings.GetSection("AllowedHeaders").Get<string[]>() ?? new[] { "*" };
+        var allowCredentials = corsSettings.GetValue<bool?>("AllowCredentials");
+        
+        // Log the loaded CORS configuration for debugging
+        Console.WriteLine($"CORS - Allowed Origins: {string.Join(", ", allowedOrigins)}");
+        Console.WriteLine($"CORS - Allow Credentials: {allowCredentials ?? true}");
+        Console.WriteLine($"CORS - Environment: {builder.Environment.EnvironmentName}");
+        
+        policy.WithOrigins(allowedOrigins)
+              .WithMethods(allowedMethods)
+              .WithHeaders(allowedHeaders);
+        
+        if (allowCredentials.HasValue)
+        {
+            if (allowCredentials.Value)
+            {
+                policy.AllowCredentials();
+            }
+        }
+        else
+        {
+            policy.AllowCredentials();
+        }
     });
 });
 
@@ -67,6 +94,7 @@ builder.Services.AddScoped<ICustMastService, CustMastService>();
 builder.Services.AddScoped<IAccountMastService, AccountMastService>();
 builder.Services.AddScoped<ICustomerDocumentService, CustomerDocumentService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
+builder.Services.AddScoped<IAppLoggerService, AppLoggerService>();
 
 // Register JWT and Authentication services
 builder.Services.AddScoped<IJwtService, JwtService>();
@@ -283,6 +311,9 @@ app.UseCors("AllowAngularApp");
 
 // Use global exception handling middleware
 app.UseGlobalExceptionHandling();
+
+// Use API logging middleware
+app.UseApiLogging();
 
 // Use authentication and authorization
 app.UseAuthentication();

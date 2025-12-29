@@ -16,11 +16,13 @@ namespace RegistrationPortal.Server.Controllers
     {
         private readonly ICustMastService _custMastService;
         private readonly IAuthService _authService;
+        private readonly IAppLoggerService _logger;
 
-        public CustMastController(ICustMastService custMastService, IAuthService authService)
+        public CustMastController(ICustMastService custMastService, IAuthService authService, IAppLoggerService logger)
         {
             _custMastService = custMastService;
             _authService = authService;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -29,6 +31,9 @@ namespace RegistrationPortal.Server.Controllers
         {
             try
             {
+                await _logger.LogInformationAsync("Getting all customers with parameters: Page={Page}, PageSize={PageSize}", 
+                    parameters.PageNumber, parameters.PageSize);
+
                 // Get user role from JWT token
                 var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
                 
@@ -43,10 +48,13 @@ namespace RegistrationPortal.Server.Controllers
                 }
                 
                 var customers = await _custMastService.GetAllCustomersAsync(parameters, userRole, userBranch);
+                
+                await _logger.LogInformationAsync("Successfully retrieved {Count} customers", customers.Data.Count());
                 return Ok(customers);
             }
             catch (Exception ex)
             {
+                await _logger.LogErrorAsync(ex, "Error occurred while getting all customers");
                 return StatusCode(500, new { error = "Internal server error", message = ex.Message });
             }
         }

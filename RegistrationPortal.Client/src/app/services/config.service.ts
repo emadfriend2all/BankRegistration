@@ -18,6 +18,7 @@ export interface AppConfig {
     rtl: boolean;
     darkModeSelector: string;
     theme: string;
+    isTesting: boolean;
   };
 }
 
@@ -78,6 +79,10 @@ export class ConfigService {
 
   public getAppConfig(): any {
     return this.config.app;
+  }
+
+  public getIsTesting(): boolean {
+    return this.config.app.isTesting;
   }
 
   private getEnvironment(): string {

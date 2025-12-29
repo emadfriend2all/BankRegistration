@@ -10,3 +10,6 @@
 /.vs/ProjectEvaluation
 /RegistrationPortal.Server/bin/Release/net8.0
 /PublishedApp
+/RegistrationPortal.Server/wwwroot/3rdpartylicenses.txt
+/RegistrationPortal.Server/wwwroot/prerendered-routes.json
+/RegistrationPortal.Server/wwwroot/browser

@@ -1,9 +1,9 @@
 {
     "api": {
-        "baseUrl": "https://localhost:4885",
+        "baseUrl": "http://localhost:4885",
         "proxy": {
             "/api/*": {
-                "target": "https://localhost:4885",
+                "target": "http://localhost:4885",
                 "secure": true,
                 "changeOrigin": true,
                 "logLevel": "debug"
@@ -13,6 +13,7 @@
     "app": {
         "rtl": true,
         "darkModeSelector": ".app-dark",
-        "theme": "aura"
+        "theme": "aura",
+        "isTesting": true
     }
 }

@@ -23,7 +23,19 @@ namespace RegistrationPortal.Server.Middleware
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "An unhandled exception occurred");
+                // Log detailed error information
+                _logger.LogError(ex, 
+                    "An unhandled exception occurred. " +
+                    "Request: {Method} {Path} | " +
+                    "User: {User} | " +
+                    "StatusCode: {StatusCode} | " +
+                    "Message: {Message}",
+                    context.Request.Method,
+                    context.Request.Path,
+                    context.User.Identity?.Name ?? "Anonymous",
+                    context.Response.StatusCode,
+                    ex.Message);
+                
                 await HandleExceptionAsync(context, ex);
             }
         }

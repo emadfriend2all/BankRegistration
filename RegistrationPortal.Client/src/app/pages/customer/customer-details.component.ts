@@ -24,6 +24,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { CustomerService } from '../../services/customer.service';
+import { PermissionService } from '../../services/permission.service';
 import { AuthService } from '../../services/auth.service';
 import { GetCustMastByIdDto, AccountMastDto, CustomerDocumentDto, UpdateCustomerReviewDto } from '../../api/client';
 
@@ -93,7 +94,8 @@ export class CustomerDetailsComponent implements OnInit {
     private router: Router,
     private customerService: CustomerService,
     public authService: AuthService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private permissionService: PermissionService
   ) {}
 
   ngOnInit(): void {
@@ -269,27 +271,10 @@ export class CustomerDetailsComponent implements OnInit {
 
   // Permission check for review functionality
   get canReviewCustomer(): boolean {
-    const user = this.authService.currentUserValue;
-    if (!user || !this.customer) return false;
-    
-    // Check if customer has Pending status
-    if (this.customer.reviewStatus !== 'Pending') {
+    if (!this.customer || this.customer.reviewStatus !== 'Pending') {
       return false;
     }
-    
-    // Check if user has review permission - temporarily allow all authenticated users for testing
-    // TODO: Fix role extraction from API response
-    const hasReviewRole = user.role === 'Admin' || user.role === 'Reviewer' || !user.role;
-    
-    console.log('Review permission check:', {
-      hasReviewRole: hasReviewRole,
-      customerStatus: this.customer.reviewStatus,
-      userRole: user.role,
-      userEmail: user.email,
-      fullUser: user
-    });
-    
-    return hasReviewRole;
+    return this.permissionService.hasPermission('customers.review');
   }
 
   // Review functionality methods
