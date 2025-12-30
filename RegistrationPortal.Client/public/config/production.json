@@ -1,9 +1,9 @@
 {
     "api": {
-        "baseUrl": "http://10.116.1.43:4885",
+        "baseUrl": "https://10.116.1.43:4885",
         "proxy": {
             "/api/*": {
-                "target": "http://10.116.1.43:4885",
+                "target": "https://10.116.1.43:4885",
                 "secure": false,
                 "changeOrigin": true,
                 "logLevel": "error"

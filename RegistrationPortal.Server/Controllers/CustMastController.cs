@@ -121,6 +121,7 @@ namespace RegistrationPortal.Server.Controllers
             }
             catch (Exception ex)
             {
+                await _logger.LogErrorAsync(ex, "Error occurred while creating customer");
                 return StatusCode(500, new { error = "Internal server error", message = ex.Message });
             }
         }
